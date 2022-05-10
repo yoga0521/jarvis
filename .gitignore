@@ -1,3 +1,8 @@
+# maven ignore
+target/
+!.mvn/wrapper/*
+.flattened-pom.xml
+
 # Compiled class file
 *.class
 
@@ -6,6 +11,17 @@
 
 # BlueJ files
 *.ctxt
+
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+
+# system ignore
+.DS_Store
+Thumbs.db
+*.orig
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -16,6 +32,7 @@
 *.nar
 *.ear
 *.zip
+*.tar
 *.tar.gz
 *.rar
 
