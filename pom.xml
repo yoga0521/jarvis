@@ -33,12 +33,31 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+
+        <!-- for maven deploy plugin -->
+        <skip_maven_deploy>false</skip_maven_deploy>
+
         <!-- for maven compiler plugin -->
-        <java_source_version>1.8</java_source_version>
-        <java_target_version>1.8</java_target_version>
+        <java_source.version>1.8</java_source.version>
+        <java_target.version>1.8</java_target.version>
         <file_encoding>UTF-8</file_encoding>
+
+        <!-- for maven release plugin -->
+        <arguments/>
+
+
+        <!-- Maven plugins -->
+        <maven_jar.version>3.2.2</maven_jar.version>
+        <maven_deploy.version>2.8.2</maven_deploy.version>
+        <maven_compiler.version>3.8.1</maven_compiler.version>
+        <apache_rat.version>0.13</apache_rat.version>
+        <maven_release.version>3.0.0-M5</maven_release.version>
+        <maven_flatten.version>1.2.7</maven_flatten.version>
+        <maven_clean.version>3.2.0</maven_clean.version>
+        <maven_dependency.version>3.3.0</maven_dependency.version>
+        <build_helper_maven.version>3.3.0</build_helper_maven.version>
+        <exec_maven.version>3.0.0</exec_maven.version>
+
 
         <revision>0.0.1-SNAPSHOT</revision>
     </properties>
@@ -47,20 +66,17 @@
         <module>universe-common</module>
         <module>universe-dependencies-bom</module>
         <module>universe-spring-boot</module>
-        <module>universe-common</module>
-        <module>universe-dependencies-bom</module>
-        <module>universe-spring-boot</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.yoga.universe</groupId>
-                <artifactId>universe-dependencies-bom</artifactId>
-                <version>${project.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.yoga.universe</groupId>-->
+<!--                <artifactId>universe-dependencies-bom</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -69,9 +85,174 @@
     </dependencies>
 
     <build>
-        <plugins>
 
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${maven.multiModuleProjectDirectory}</directory>
+                <targetPath>META-INF/</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>NOTICE</include>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven_jar.version}</version>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven_deploy.version}</version>
+                <configuration>
+                    <skip>${skip_maven_deploy}</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven_compiler.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <compilerArg>-proc:none</compilerArg>
+                        <compilerArg>-parameters</compilerArg>
+                    </compilerArgs>
+                    <fork>true</fork>
+                    <source>${java_source.version}</source>
+                    <target>${java_target.version}</target>
+                    <encoding>${file_encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>${apache_rat.version}</version>
+                <executions>
+                    <execution>
+                        <id>rat-validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*.versionsBackup</exclude>
+                        <exclude>**/.idea/</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.load</exclude>
+                        <exclude>**/*.flex</exclude>
+                        <exclude>**/*.fc</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.sh</exclude>
+                        <exclude>**/*.bat</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>.git/</exclude>
+                        <exclude>.gitignore</exclude>
+                        <!-- ASF jenkins box puts the Maven repo in our root directory. -->
+                        <exclude>.repository/</exclude>
+                        <exclude>**/.settings/*</exclude>
+                        <exclude>**/.classpath</exclude>
+                        <exclude>**/.project</exclude>
+                        <exclude>**/target/**</exclude>
+                        <exclude>**/*.log</exclude>
+                        <exclude>CODE_OF_CONDUCT.md</exclude>
+                        <exclude>.codecov.yml</exclude>
+                        <exclude>.travis.yml</exclude>
+                        <exclude>PULL_REQUEST_TEMPLATE.md</exclude>
+                        <exclude>CONTRIBUTING.md</exclude>
+                        <exclude>README.md</exclude>
+                        <exclude>**/codestyle/*</exclude>
+                        <exclude>**/resources/META-INF/**</exclude>
+                        <exclude>.github/**</exclude>
+                        <exclude>compiler/**</exclude>
+                        <exclude>**/generated/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven_release.version}</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                    <arguments>${arguments}</arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven_flatten.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven_clean.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven_dependency.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build_helper_maven.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>kr.motd.maven</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec_maven.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>
