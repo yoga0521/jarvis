@@ -27,22 +27,18 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>universe-common</artifactId>
+    <artifactId>universe-core</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <description>The common module of universe project</description>
-
-    <properties>
-    </properties>
+    <description>The core module of universe project</description>
 
     <dependencies>
-
+        <!-- universe module -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
+            <groupId>org.yoga.universe</groupId>
+            <artifactId>universe-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

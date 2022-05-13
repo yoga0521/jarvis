@@ -83,6 +83,8 @@
         <module>universe-common</module>
         <module>universe-dependencies-bom</module>
         <module>universe-spring-boot</module>
+        <module>universe-core</module>
+        <module>universe-oss</module>
     </modules>
 
     <dependencyManagement>

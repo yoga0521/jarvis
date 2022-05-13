@@ -27,22 +27,32 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>universe-common</artifactId>
+    <artifactId>universe-oss</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <description>The common module of universe project</description>
-
-    <properties>
-    </properties>
+    <description>The oss module of universe project</description>
 
     <dependencies>
-
+        <!-- universe module -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.yoga.universe</groupId>
+            <artifactId>universe-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
             <scope>provided</scope>
         </dependency>
 
+        <!-- oss -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
     </dependencies>
+
 
 </project>

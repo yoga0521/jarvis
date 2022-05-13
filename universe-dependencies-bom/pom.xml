@@ -43,6 +43,9 @@
         <!-- log -->
         <slf4j.version>1.7.36</slf4j.version>
 
+        <!-- oss -->
+        <aliyun_oss.version>3.15.0</aliyun_oss.version>
+
         <!-- Maven plugins -->
         <maven_flatten.version>1.2.7</maven_flatten.version>
 
@@ -64,6 +67,13 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- oss -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun_oss.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

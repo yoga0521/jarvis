@@ -49,4 +49,59 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <!-- Used for packaging NOTICE & LICENSE to each sub-module jar-->
+        <resources>
+            <resource>
+                <directory>src/main/resources/</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>../</directory>
+                <targetPath>META-INF/</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>NOTICE</include>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven_jar.version}</version>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven_compiler.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <compilerArg>-parameters</compilerArg>
+                    </compilerArgs>
+                    <fork>true</fork>
+                    <source>${java_source.version}</source>
+                    <target>${java_target.version}</target>
+                    <encoding>${file_encoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
