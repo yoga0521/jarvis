@@ -28,6 +28,7 @@ public class OssProgressListener extends AbstractListener implements ProgressLis
 
     @Override
     public void progressChanged(ProgressEvent progressEvent) {
+        long bytes = progressEvent.getBytes();
         // do something TODO
     }
 }

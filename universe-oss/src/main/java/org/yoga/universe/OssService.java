@@ -16,7 +16,9 @@
 
 package org.yoga.universe;
 
+import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.model.*;
 import org.springframework.lang.Nullable;
@@ -103,10 +105,11 @@ public class OssService {
      * @param objectName    objectName
      * @param requireFormat Whether to require resource format
      * @param isEncrypt     Whether to encrypt
+     * @param isShowProgressBar Whether to show progress bar
      * @return oss result {@link org.yoga.universe.beans.OssResourceDTO}
      */
     private OssResourceDTO upload(InputStream inputStream, String resourceName, long resourceSize, @Nullable String folder,
-                                  @Nullable String objectName, boolean requireFormat, boolean isEncrypt) {
+                                  @Nullable String objectName, boolean requireFormat, boolean isEncrypt, boolean isShowProgressBar) {
         // not null check inputStream,resourceName TODO
         // resource size check TODO
         // resource suffix check TODO
@@ -123,10 +126,13 @@ public class OssService {
         // set contentLength
         meta.setContentLength(resourceSize);
 
-        OSSClient ossClient = generateOssClient();
+        OSS ossClient = generateOssClient();
 
-        ossClient.putObject(new PutObjectRequest(bucketName, objectName, inputStream, meta)
-                .withProgressListener(new OssProgressListener()));
+        PutObjectRequest objectRequest = new PutObjectRequest(bucketName, objectName, inputStream, meta);
+        if (isShowProgressBar) {
+            objectRequest.withProgressListener(new OssProgressListener());
+        }
+        ossClient.putObject(objectRequest);
         shutdownOssClient(ossClient);
 
         ossResourceDTO.setObjectName(objectName);
@@ -153,7 +159,7 @@ public class OssService {
         ossResourceDTO.setResourceSize(resourceSize);
 
         objectName = handleObjectName(objectName, folder);
-        OSSClient ossClient = generateOssClient();
+        OSS ossClient = generateOssClient();
         InitiateMultipartUploadResult initiateMultipartUploadResult =
                 ossClient.initiateMultipartUpload(new InitiateMultipartUploadRequest(bucketName, objectName));
         String uploadId = initiateMultipartUploadResult.getUploadId();
@@ -203,7 +209,7 @@ public class OssService {
         if (isEncrypt && (null == securityKey || securityKey.length() == 0)) {
             throw new UniverseException("securityKey is illegal");
         }
-        OSSClient ossClient = generateOssClient();
+        OSS ossClient = generateOssClient();
         OSSObject ossObject = ossClient.getObject(new GetObjectRequest(bucketName, objectName)
                 .withProgressListener(new OssProgressListener()));
         try (InputStream inputStream = ossObject.getObjectContent()) {
@@ -222,7 +228,7 @@ public class OssService {
      */
     public byte[] downloadByOssUrl(String ossUrl, @Nullable Map<String, String> requestHeaders) throws IOException {
         URL url = new URL(ossUrl);
-        OSSClient ossClient = generateOssClient();
+        OSS ossClient = generateOssClient();
         OSSObject ossObject = ossClient.getObject(new GetObjectRequest(url, requestHeaders)
                 .withProgressListener(new OssProgressListener()));
         try (InputStream inputStream = ossObject.getObjectContent()) {
@@ -240,7 +246,7 @@ public class OssService {
      * @return url
      */
     public URL generateOssUrl(String objectName, long expireTime) {
-        OSSClient ossClient = generateOssClient();
+        OSS ossClient = generateOssClient();
         Date expiration = new Date(System.currentTimeMillis() + expireTime);
         URL url = ossClient.generatePresignedUrl(bucketName, objectName, expiration);
         shutdownOssClient(ossClient);
@@ -253,7 +259,7 @@ public class OssService {
      * @param objectName objectName
      */
     public void delete(String objectName) {
-        OSSClient ossClient = generateOssClient();
+        OSS ossClient = generateOssClient();
         ossClient.deleteObject(new GenericRequest(bucketName, objectName)
                 .withProgressListener(new OssProgressListener()));
         shutdownOssClient(ossClient);
@@ -264,8 +270,8 @@ public class OssService {
      *
      * @return ossClient
      */
-    protected OSSClient generateOssClient() {
-        return new OSSClient(endpoint, new DefaultCredentialProvider(accessKeyId, secretAccessKey), null);
+    protected OSS generateOssClient() {
+        return new OSSClientBuilder().build(endpoint, accessKeyId, secretAccessKey);
     }
 
     /**
@@ -273,7 +279,7 @@ public class OssService {
      *
      * @param ossClient ossClient
      */
-    protected void shutdownOssClient(OSSClient ossClient) {
+    protected void shutdownOssClient(OSS ossClient) {
         ossClient.shutdown();
     }
 
