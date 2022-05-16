@@ -25,14 +25,14 @@
         <version>23</version>
     </parent>
 
-    <groupId>org.yoga.universe</groupId>
-    <artifactId>universe-parent</artifactId>
+    <groupId>org.yoga.jarvis</groupId>
+    <artifactId>jarvis-parent</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>The parent project of universe</description>
-    <url>https://github.com/yoga0521/universe</url>
+    <description>The parent project of jarvis</description>
+    <url>https://github.com/yoga0521/jarvis</url>
     <inceptionYear>2022</inceptionYear>
     <licenses>
         <license>
@@ -44,7 +44,7 @@
 
     <issueManagement>
         <system>Github Issues</system>
-        <url>https://github.com/yoga0521/universe/issues</url>
+        <url>https://github.com/yoga0521/jarvis/issues</url>
     </issueManagement>
 
     <properties>
@@ -79,19 +79,18 @@
     </properties>
 
     <modules>
-        <module>universe-build-tools</module>
-        <module>universe-common</module>
-        <module>universe-dependencies-bom</module>
-        <module>universe-spring-boot</module>
-        <module>universe-core</module>
-        <module>universe-oss</module>
+        <module>jarvis-dependencies-bom</module>
+        <module>jarvis-common</module>
+        <module>jarvis-core</module>
+        <module>jarvis-oss</module>
+        <module>jarvis-spring-boot</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.yoga.universe</groupId>
-                <artifactId>universe-dependencies-bom</artifactId>
+                <groupId>org.yoga.jarvis</groupId>
+                <artifactId>jarvis-dependencies-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
