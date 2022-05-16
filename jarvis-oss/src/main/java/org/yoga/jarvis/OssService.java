@@ -34,6 +34,7 @@ import org.yoga.jarvis.beans.OssResourceDTO;
 import org.yoga.jarvis.constants.DelimiterType;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.listener.OssProgressListener;
+import org.yoga.jarvis.utils.Assert;
 import org.yoga.jarvis.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -112,13 +113,13 @@ public class OssService {
     /**
      * upload resource to oss
      *
-     * @param inputStream   resource
-     * @param resourceName  name of resource
-     * @param resourceSize  size of resource
-     * @param folder        oss folder, Use the default folder {@value DEFAULT_FOLDER} when the folder is blank
-     * @param objectName    objectName
-     * @param requireFormat Whether to require resource format
-     * @param isEncrypt     Whether to encrypt
+     * @param inputStream       resource
+     * @param resourceName      name of resource
+     * @param resourceSize      size of resource
+     * @param folder            oss folder, Use the default folder {@value DEFAULT_FOLDER} when the folder is blank
+     * @param objectName        objectName
+     * @param requireFormat     Whether to require resource format
+     * @param isEncrypt         Whether to encrypt
      * @param isShowProgressBar Whether to show progress bar
      * @return oss result {@link org.yoga.jarvis.beans.OssResourceDTO}
      */
@@ -161,13 +162,13 @@ public class OssService {
      * @param resourceSize name of resource
      * @param folder       oss folder, Use the default folder {@value DEFAULT_FOLDER} when the folder is blank
      * @param objectName   objectName
-     * @param partSize     partSize(min value 100mb)
+     * @param segmentSize  segmentSize(min value 100mb)
      * @throws JarvisException exception
      */
     private OssResourceDTO multipartUpload(byte[] bytes, long resourceSize, @Nullable String folder, @Nullable String objectName,
-                                           long partSize) throws JarvisException {
-//        Assert.notNull(bytes, "bytes is null");
-//        Assert.isTrue(MIN_PART_SIZE < partSize, String.format("partSize[%d] smaller than min partSize", partSize));
+                                           long segmentSize) throws JarvisException {
+        Assert.notNull(bytes, "bytes must not be null!");
+        Assert.isTrue(MIN_SEGMENT_SIZE < segmentSize, String.format("segmentSize[%d] must be greater than min segmentSize", segmentSize));
 
         OssResourceDTO ossResourceDTO = new OssResourceDTO();
         ossResourceDTO.setResourceSize(resourceSize);
@@ -178,10 +179,10 @@ public class OssService {
                 ossClient.initiateMultipartUpload(new InitiateMultipartUploadRequest(bucketName, objectName));
         String uploadId = initiateMultipartUploadResult.getUploadId();
         List<PartETag> tags = new ArrayList<>();
-        int partCount = (int) Math.ceil((double) resourceSize / partSize);
+        int partCount = (int) Math.ceil((double) resourceSize / segmentSize);
 
         for (int i = 0; i < partCount; i++) {
-            long startPos = i * partSize;
+            long startPos = i * segmentSize;
             try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes)) {
                 byteArrayInputStream.skip(startPos);
                 UploadPartRequest uploadPartRequest = new UploadPartRequest();
@@ -189,7 +190,7 @@ public class OssService {
                 uploadPartRequest.setKey(objectName);
                 uploadPartRequest.setUploadId(uploadId);
                 uploadPartRequest.setInputStream(byteArrayInputStream);
-                uploadPartRequest.setPartSize((i + 1 == partCount) ? (resourceSize - startPos) : partSize);
+                uploadPartRequest.setPartSize((i + 1 == partCount) ? (resourceSize - startPos) : segmentSize);
                 uploadPartRequest.setPartNumber(i + 1);
                 // upload
                 UploadPartResult uploadPartResult =

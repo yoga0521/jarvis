@@ -16,6 +16,7 @@
 
 package org.yoga.jarvis.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,8 +27,31 @@ import java.io.InputStream;
  */
 public class IOUtils {
 
+    /**
+     * The default buffer size ({@value}) ,
+     * be consistent with {@link java.io.BufferedInputStream} {@code DEFAULT_BUFFER_SIZE}
+     */
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    /**
+     * {@code InputStream} convert to {@code byte[]}
+     *
+     * @param input the {@code InputStream} to read
+     * @return byte array
+     * @throws IllegalArgumentException if {@code InputStream} is null
+     * @throws IOException              if an I/O error occurs
+     */
     public static byte[] toByteArray(final InputStream input) throws IOException {
-        // TODO
-        return null;
+        Assert.notNull(input, "input must not be null!");
+
+        // close ByteArrayOutputStream
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int n;
+            while (-1 != (n = input.read(buffer))) {
+                output.write(buffer, 0, n);
+            }
+            return output.toByteArray();
+        }
     }
 }
