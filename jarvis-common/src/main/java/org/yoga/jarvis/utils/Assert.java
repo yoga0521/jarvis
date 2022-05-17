@@ -244,4 +244,22 @@ public class Assert {
             throw new IllegalArgumentException(message);
         }
     }
+
+    /**
+     * Assert a {@code CharSequence} is not {@code null} and length greater 0 and not whitespace only
+     *
+     * <pre class="code">
+     * Assert.notBlank(str, "The obj must not be null");
+     * </pre>
+     *
+     * @param cs      the {@code CharSequence} to check, nullable
+     * @param message exception message to use when it fails
+     * @throws IllegalArgumentException if the {@code CharSequence} is {@code null} or has length 0 or has whitespace only
+     * @see StringUtils#isBlank(CharSequence)
+     */
+    public static void notBlank(final CharSequence cs, String message) {
+        if (StringUtils.isBlank(cs)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }

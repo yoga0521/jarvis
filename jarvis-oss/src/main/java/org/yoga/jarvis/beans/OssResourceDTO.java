@@ -34,24 +34,14 @@ public class OssResourceDTO implements Serializable {
     private String resourceName;
 
     /**
-     * oss
+     * oss objectName
      */
     private String objectName;
-
-    /**
-     * encryption key
-     */
-    private String securityKey;
 
     /**
      * size of resource(kb)
      */
     private Long resourceSize;
-
-    /**
-     * size of encrypted resource(kb)
-     */
-    private Long encryptedResourceSize;
 
     public String getResourceName() {
         return resourceName;
@@ -69,13 +59,6 @@ public class OssResourceDTO implements Serializable {
         this.objectName = objectName;
     }
 
-    public String getSecurityKey() {
-        return securityKey;
-    }
-
-    public void setSecurityKey(String securityKey) {
-        this.securityKey = securityKey;
-    }
 
     public Long getResourceSize() {
         return resourceSize;
@@ -85,22 +68,12 @@ public class OssResourceDTO implements Serializable {
         this.resourceSize = resourceSize;
     }
 
-    public Long getEncryptedResourceSize() {
-        return encryptedResourceSize;
-    }
-
-    public void setEncryptedResourceSize(Long encryptedResourceSize) {
-        this.encryptedResourceSize = encryptedResourceSize;
-    }
-
     @Override
     public String toString() {
         return new StringJoiner(", ", OssResourceDTO.class.getSimpleName() + "[", "]")
                 .add("resourceName='" + resourceName + "'")
                 .add("objectName='" + objectName + "'")
-                .add("securityKey='" + securityKey + "'")
                 .add("resourceSize=" + resourceSize)
-                .add("encryptedResourceSize=" + encryptedResourceSize)
                 .toString();
     }
 }
