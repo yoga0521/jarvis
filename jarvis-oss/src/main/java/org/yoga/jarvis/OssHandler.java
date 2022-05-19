@@ -16,7 +16,7 @@
 
 package org.yoga.jarvis;
 
-import org.yoga.jarvis.beans.OssResourceDTO;
+import org.yoga.jarvis.bean.OssResourceDTO;
 
 import java.io.IOException;
 import java.io.InputStream;

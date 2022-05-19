@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.utils;
+package org.yoga.jarvis.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

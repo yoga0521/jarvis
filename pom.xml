@@ -84,6 +84,7 @@
         <module>jarvis-core</module>
         <module>jarvis-oss</module>
         <module>jarvis-spring-boot</module>
+        <module>jarvis-samples</module>
     </modules>
 
     <dependencyManagement>

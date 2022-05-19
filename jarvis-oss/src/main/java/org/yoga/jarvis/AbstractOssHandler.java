@@ -16,18 +16,23 @@
 
 package org.yoga.jarvis;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
-import org.yoga.jarvis.beans.OssProperties;
-import org.yoga.jarvis.beans.OssResourceDTO;
-import org.yoga.jarvis.constants.DelimiterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
+import org.yoga.jarvis.bean.OssProperties;
+import org.yoga.jarvis.bean.OssResourceDTO;
+import org.yoga.jarvis.constant.DelimiterType;
 import org.yoga.jarvis.listener.OssProgressListener;
-import org.yoga.jarvis.utils.Assert;
-import org.yoga.jarvis.utils.IOUtils;
-import org.yoga.jarvis.utils.StringUtils;
+import org.yoga.jarvis.util.Assert;
+import org.yoga.jarvis.util.IOUtils;
+import org.yoga.jarvis.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,10 +42,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -52,7 +56,10 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class AbstractOssHandler implements OssHandler {
 
-    protected final Executor executor = new ThreadPoolExecutor(2 * Runtime.getRuntime().availableProcessors(),
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractOssHandler.class);
+
+    protected static final ExecutorService OSS_THREAD_POOL = new ThreadPoolExecutor(
+            2 * Runtime.getRuntime().availableProcessors(),
             4 * Runtime.getRuntime().availableProcessors(),
             5000L,
             TimeUnit.MILLISECONDS,
@@ -74,17 +81,47 @@ public abstract class AbstractOssHandler implements OssHandler {
      */
     private static final String OSS_INTERNAL_ENDPOINT_SUFFIX = "-internal";
 
-    protected OssProperties ossProperties;
+    /**
+     * The number of resources to delete in bulk
+     */
+    private final int BATCH_DELETE_RESOURCE_NUMBER = 1000;
+
+    protected final OssProperties ossProperties;
 
     protected AbstractOssHandler(OssProperties ossProperties) {
         this.ossProperties = ossProperties;
         // check param TODO
     }
 
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            OSS_THREAD_POOL.shutdown();
+            logger.warn("thread pool is shutdown");
+        }));
+    }
+
     @Override
-    public OssResourceDTO upload(InputStream inputStream, String resourceName, long resourceSize, String objectName, boolean requireFormat, boolean isShowProgressBar) {
+    public OssResourceDTO upload(InputStream input, String resourceName, long resourceSize, @Nullable String objectName, boolean requireFormat, boolean isShowProgressBar) {
+        Assert.notNull(input, "input must not be null!");
+        Assert.notBlank(resourceName, "resourceName must not be blank!");
+
+        try {
+            return uploadActual(input, resourceName, resourceSize, handleObjectName(objectName), requireFormat, isShowProgressBar);
+        } catch (OSSException oe) {
+            logger.error("Caught an OSSException, which means your request made it to OSS," +
+                    " but was rejected with an error response for some reason.");
+            logger.error("Error Code:{}, Request ID:{}, Host ID:{}, Error Message:{}",
+                    oe.getErrorCode(), oe.getRequestId(), oe.getHostId(), oe.getErrorMessage());
+        } catch (ClientException ce) {
+            logger.error("Caught an ClientException, which means the client encountered a serious internal problem while trying to communicate with OSS," +
+                    " such as not being able to access the network.");
+            logger.error("Error Message:{}", ce.getMessage());
+        }
+        // TODO
         return null;
     }
+
+    protected abstract OssResourceDTO uploadActual(InputStream input, String resourceName, long resourceSize, String objectName, boolean requireFormat, boolean isShowProgressBar);
 
     @Override
     public byte[] download(String objectName) throws IOException {
@@ -145,7 +182,7 @@ public abstract class AbstractOssHandler implements OssHandler {
      * @param objectName objectName of oss
      * @return objectName
      */
-    protected String handleObjectName(String objectName) {
+    protected String handleObjectName(@Nullable String objectName) {
         if (StringUtils.isBlank(objectName)) {
             objectName = new StringJoiner(DelimiterType.slash.getValue()).add(DEFAULT_FOLDER)
                     .add(DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now())).add(UUID.randomUUID().toString()).toString();

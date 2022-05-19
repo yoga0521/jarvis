@@ -17,10 +17,12 @@
 package org.yoga.jarvis.listener;
 
 import com.aliyun.oss.event.ProgressEvent;
+import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
 
 /**
  * @Description: oss process listener
+ * Try not to do time-consuming operations, except in async methods
  * @Author: yoga
  * @Date: 2022/5/13 15:34
  */
@@ -29,6 +31,7 @@ public class OssProgressListener extends AbstractListener implements ProgressLis
     @Override
     public void progressChanged(ProgressEvent progressEvent) {
         long bytes = progressEvent.getBytes();
+        ProgressEventType eventType = progressEvent.getEventType();
         // do something TODO
     }
 }

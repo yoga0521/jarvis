@@ -14,45 +14,14 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.constants;
+package org.yoga.jarvis.exception;
 
 /**
- * @Description: delimiter type
+ * @Description: unsupported exception
  * @Author: yoga
- * @Date: 2022/5/13 14:32
+ * @Date: 2022/5/19 14:30
  */
-public enum DelimiterType {
+public class UnsupportedException extends JarvisException {
 
-    /**
-     * point
-     */
-    point("."),
-
-    /**
-     * slash
-     */
-    slash("/"),
-
-    /**
-     * underscore
-     */
-    underscore("_"),
-
-    /**
-     * horizontal line
-     */
-    horizontal("-");
-
-    /**
-     * delimiter type value
-     */
-    private final String value;
-
-    DelimiterType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
+    private static final long serialVersionUID = 5562204012421498045L;
 }

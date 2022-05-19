@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.beans;
+package org.yoga.jarvis.bean;
 
 import java.io.Serializable;
 import java.util.Map;

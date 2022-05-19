@@ -22,11 +22,11 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import org.springframework.lang.Nullable;
-import org.yoga.jarvis.beans.OssProperties;
-import org.yoga.jarvis.beans.OssResourceDTO;
+import org.yoga.jarvis.bean.OssProperties;
+import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.listener.OssProgressListener;
-import org.yoga.jarvis.utils.Assert;
-import org.yoga.jarvis.utils.IOUtils;
+import org.yoga.jarvis.util.Assert;
+import org.yoga.jarvis.util.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +39,12 @@ import java.util.Map;
  * @Date: 2022/5/13 14:29
  */
 public class DefaultOssHandler extends AbstractOssHandler {
+
+    /**
+     * Basic upload maximum resource size
+     * 5GB
+     */
+    private final long MAX_RESOURCE_SIZE = 5 * 1024 * 1024L;
 
     public DefaultOssHandler(OssProperties ossProperties) {
         super(ossProperties);
@@ -53,18 +59,13 @@ public class DefaultOssHandler extends AbstractOssHandler {
      * @param objectName        objectName
      * @param requireFormat     Whether to require resource format
      * @param isShowProgressBar Whether to show progress bar
-     * @return oss result {@link org.yoga.jarvis.beans.OssResourceDTO}
+     * @return oss result {@link org.yoga.jarvis.bean.OssResourceDTO}
      */
     @Override
-    public OssResourceDTO upload(InputStream inputStream, String resourceName, long resourceSize, @Nullable String objectName,
-                                 boolean requireFormat, boolean isShowProgressBar) throws IllegalArgumentException {
-        Assert.isTrue(resourceSize < ossProperties.getCommonUploadMaxSize(), "the resource is too large, please use multipart upload!");
-        Assert.notNull(inputStream, "inputStream must not be null!");
-        Assert.notBlank(resourceName, "resourceName must not be blank!");
+    protected OssResourceDTO uploadActual(InputStream inputStream, String resourceName, long resourceSize, @Nullable String objectName,
+                                       boolean requireFormat, boolean isShowProgressBar) throws IllegalArgumentException {
+        Assert.isTrue(resourceSize < MAX_RESOURCE_SIZE, "the resource is too large, please use multipart upload!");
         // resource suffix check TODO
-
-        // handle objectName
-        objectName = handleObjectName(objectName);
 
         PutObjectRequest objectRequest = new PutObjectRequest(ossProperties.getBucketName(), objectName, inputStream);
         if (requireFormat) {

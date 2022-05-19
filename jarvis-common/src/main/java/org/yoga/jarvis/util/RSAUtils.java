@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.utils;
+package org.yoga.jarvis.util;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

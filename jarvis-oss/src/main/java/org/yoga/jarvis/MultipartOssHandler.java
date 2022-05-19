@@ -25,16 +25,17 @@ import com.aliyun.oss.model.PartETag;
 import com.aliyun.oss.model.UploadPartRequest;
 import com.aliyun.oss.model.UploadPartResult;
 import org.springframework.lang.Nullable;
-import org.yoga.jarvis.beans.OssProperties;
-import org.yoga.jarvis.beans.OssResourceDTO;
+import org.yoga.jarvis.bean.OssProperties;
+import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.listener.OssProgressListener;
-import org.yoga.jarvis.utils.Assert;
+import org.yoga.jarvis.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @Description: Oss multipart handler
@@ -53,6 +54,12 @@ public class MultipartOssHandler extends AbstractOssHandler {
      */
     private static final long DEFAULT_SEGMENT_SIZE = 102_400;
 
+    /**
+     * Multipart upload maximum resource size
+     * 48.8TB
+     */
+    private final double MAX_RESOURCE_SIZE = 48.8 * 1024 * 1024 * 1024d;
+
     protected MultipartOssHandler(OssProperties ossProperties) {
         super(ossProperties);
     }
@@ -70,13 +77,9 @@ public class MultipartOssHandler extends AbstractOssHandler {
      * @throws JarvisException exception
      */
     @Override
-    public OssResourceDTO upload(InputStream input, String resourceName, long resourceSize, @Nullable String objectName,
-                                 boolean requireFormat, boolean isShowProgressBar) throws JarvisException {
-        Assert.isTrue(resourceSize < ossProperties.getCommonUploadMaxSize(), "the resource is too large, please use multipart upload!");
-        Assert.notNull(input, "input must not be null!");
-        Assert.notBlank(resourceName, "resourceName must not be blank!");
-
-        objectName = handleObjectName(objectName);
+    protected OssResourceDTO uploadActual(InputStream input, String resourceName, long resourceSize, @Nullable String objectName,
+                                       boolean requireFormat, boolean isShowProgressBar) throws JarvisException {
+        Assert.isTrue(resourceSize < MAX_RESOURCE_SIZE, "the resource is too large, not support!");
 
         OSS ossClient = generateOssClient();
         InitiateMultipartUploadRequest initiateMultipartUploadRequest = new InitiateMultipartUploadRequest(ossProperties.getBucketName(), objectName);
@@ -89,7 +92,7 @@ public class MultipartOssHandler extends AbstractOssHandler {
 
         int partCount = (int) Math.ceil((double) resourceSize / MIN_SEGMENT_SIZE);
 
-//        CountDownLatch countDownLatch = new CountDownLatch(partCount);
+        CountDownLatch countDownLatch = new CountDownLatch(partCount);
 
         for (int i = 0; i < partCount; i++) {
             long startPos = i * MIN_SEGMENT_SIZE;
@@ -111,17 +114,21 @@ public class MultipartOssHandler extends AbstractOssHandler {
                 tags.add(uploadPartResult.getPartETag());
 
                 // use thread pool
-//                threadPoolTaskExecutor.execute((Runnable) () -> {
-//                    UploadPartResult uploadPartResult1 = ossClient.uploadPart(uploadPartRequest);
-//                    tags.add(uploadPartResult1.getPartETag());
-//                    countDownLatch.countDown();
-//                });
+                OSS_THREAD_POOL.execute(() -> {
+                    UploadPartResult uploadPartResult1 = ossClient.uploadPart(uploadPartRequest);
+                    tags.add(uploadPartResult1.getPartETag());
+                    countDownLatch.countDown();
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        // countDownLatch.await();
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         CompleteMultipartUploadRequest completeMultipartUploadRequest =
                 new CompleteMultipartUploadRequest(ossProperties.getBucketName(), objectName, uploadId, tags);
         completeMultipartUploadRequest.withProgressListener(new OssProgressListener());

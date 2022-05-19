@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+package org.yoga.jarvis.util;
+
 /**
- * @Description: jarvis common utils
- * In order to reduce maven dependencies, reduce the probability of jar conflict
+ * @Description: 事务工具类
  * @Author: yoga
- * @Date: 2022/5/16 13:37
+ * @Date: 2022/5/11 10:00
  */
-package org.yoga.jarvis.utils;
+public class TransactionUtils {
+
+}

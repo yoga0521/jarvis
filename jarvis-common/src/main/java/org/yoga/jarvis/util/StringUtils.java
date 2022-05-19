@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.utils;
+package org.yoga.jarvis.util;
 
 /**
  * @Description: String Utils

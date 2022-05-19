@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.constants;
+package org.yoga.jarvis.constant;
 
 /**
  * @Description: media type

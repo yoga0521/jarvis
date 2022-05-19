@@ -14,19 +14,45 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.utils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.yoga.jarvis.constant;
 
 /**
- * @Description: AES
+ * @Description: delimiter type
  * @Author: yoga
- * @Date: 2022/5/16 13:18
+ * @Date: 2022/5/13 14:32
  */
-public class AESUtils {
+public enum DelimiterType {
 
-    private static final Logger log = LoggerFactory.getLogger(AESUtils.class);
+    /**
+     * point
+     */
+    point("."),
 
+    /**
+     * slash
+     */
+    slash("/"),
 
+    /**
+     * underscore
+     */
+    underscore("_"),
+
+    /**
+     * horizontal line
+     */
+    horizontal("-");
+
+    /**
+     * delimiter type value
+     */
+    private final String value;
+
+    DelimiterType(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }
