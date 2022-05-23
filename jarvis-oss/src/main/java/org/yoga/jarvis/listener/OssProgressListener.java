@@ -19,6 +19,9 @@ package org.yoga.jarvis.listener;
 import com.aliyun.oss.event.ProgressEvent;
 import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.event.ProgressListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.yoga.jarvis.constant.OssOperateType;
 
 /**
  * @Description: oss process listener
@@ -28,10 +31,47 @@ import com.aliyun.oss.event.ProgressListener;
  */
 public class OssProgressListener extends AbstractListener implements ProgressListener {
 
+    protected final static Logger logger = LoggerFactory.getLogger(OssProgressListener.class);
+
+    private final OssOperateType ossOperateType;
+
+    private long totalBytes = -1;
+
+    private long handledBytes = 0;
+
+    public OssProgressListener(OssOperateType ossOperateType) {
+        this.ossOperateType = ossOperateType;
+    }
+
     @Override
     public void progressChanged(ProgressEvent progressEvent) {
         long bytes = progressEvent.getBytes();
         ProgressEventType eventType = progressEvent.getEventType();
-        // do something TODO
+        switch (eventType) {
+            case TRANSFER_STARTED_EVENT:
+                logger.info(String.format("Start to %s......", ossOperateType.toString()));
+                break;
+            case REQUEST_CONTENT_LENGTH_EVENT:
+                this.totalBytes = bytes;
+                logger.info(String.format("%d bytes in total will be %s to OSS",this.totalBytes , ossOperateType.getSimplePast()));
+                break;
+            case REQUEST_BYTE_TRANSFER_EVENT:
+                this.handledBytes += bytes;
+                if (this.totalBytes != -1) {
+                    int percent = (int) (this.handledBytes * 100.0 / this.totalBytes);
+                    logger.info(bytes + " bytes have been written at this time, upload progress: " + percent + "%(" + this.handledBytes + "/" + this.totalBytes + ")");
+                } else {
+                    logger.info(bytes + " bytes have been written at this time, upload ratio: unknown" + "(" + this.handledBytes + "/...)");
+                }
+                break;
+            case TRANSFER_COMPLETED_EVENT:
+                logger.info("Succeed to upload, " + this.handledBytes + " bytes have been transferred in total");
+                break;
+            case TRANSFER_FAILED_EVENT:
+                logger.info("Failed to upload, " + this.handledBytes + " bytes have been transferred");
+                break;
+            default:
+                break;
+        }
     }
 }

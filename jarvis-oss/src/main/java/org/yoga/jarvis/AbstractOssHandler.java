@@ -29,6 +29,8 @@ import org.springframework.lang.Nullable;
 import org.yoga.jarvis.bean.OssProperties;
 import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.constant.DelimiterType;
+import org.yoga.jarvis.constant.OssOperateType;
+import org.yoga.jarvis.factory.ThreadPoolFactory;
 import org.yoga.jarvis.listener.OssProgressListener;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.IOUtils;
@@ -43,11 +45,6 @@ import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @Description: Abstract oss handler
@@ -58,18 +55,7 @@ public abstract class AbstractOssHandler implements OssHandler {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractOssHandler.class);
 
-    protected static final ExecutorService OSS_THREAD_POOL = new ThreadPoolExecutor(
-            2 * Runtime.getRuntime().availableProcessors(),
-            4 * Runtime.getRuntime().availableProcessors(),
-            5000L,
-            TimeUnit.MILLISECONDS,
-            new LinkedBlockingDeque<>(1024),
-            r -> {
-                Thread thread = Executors.defaultThreadFactory().newThread(r);
-                final AtomicLong count = new AtomicLong(0);
-                thread.setName(String.format("oss-pool-%d", count.getAndIncrement()));
-                return thread;
-            });
+    protected static final ExecutorService OSS_THREAD_POOL = ThreadPoolFactory.generateIOThreadPool("oss-pool-%d");
 
     /**
      * Default folder
@@ -128,7 +114,7 @@ public abstract class AbstractOssHandler implements OssHandler {
         Assert.notBlank(objectName, "objectName must not be blank!");
         OSS ossClient = generateOssClient();
         OSSObject ossObject = ossClient.getObject(new GetObjectRequest(ossProperties.getBucketName(), objectName)
-                .withProgressListener(new OssProgressListener()));
+                .withProgressListener(new OssProgressListener(OssOperateType.download)));
         try (InputStream inputStream = ossObject.getObjectContent()) {
             return IOUtils.toByteArray(inputStream);
         } finally {
@@ -153,8 +139,7 @@ public abstract class AbstractOssHandler implements OssHandler {
         Assert.notBlank(objectName, "objectName must not be blank!");
 
         OSS ossClient = generateOssClient();
-        ossClient.deleteObject(new GenericRequest(ossProperties.getBucketName(), objectName)
-                .withProgressListener(new OssProgressListener()));
+        ossClient.deleteObject(new GenericRequest(ossProperties.getBucketName(), objectName));
         shutdownOssClient(ossClient);
     }
 

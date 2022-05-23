@@ -27,6 +27,7 @@ import com.aliyun.oss.model.UploadPartResult;
 import org.springframework.lang.Nullable;
 import org.yoga.jarvis.bean.OssProperties;
 import org.yoga.jarvis.bean.OssResourceDTO;
+import org.yoga.jarvis.constant.OssOperateType;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.listener.OssProgressListener;
 import org.yoga.jarvis.util.Assert;
@@ -108,7 +109,7 @@ public class MultipartOssHandler extends AbstractOssHandler {
                 uploadPartRequest.setPartNumber(i + 1);
 
                 // listener
-                uploadPartRequest.withProgressListener(new OssProgressListener());
+                uploadPartRequest.withProgressListener(new OssProgressListener(OssOperateType.upload));
                 // upload
                 UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
                 tags.add(uploadPartResult.getPartETag());
@@ -131,7 +132,7 @@ public class MultipartOssHandler extends AbstractOssHandler {
         }
         CompleteMultipartUploadRequest completeMultipartUploadRequest =
                 new CompleteMultipartUploadRequest(ossProperties.getBucketName(), objectName, uploadId, tags);
-        completeMultipartUploadRequest.withProgressListener(new OssProgressListener());
+        completeMultipartUploadRequest.withProgressListener(new OssProgressListener(OssOperateType.upload));
         // complete
         CompleteMultipartUploadResult completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
         shutdownOssClient(ossClient);

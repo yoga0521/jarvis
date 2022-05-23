@@ -24,6 +24,7 @@ import com.aliyun.oss.model.PutObjectRequest;
 import org.springframework.lang.Nullable;
 import org.yoga.jarvis.bean.OssProperties;
 import org.yoga.jarvis.bean.OssResourceDTO;
+import org.yoga.jarvis.constant.OssOperateType;
 import org.yoga.jarvis.listener.OssProgressListener;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.IOUtils;
@@ -76,7 +77,7 @@ public class DefaultOssHandler extends AbstractOssHandler {
         }
 
         if (isShowProgressBar) {
-            objectRequest.withProgressListener(new OssProgressListener());
+            objectRequest.withProgressListener(new OssProgressListener(OssOperateType.upload));
         }
 
         OSS ossClient = generateOssClient();
@@ -101,7 +102,7 @@ public class DefaultOssHandler extends AbstractOssHandler {
         URL url = new URL(ossUrl);
         OSS ossClient = generateOssClient();
         OSSObject ossObject = ossClient.getObject(new GetObjectRequest(url, requestHeaders)
-                .withProgressListener(new OssProgressListener()));
+                .withProgressListener(new OssProgressListener(OssOperateType.download)));
         try (InputStream inputStream = ossObject.getObjectContent()) {
             return IOUtils.toByteArray(inputStream);
         } finally {
