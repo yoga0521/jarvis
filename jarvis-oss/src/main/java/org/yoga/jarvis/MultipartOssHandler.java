@@ -48,12 +48,7 @@ public class MultipartOssHandler extends AbstractOssHandler {
     /**
      * Minimum size of segment(100 * 1024kb)
      */
-    private static final long MIN_SEGMENT_SIZE = 102_400;
-
-    /**
-     * Default size of segment(100 * 1024kb)
-     */
-    private static final long DEFAULT_SEGMENT_SIZE = 102_400;
+    private final long MIN_SEGMENT_SIZE = 102_400;
 
     /**
      * Multipart upload maximum resource size
@@ -78,8 +73,8 @@ public class MultipartOssHandler extends AbstractOssHandler {
      * @throws JarvisException exception
      */
     @Override
-    protected OssResourceDTO uploadActual(InputStream input, String resourceName, long resourceSize, @Nullable String objectName,
-                                       boolean requireFormat, boolean isShowProgressBar) throws JarvisException {
+    protected OssResourceDTO uploadActual(InputStream input, String resourceName, long resourceSize, String objectName,
+                                          boolean requireFormat, boolean isShowProgressBar) throws JarvisException {
         Assert.isTrue(resourceSize < MAX_RESOURCE_SIZE, "the resource is too large, not support!");
 
         OSS ossClient = generateOssClient();

@@ -17,22 +17,15 @@
 package org.yoga.jarvis;
 
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.model.GetObjectRequest;
-import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
-import org.springframework.lang.Nullable;
 import org.yoga.jarvis.bean.OssProperties;
 import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.constant.OssOperateType;
 import org.yoga.jarvis.listener.OssProgressListener;
 import org.yoga.jarvis.util.Assert;
-import org.yoga.jarvis.util.IOUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.Map;
 
 /**
  * @Description: Oss operate handler
@@ -63,7 +56,7 @@ public class DefaultOssHandler extends AbstractOssHandler {
      * @return oss result {@link org.yoga.jarvis.bean.OssResourceDTO}
      */
     @Override
-    protected OssResourceDTO uploadActual(InputStream inputStream, String resourceName, long resourceSize, @Nullable String objectName,
+    protected OssResourceDTO uploadActual(InputStream inputStream, String resourceName, long resourceSize, String objectName,
                                        boolean requireFormat, boolean isShowProgressBar) throws IllegalArgumentException {
         Assert.isTrue(resourceSize < MAX_RESOURCE_SIZE, "the resource is too large, please use multipart upload!");
         // resource suffix check TODO
@@ -89,25 +82,6 @@ public class DefaultOssHandler extends AbstractOssHandler {
         ossResourceDTO.setResourceSize(resourceSize);
         ossResourceDTO.setObjectName(objectName);
         return ossResourceDTO;
-    }
-
-    /**
-     * download resource from oss by url
-     *
-     * @param ossUrl         oss resource url
-     * @param requestHeaders request headers
-     * @return byte array of resource
-     */
-    public byte[] downloadByOssUrl(String ossUrl, @Nullable Map<String, String> requestHeaders) throws IOException {
-        URL url = new URL(ossUrl);
-        OSS ossClient = generateOssClient();
-        OSSObject ossObject = ossClient.getObject(new GetObjectRequest(url, requestHeaders)
-                .withProgressListener(new OssProgressListener(OssOperateType.download)));
-        try (InputStream inputStream = ossObject.getObjectContent()) {
-            return IOUtils.toByteArray(inputStream);
-        } finally {
-            shutdownOssClient(ossClient);
-        }
     }
 
 }

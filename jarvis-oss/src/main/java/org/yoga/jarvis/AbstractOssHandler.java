@@ -137,7 +137,6 @@ public abstract class AbstractOssHandler implements OssHandler {
     @Override
     public void delete(String objectName) {
         Assert.notBlank(objectName, "objectName must not be blank!");
-
         OSS ossClient = generateOssClient();
         ossClient.deleteObject(new GenericRequest(ossProperties.getBucketName(), objectName));
         shutdownOssClient(ossClient);

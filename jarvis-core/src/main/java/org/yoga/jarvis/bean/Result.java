@@ -23,43 +23,83 @@ package org.yoga.jarvis.bean;
  */
 public class Result<T> {
 
-    private int code;
+    private boolean success;
 
-    private boolean isSuccess;
+    private int code;
 
     private T data;
 
     private String message;
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public Result<T> setSuccess(boolean success) {
+        this.success = success;
+        return this;
+    }
+
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public Result<T> setCode(int code) {
         this.code = code;
-    }
-
-    public boolean isSuccess() {
-        return isSuccess;
-    }
-
-    public void setIsSuccess(boolean isSuccess) {
-        isSuccess = isSuccess;
+        return this;
     }
 
     public T getData() {
         return data;
     }
 
-    public void setData(T data) {
+    public Result<T> setData(T data) {
         this.data = data;
+        return this;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public Result<T> setMessage(String message) {
         this.message = message;
+        return this;
+    }
+
+    public static <T> Result<T> success() {
+        Result<T> result = new Result<>();
+        result.setSuccess(true);
+        return result;
+    }
+
+    public static <T> Result<T> success(T data) {
+        Result<T> result = new Result<>();
+        result.setSuccess(true).setData(data);
+        return result;
+    }
+
+    public static <T> Result<T> fail(String message) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false).setMessage(message);
+        return result;
+    }
+
+    public static <T> Result<T> fail(int code, String message) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false).setCode(code).setMessage(message);
+        return result;
+    }
+
+    public static <T> Result<T> fail(String message, T data) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false).setData(data).setMessage(message);
+        return result;
+    }
+
+    public static <T> Result<T> fail(int code, String message, T data) {
+        Result<T> result = new Result<>();
+        result.setSuccess(false).setCode(code).setData(data).setMessage(message);
+        return result;
     }
 }
