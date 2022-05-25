@@ -33,11 +33,22 @@
     <description>The core module of jarvis project</description>
 
     <dependencies>
-        <!-- jarvis module -->
         <dependency>
-            <groupId>org.yoga.jarvis</groupId>
-            <artifactId>jarvis-common</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>3.1.4</version>
+        </dependency>
+
+
+        <!-- log -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
     </dependencies>
 
