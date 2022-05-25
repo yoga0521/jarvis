@@ -19,7 +19,7 @@ package org.yoga.jarvis;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
-import org.yoga.jarvis.bean.OssProperties;
+import org.yoga.jarvis.bean.OssConfigs;
 import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.constant.OssOperateType;
 import org.yoga.jarvis.listener.OssProgressListener;
@@ -40,8 +40,8 @@ public class DefaultOssHandler extends AbstractOssHandler {
      */
     private final long MAX_RESOURCE_SIZE = 5 * 1024 * 1024L;
 
-    public DefaultOssHandler(OssProperties ossProperties) {
-        super(ossProperties);
+    public DefaultOssHandler(OssConfigs ossConfigs) {
+        super(ossConfigs);
     }
 
     /**
@@ -61,7 +61,7 @@ public class DefaultOssHandler extends AbstractOssHandler {
         Assert.isTrue(resourceSize < MAX_RESOURCE_SIZE, "the resource is too large, please use multipart upload!");
         // resource suffix check TODO
 
-        PutObjectRequest objectRequest = new PutObjectRequest(ossProperties.getBucketName(), objectName, inputStream);
+        PutObjectRequest objectRequest = new PutObjectRequest(ossConfigs.getBucketName(), objectName, inputStream);
         if (requireFormat) {
             ObjectMetadata meta = new ObjectMetadata();
             // set contentLength

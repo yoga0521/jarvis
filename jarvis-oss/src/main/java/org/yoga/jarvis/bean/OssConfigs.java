@@ -17,11 +17,11 @@
 package org.yoga.jarvis.bean;
 
 /**
- * @Description: Oss config properties
+ * @Description: Oss configs
  * @Author: yoga
  * @Date: 2022/5/18 10:34
  */
-public class OssProperties {
+public class OssConfigs {
     /**
      * Endpoint of oss
      */
@@ -43,10 +43,9 @@ public class OssProperties {
     private String accessKeySecret;
 
     /**
-     * Maximum size of resource, default 5 GB
-     * If larger than this size, use multipart upload
+     * Part size for multipart upload, default 100 MB
      */
-    private long commonUploadMaxSize = 5 * 1024 * 1024;
+    private long partSize = 102_400;
 
     public String getEndpoint() {
         return endpoint;
@@ -80,11 +79,12 @@ public class OssProperties {
         this.accessKeySecret = accessKeySecret;
     }
 
-    public long getCommonUploadMaxSize() {
-        return commonUploadMaxSize;
+    public long getPartSize() {
+        return partSize;
     }
 
-    public void setCommonUploadMaxSize(long commonUploadMaxSize) {
-        this.commonUploadMaxSize = commonUploadMaxSize;
+    public OssConfigs setPartSize(long partSize) {
+        this.partSize = partSize;
+        return this;
     }
 }

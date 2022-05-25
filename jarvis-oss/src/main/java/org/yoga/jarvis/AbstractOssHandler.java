@@ -26,7 +26,7 @@ import com.aliyun.oss.model.OSSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
-import org.yoga.jarvis.bean.OssProperties;
+import org.yoga.jarvis.bean.OssConfigs;
 import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.constant.DelimiterType;
 import org.yoga.jarvis.constant.OssOperateType;
@@ -72,10 +72,10 @@ public abstract class AbstractOssHandler implements OssHandler {
      */
     private final int BATCH_DELETE_RESOURCE_NUMBER = 1000;
 
-    protected final OssProperties ossProperties;
+    protected final OssConfigs ossConfigs;
 
-    protected AbstractOssHandler(OssProperties ossProperties) {
-        this.ossProperties = ossProperties;
+    protected AbstractOssHandler(OssConfigs ossConfigs) {
+        this.ossConfigs = ossConfigs;
         // check param TODO
     }
 
@@ -113,7 +113,7 @@ public abstract class AbstractOssHandler implements OssHandler {
     public byte[] download(String objectName) throws IOException {
         Assert.notBlank(objectName, "objectName must not be blank!");
         OSS ossClient = generateOssClient();
-        OSSObject ossObject = ossClient.getObject(new GetObjectRequest(ossProperties.getBucketName(), objectName)
+        OSSObject ossObject = ossClient.getObject(new GetObjectRequest(ossConfigs.getBucketName(), objectName)
                 .withProgressListener(new OssProgressListener(OssOperateType.download)));
         try (InputStream inputStream = ossObject.getObjectContent()) {
             return IOUtils.toByteArray(inputStream);
@@ -129,7 +129,7 @@ public abstract class AbstractOssHandler implements OssHandler {
 
         OSS ossClient = generateOssClient();
         Date expiration = new Date(System.currentTimeMillis() + expireTime);
-        URL url = ossClient.generatePresignedUrl(ossProperties.getBucketName(), objectName, expiration);
+        URL url = ossClient.generatePresignedUrl(ossConfigs.getBucketName(), objectName, expiration);
         shutdownOssClient(ossClient);
         return url.toString();
     }
@@ -138,7 +138,7 @@ public abstract class AbstractOssHandler implements OssHandler {
     public void delete(String objectName) {
         Assert.notBlank(objectName, "objectName must not be blank!");
         OSS ossClient = generateOssClient();
-        ossClient.deleteObject(new GenericRequest(ossProperties.getBucketName(), objectName));
+        ossClient.deleteObject(new GenericRequest(ossConfigs.getBucketName(), objectName));
         shutdownOssClient(ossClient);
     }
 
@@ -148,7 +148,7 @@ public abstract class AbstractOssHandler implements OssHandler {
      * @return ossClient
      */
     protected OSS generateOssClient() {
-        return new OSSClientBuilder().build(ossProperties.getEndpoint(), ossProperties.getAccessKeyId(), ossProperties.getAccessKeySecret());
+        return new OSSClientBuilder().build(ossConfigs.getEndpoint(), ossConfigs.getAccessKeyId(), ossConfigs.getAccessKeySecret());
     }
 
     /**

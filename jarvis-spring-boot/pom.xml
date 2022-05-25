@@ -32,8 +32,14 @@
     <name>${project.artifactId}</name>
     <description>Jarvis Spring Boot Parent</description>
 
+    <modules>
+        <module>jarvis-spring-boot-autoconfigure</module>
+        <module>jarvis-spring-boot-starter</module>
+    </modules>
+
     <properties>
         <spring-boot.version>2.6.7</spring-boot.version>
+        <jarvis.version>${revision}</jarvis.version>
     </properties>
 
     <dependencyManagement>
