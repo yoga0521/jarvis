@@ -86,6 +86,7 @@
         <module>jarvis-samples</module>
         <module>jarvis-distribution</module>
         <module>jarvis-distribution/jarvis-all</module>
+        <module>jarvis-cache</module>
     </modules>
 
     <dependencyManagement>
