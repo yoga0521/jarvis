@@ -16,46 +16,42 @@
 
 package org.yoga.jarvis;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.RemovalCause;
+import com.github.benmanes.caffeine.cache.RemovalListener;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Description: Cache Handler implemented by guava
+ * @Description: Caffeine Cache Handler
  * @Author: yoga
- * @Date: 2022/5/31 17:12
+ * @Date: 2022/6/1 18:13
  */
-public class GuavaCacheHandler<K, V> implements CacheHandler<K, V> {
+public class CaffeineCacheHandler<K, V> implements CacheHandler<K, V> {
 
-    Cache<K, V> cache = CacheBuilder.newBuilder()
-            // Set the concurrency level to 10
-            // the concurrency level refers to the number of threads
-            // that can write to the cache at the same time
-            .concurrencyLevel(10)
-            // 60 second after setting write cache expires
-            .expireAfterWrite(60, TimeUnit.SECONDS)
-            // 60 second refresh after setting write cache
-            .refreshAfterWrite(60, TimeUnit.SECONDS)
+    Cache<K, V> cache = Caffeine.newBuilder()
             // Set the initial capacity of the cache container to 64
             .initialCapacity(64)
             // Set the maximum cache capacity to 100
             // After more than 100, the cache items will be removed according to the LRU algorithm
             // that is rarely used recently.
             .maximumSize(100)
+            // 60 second refresh after setting write cache
+            .expireAfterWrite(60, TimeUnit.SECONDS)
+            // 60 second after setting write cache expires
+            .expireAfterWrite(60, TimeUnit.SECONDS)
             // Set the hit rate of the cache to be counted
             .recordStats()
             // Set cache removal notifications
             .removalListener(new RemovalListener<K, V>() {
                 @Override
-                public void onRemoval(RemovalNotification<K, V> notification) {
-                    System.out.println(notification.getKey() + " has removed, reason: " + notification.getCause());
+                public void onRemoval(@Nullable K k, @Nullable V v, RemovalCause removalCause) {
+                    System.out.println(k + " has removed, reason: " + v);
                 }
             })
-            // CacheLoader todo
             .build();
 
     @Override
@@ -65,7 +61,7 @@ public class GuavaCacheHandler<K, V> implements CacheHandler<K, V> {
 
     @Override
     public V get(K k) throws ExecutionException {
-        return cache.get(k, () -> getIfKNotExist(k));
+        return cache.get(k, this::getIfKNotExist);
     }
 
     @Override
@@ -81,6 +77,6 @@ public class GuavaCacheHandler<K, V> implements CacheHandler<K, V> {
 
     @Override
     public long size() {
-        return cache.size();
+        return cache.estimatedSize();
     }
 }

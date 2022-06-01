@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * @Description: Cache Handler
  * @Author: yoga
@@ -38,7 +40,7 @@ public interface CacheHandler<K, V> {
      * @param k key
      * @return value
      */
-    V get(K k);
+    V get(K k) throws ExecutionException;
 
     /**
      * remove cache
@@ -54,4 +56,8 @@ public interface CacheHandler<K, V> {
     void clear();
 
     long size();
+
+    default V getIfKNotExist(K k) {
+        return null;
+    }
 }
