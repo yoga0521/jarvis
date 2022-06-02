@@ -19,7 +19,6 @@ package org.yoga.jarvis;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -29,54 +28,52 @@ import java.util.concurrent.TimeUnit;
  * @Author: yoga
  * @Date: 2022/5/31 17:12
  */
-public class GuavaCacheHandler<K, V> implements CacheHandler<K, V> {
+public class GuavaCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
     Cache<K, V> cache = CacheBuilder.newBuilder()
-            // Set the concurrency level to 10
+            // Set the concurrency level is the same as the number of cpus
             // the concurrency level refers to the number of threads
             // that can write to the cache at the same time
-            .concurrencyLevel(10)
-            // 60 second after setting write cache expires
-            .expireAfterWrite(60, TimeUnit.SECONDS)
-            // 60 second refresh after setting write cache
-            .refreshAfterWrite(60, TimeUnit.SECONDS)
-            // Set the initial capacity of the cache container to 64
-            .initialCapacity(64)
-            // Set the maximum cache capacity to 100
+            .concurrencyLevel(Runtime.getRuntime().availableProcessors())
+            // 1 hours refresh after setting write cache
+            .refreshAfterWrite(1, TimeUnit.HOURS)
+            // Set the initial capacity of the cache container to 1000
+            .initialCapacity(1000)
+            // Set the maximum cache capacity to 1000
             // After more than 100, the cache items will be removed according to the LRU algorithm
             // that is rarely used recently.
-            .maximumSize(100)
+            .maximumSize(1000)
             // Set the hit rate of the cache to be counted
             .recordStats()
             // Set cache removal notifications
-            .removalListener(new RemovalListener<K, V>() {
-                @Override
-                public void onRemoval(RemovalNotification<K, V> notification) {
-                    System.out.println(notification.getKey() + " has removed, reason: " + notification.getCause());
-                }
-            })
+            .removalListener((RemovalListener<K, V>) notification ->
+                    System.out.println(notification.getKey() + " has removed, reason: " + notification.getCause()))
             // CacheLoader todo
             .build();
 
     @Override
-    public void add(K k, V v, long effectiveTime) {
+    public void add(K k, V v) {
+        super.add(k, v);
         cache.put(k, v);
     }
 
     @Override
     public V get(K k) throws ExecutionException {
-        return cache.get(k, () -> getIfKNotExist(k));
+        return cache.get(k, () -> getIfNotExist(k));
     }
 
     @Override
     public V remove(K k) {
+
         cache.invalidate(k);
         return null;
     }
 
     @Override
     public void clear() {
-        cache.cleanUp();
+        if (size() > 0) {
+            cache.invalidateAll();
+        }
     }
 
     @Override

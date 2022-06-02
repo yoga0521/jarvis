@@ -16,37 +16,83 @@
 
 package org.yoga.jarvis;
 
-import java.lang.ref.SoftReference;
-import java.util.Optional;
+import org.yoga.jarvis.factory.ThreadFactoryBuilder;
+import org.yoga.jarvis.util.Assert;
+
+import java.io.Serializable;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description: Default Cache Handler
  * @Author: yoga
  * @Date: 2022/5/28 21:06
  */
-public class DefaultCacheHandler<K, V> implements CacheHandler<K, V> {
+public class DefaultCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
-    private final ConcurrentHashMap<K, SoftReference<V>> cache = new ConcurrentHashMap<>();
+    /**
+     * cache
+     */
+    private final Map<K, Item> cache = new ConcurrentHashMap<>();
+
+    /**
+     * Used to scan and remove expired caches
+     */
+    private final ExecutorService executor = new ThreadPoolExecutor(
+            1,
+            1,
+            0L,
+            TimeUnit.MILLISECONDS,
+            new LinkedBlockingDeque<>(),
+            new ThreadFactoryBuilder().setNameFormat("cache-pool").setDaemon(true).build());
+
+    public DefaultCacheHandler() {
+        executor.execute(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(20 * 60 * 1000L);
+                    cache.entrySet().removeIf(entry -> entry.getValue().isExpired());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void add(K k, V v) {
+        super.add(k, v);
+        cache.put(k, new Item(v, System.currentTimeMillis() + DEFAULT_EFFECTIVE_TIME));
+    }
 
     @Override
     public void add(K k, V v, long effectiveTime) {
-        cache.put(k, new SoftReference<>(v));
+        super.add(k, v, effectiveTime);
+        cache.put(k, new Item(v, System.currentTimeMillis() + effectiveTime));
     }
 
     @Override
     public V get(K k) {
-        return Optional.ofNullable(cache.get(k)).map(SoftReference::get).orElse(null);
+        Assert.notNull(k, "key must not be null!");
+        return cache.get(k).getV();
     }
 
     @Override
     public V remove(K k) {
-        return Optional.ofNullable(cache.remove(k)).map(SoftReference::get).orElse(null);
+        Assert.notNull(k, "key must not be null!");
+        return cache.remove(k).getV();
     }
 
     @Override
     public void clear() {
-        cache.clear();
+        if (size() > 0) {
+            cache.clear();
+        }
     }
 
     @Override
@@ -54,4 +100,43 @@ public class DefaultCacheHandler<K, V> implements CacheHandler<K, V> {
         return cache.size();
     }
 
+    /**
+     * the item for cache
+     */
+    final class Item implements Serializable {
+
+        private static final long serialVersionUID = 5522441429013497696L;
+
+        /**
+         * the cache value
+         */
+        private final V v;
+
+        /**
+         * the cache expireTime
+         */
+        private long expireTime;
+
+        public Item(final V v, long expireTime) {
+            this.v = v;
+            this.expireTime = expireTime;
+        }
+
+        public V getV() {
+            return v;
+        }
+
+        public long getExpireTime() {
+            return expireTime;
+        }
+
+        public void setExpireTime(long expireTime) {
+            this.expireTime = expireTime;
+        }
+
+        public boolean isExpired() {
+            return System.currentTimeMillis() > this.expireTime;
+        }
+
+    }
 }

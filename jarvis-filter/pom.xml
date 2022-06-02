@@ -17,6 +17,13 @@
     <description>The filter module of jarvis project</description>
 
     <dependencies>
+
+        <!-- jarvis module -->
+        <dependency>
+            <groupId>org.yoga.jarvis</groupId>
+            <artifactId>jarvis-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @Author: yoga
  * @Date: 2022/6/1 18:13
  */
-public class CaffeineCacheHandler<K, V> implements CacheHandler<K, V> {
+public class CaffeineCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
     Cache<K, V> cache = Caffeine.newBuilder()
             // Set the initial capacity of the cache container to 64
@@ -61,7 +61,7 @@ public class CaffeineCacheHandler<K, V> implements CacheHandler<K, V> {
 
     @Override
     public V get(K k) throws ExecutionException {
-        return cache.get(k, this::getIfKNotExist);
+        return cache.get(k, super::getIfNotExist);
     }
 
     @Override
@@ -72,11 +72,12 @@ public class CaffeineCacheHandler<K, V> implements CacheHandler<K, V> {
 
     @Override
     public void clear() {
-        cache.cleanUp();
+        cache.invalidateAll();
     }
 
     @Override
     public long size() {
+        cache.cleanUp();
         return cache.estimatedSize();
     }
 }

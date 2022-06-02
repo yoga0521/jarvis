@@ -28,16 +28,24 @@ public interface CacheHandler<K, V> {
     /**
      * add cache
      *
-     * @param k             key
-     * @param v             value
-     * @param effectiveTime the key effective time
+     * @param k key, not null
+     * @param v value, not null
+     */
+    void add(K k, V v);
+
+    /**
+     * add cache
+     *
+     * @param k             key, not null
+     * @param v             value, not null
+     * @param effectiveTime key effective time(ms), granter than 0
      */
     void add(K k, V v, long effectiveTime);
 
     /**
      * get cache
      *
-     * @param k key
+     * @param k key, not null
      * @return value
      */
     V get(K k) throws ExecutionException;
@@ -57,7 +65,4 @@ public interface CacheHandler<K, V> {
 
     long size();
 
-    default V getIfKNotExist(K k) {
-        return null;
-    }
 }
