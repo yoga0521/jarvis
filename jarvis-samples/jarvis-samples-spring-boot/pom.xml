@@ -22,22 +22,21 @@
 
     <parent>
         <groupId>org.yoga.jarvis</groupId>
-        <artifactId>jarvis-parent</artifactId>
+        <artifactId>jarvis-samples</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>jarvis-samples</artifactId>
+    <artifactId>jarvis-samples-spring-boot</artifactId>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-    <description>The samples module of jarvis project</description>
-
-    <modules>
-        <module>jarvis-samples-spring-boot</module>
-    </modules>
+    <description>Jarvis Samples Spring Boot</description>
 
     <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <skip_maven_deploy>true</skip_maven_deploy>
     </properties>
+
 
 </project>

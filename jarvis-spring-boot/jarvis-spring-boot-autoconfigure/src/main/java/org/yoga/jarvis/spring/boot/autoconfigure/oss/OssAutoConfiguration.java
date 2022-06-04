@@ -67,6 +67,12 @@ public class OssAutoConfiguration {
         return new MultipartOssHandler(trans2OssConfigs(ossProperties));
     }
 
+    /**
+     * OssProperties to Oss Configs
+     *
+     * @param ossProperties ossProperties {@link OssProperties}
+     * @return ossConfigs {@link OssConfigs}
+     */
     OssConfigs trans2OssConfigs(OssProperties ossProperties) {
         OssConfigs ossConfigs = new OssConfigs();
         ossConfigs.setEndpoint(ossProperties.getEndpoint());
