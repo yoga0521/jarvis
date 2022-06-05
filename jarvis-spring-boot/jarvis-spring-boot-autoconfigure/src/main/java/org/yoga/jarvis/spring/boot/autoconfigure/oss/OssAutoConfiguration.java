@@ -34,7 +34,7 @@ import org.yoga.jarvis.bean.OssConfigs;
  * @Date: 2022/5/25 10:26
  */
 @Configuration
-@ConditionalOnProperty(prefix = "mekong.oss", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "jarvis.oss", name = "enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({OssHandler.class, AbstractOssHandler.class, DefaultOssHandler.class, MultipartOssHandler.class})
 @EnableConfigurationProperties(OssProperties.class)
 public class OssAutoConfiguration {

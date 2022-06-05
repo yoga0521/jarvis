@@ -25,7 +25,7 @@ import java.util.StringJoiner;
  * @Author: yoga
  * @Date: 2022/5/25 13:22
  */
-@ConfigurationProperties(prefix = "mekong.oss")
+@ConfigurationProperties(prefix = "jarvis.oss")
 public class OssProperties {
 
     /**
