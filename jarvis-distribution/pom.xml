@@ -33,5 +33,8 @@
     <description>The distribution module of jarvis project</description>
 
 
+    <modules>
+        <module>jarvis-all</module>
+    </modules>
 
 </project>

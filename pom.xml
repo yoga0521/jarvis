@@ -73,6 +73,7 @@
         <maven_dependency.version>3.3.0</maven_dependency.version>
         <build_helper_maven.version>3.3.0</build_helper_maven.version>
         <exec_maven.version>3.0.0</exec_maven.version>
+        <maven_shade.version>3.2.4</maven_shade.version>
 
 
         <revision>0.0.1-SNAPSHOT</revision>
@@ -88,6 +89,7 @@
         <module>jarvis-distribution/jarvis-all</module>
         <module>jarvis-cache</module>
         <module>jarvis-filter</module>
+        <module>jarvis-test</module>
     </modules>
 
     <dependencyManagement>
@@ -272,6 +274,14 @@
                     <groupId>kr.motd.maven</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>${exec_maven.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven_shade.version}</version>
+                    <configuration>
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

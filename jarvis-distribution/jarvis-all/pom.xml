@@ -43,6 +43,7 @@
             <artifactId>jarvis-core</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -50,6 +51,7 @@
             <artifactId>jarvis-oss</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
