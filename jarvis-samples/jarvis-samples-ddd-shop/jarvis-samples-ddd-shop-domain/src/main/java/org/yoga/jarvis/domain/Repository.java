@@ -21,5 +21,9 @@ package org.yoga.jarvis.domain;
  * @Author: yoga
  * @Date: 2022/6/8 19:47
  */
-public interface Repository {
+public interface Repository<T extends Entity, ID extends Identifiable> {
+
+    T find(ID id);
+
+    void save(T aggregate);
 }
