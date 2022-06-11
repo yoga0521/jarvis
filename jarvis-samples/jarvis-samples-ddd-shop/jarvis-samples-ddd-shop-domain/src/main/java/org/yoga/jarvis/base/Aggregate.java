@@ -14,21 +14,12 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.domain;
-
-import java.io.Serializable;
+package org.yoga.jarvis.base;
 
 /**
- * @Description: ID MarkerInterface
+ * @Description: Aggregate Root
  * @Author: yoga
- * @Date: 2022/6/9 21:32
+ * @Date: 2022/6/11 20:31
  */
-public interface Identifiable<ID extends Serializable> extends MarkerInterface {
-
-    /**
-     * get ID
-     *
-     * @return ID
-     */
-    ID getId();
+public interface Aggregate<ID extends MarkerInterface> extends Entity<ID> {
 }

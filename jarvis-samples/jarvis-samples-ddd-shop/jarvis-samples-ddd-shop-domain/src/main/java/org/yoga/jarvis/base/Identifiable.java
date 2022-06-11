@@ -14,12 +14,19 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.domain;
+package org.yoga.jarvis.base;
 
 /**
- * @Description: MarkerInterface
+ * @Description: ID
  * @Author: yoga
- * @Date: 2022/6/9 21:27
+ * @Date: 2022/6/9 21:32
  */
-public interface MarkerInterface {
+public interface Identifiable<ID extends MarkerInterface> {
+
+    /**
+     * get ID
+     *
+     * @return ID
+     */
+    ID getId();
 }

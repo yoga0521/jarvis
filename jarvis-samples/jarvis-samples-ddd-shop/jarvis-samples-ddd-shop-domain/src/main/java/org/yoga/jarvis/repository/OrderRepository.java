@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.domain;
+package org.yoga.jarvis.repository;
+
+import org.yoga.jarvis.base.Repository;
 
 /**
- * @Description: the Repository interface
+ * @Description: OrderRepository
  * @Author: yoga
- * @Date: 2022/6/8 19:47
+ * @Date: 2022/6/11 21:02
  */
-public interface Repository<T extends Entity, ID extends Identifiable> {
-
-    T find(ID id);
-
-    void save(T aggregate);
+public interface OrderRepository extends Repository {
 }

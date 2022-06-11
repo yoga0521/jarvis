@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.domain;
+package org.yoga.jarvis.base;
 
 import java.io.Serializable;
 
 /**
- * @Description: Entity MarkerInterface
+ * @Description: MarkerInterface
  * @Author: yoga
- * @Date: 2022/6/9 21:38
+ * @Date: 2022/6/9 21:27
  */
-public interface Entity<ID extends Serializable> extends Identifiable<ID> {
+public interface MarkerInterface extends Serializable {
 }
