@@ -35,6 +35,26 @@
 
     <modules>
         <module>jarvis-all</module>
+        <module>jarvis-bom</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>jarvis-all</module>
+                <module>jarvis-bom</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>jarvis-all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>jarvis-all</module>
+                <module>jarvis-bom</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

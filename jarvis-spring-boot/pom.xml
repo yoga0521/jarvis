@@ -38,7 +38,7 @@
     </modules>
 
     <properties>
-        <spring-boot.version>2.6.7</spring-boot.version>
+        <spring-boot.version>2.7.0</spring-boot.version>
         <jarvis.version>${revision}</jarvis.version>
     </properties>
 

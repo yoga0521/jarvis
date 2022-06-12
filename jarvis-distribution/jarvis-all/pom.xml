@@ -29,7 +29,7 @@
 
     <artifactId>jarvis</artifactId>
     <packaging>jar</packaging>
-    <name>jarvis</name>
+    <name>${project.artifactId}</name>
     <description>The all in one project of jarvis</description>
 
     <properties>
@@ -81,6 +81,10 @@
                                     <excludes>
                                         <exclude>com/**</exclude>
                                         <exclude>org/**</exclude>
+                                        <exclude>META-INF/DEPENDENCIES</exclude>
+                                        <exclude>META-INF/LICENSE*</exclude>
+                                        <exclude>META-INF/NOTICE*</exclude>
+                                        <exclude>META-INF/MANIFEST*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

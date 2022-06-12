@@ -32,20 +32,36 @@
     <name>${project.artifactId}</name>
     <description>The samples module of jarvis project</description>
 
+    <properties>
+        <skip_maven_deploy>true</skip_maven_deploy>
+
+        <spring-boot.version>2.7.0</spring-boot.version>
+    </properties>
+
     <modules>
         <module>jarvis-samples-spring-boot</module>
         <module>jarvis-samples-ddd-shop</module>
     </modules>
 
-    <properties>
-        <skip_maven_deploy>true</skip_maven_deploy>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-    </dependencies>
+            <dependency>
+                <groupId>org.yoga.jarvis</groupId>
+                <artifactId>jarvis-bom</artifactId>
+                <version>${project.parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
