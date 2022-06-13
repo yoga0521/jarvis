@@ -86,7 +86,6 @@
         <module>jarvis-spring-boot</module>
         <module>jarvis-samples</module>
         <module>jarvis-distribution</module>
-        <module>jarvis-distribution/jarvis-all</module>
         <module>jarvis-cache</module>
         <module>jarvis-filter</module>
         <module>jarvis-test</module>

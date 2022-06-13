@@ -73,6 +73,8 @@
                                 <includes>
                                     <include>org.yoga.jarvis:jarvis-core</include>
                                     <include>org.yoga.jarvis:jarvis-oss</include>
+                                    <include>org.yoga.jarvis:jarvis-cache</include>
+                                    <include>org.yoga.jarvis:jarvis-filter</include>
                                 </includes>
                             </artifactSet>
                             <filters>

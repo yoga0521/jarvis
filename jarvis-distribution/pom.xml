@@ -32,12 +32,6 @@
     <name>${project.artifactId}</name>
     <description>The distribution module of jarvis project</description>
 
-
-    <modules>
-        <module>jarvis-all</module>
-        <module>jarvis-bom</module>
-    </modules>
-
     <profiles>
         <profile>
             <id>release</id>
