@@ -34,6 +34,7 @@
 
     <modules>
         <module>jarvis-samples-ddd-shop-domain</module>
+        <module>jarvis-samples-ddd-shop-infrastructure</module>
     </modules>
 
     <properties>
@@ -41,8 +42,15 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.yoga.jarvis</groupId>
+                <artifactId>jarvis-samples-ddd-shop-domain</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
 
-    </dependencies>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
