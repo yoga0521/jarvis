@@ -14,16 +14,22 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.repository;
+package org.yoga.jarvis.db;
 
-import org.yoga.jarvis.base.Repository;
-import org.yoga.jarvis.entity.Order;
-import org.yoga.jarvis.entity.OrderId;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
- * @Description: OrderRepository
+ * @Description: OrderConverter
  * @Author: yoga
- * @Date: 2022/6/11 21:02
+ * @Date: 2022/6/16 22:01
  */
-public interface OrderRepository extends Repository<Order, OrderId> {
+@Data
+public class OrderDO {
+
+    /**
+     * order create time
+     */
+    private Date gmtCreated;
 }

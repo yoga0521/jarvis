@@ -16,18 +16,28 @@
 
 package org.yoga.jarvis.entity;
 
+import lombok.Data;
 import org.yoga.jarvis.base.Aggregate;
 import org.yoga.jarvis.base.MarkerInterface;
+
+import java.util.Date;
 
 /**
  * @Description: Order Entity
  * @Author: yoga
  * @Date: 2022/6/11 21:04
  */
-public class Order implements Aggregate {
+@Data
+public class Order implements Aggregate<OrderId> {
+
+
+    /**
+     * order create time
+     */
+    private Date gmtCreated;
 
     @Override
-    public MarkerInterface getId() {
-        return null;
+    public OrderId getId() {
+        return new OrderId();
     }
 }

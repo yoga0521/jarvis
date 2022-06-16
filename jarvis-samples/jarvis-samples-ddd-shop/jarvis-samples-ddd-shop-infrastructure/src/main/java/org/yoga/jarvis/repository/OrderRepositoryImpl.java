@@ -16,11 +16,13 @@
 
 package org.yoga.jarvis.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.yoga.jarvis.base.Aggregate;
-import org.yoga.jarvis.base.MarkerInterface;
-import org.yoga.jarvis.db.OrderPersistenceHandler;
+import org.yoga.jarvis.converter.OrderConverter;
+import org.yoga.jarvis.db.OrderDAO;
+import org.yoga.jarvis.entity.Order;
+import org.yoga.jarvis.entity.OrderId;
+
+import java.util.Objects;
 
 /**
  * @Description: OrderRepositoryImpl
@@ -30,34 +32,39 @@ import org.yoga.jarvis.db.OrderPersistenceHandler;
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
 
-    private final OrderPersistenceHandler orderPersistenceHandler;
+    private final OrderDAO orderDAO;
 
-    public OrderRepositoryImpl(OrderPersistenceHandler orderPersistenceHandler) {
-        this.orderPersistenceHandler = orderPersistenceHandler;
+    public OrderRepositoryImpl(OrderDAO orderDAO) {
+        this.orderDAO = orderDAO;
     }
 
-    @Override
-    public void attach(Aggregate aggregate) {
-
-    }
 
     @Override
-    public void detach(Aggregate aggregate) {
+    public void attach(Order aggregate) {
 
     }
 
     @Override
-    public Aggregate find(MarkerInterface markerInterface) {
+    public void detach(Order aggregate) {
+
+    }
+
+    @Override
+    public Order find(OrderId orderId) {
         return null;
     }
 
     @Override
-    public void remove(Aggregate aggregate) {
+    public void remove(Order aggregate) {
 
     }
 
     @Override
-    public void save(Aggregate aggregate) {
-
+    public void save(Order order) {
+        if (Objects.isNull(order.getId())) {
+            orderDAO.insert(OrderConverter.INSTANCE.toDO(order));
+        } else {
+            orderDAO.update(OrderConverter.INSTANCE.toDO(order));
+        }
     }
 }

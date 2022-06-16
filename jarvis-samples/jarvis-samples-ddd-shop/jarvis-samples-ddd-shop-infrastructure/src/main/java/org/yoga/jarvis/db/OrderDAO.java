@@ -14,16 +14,33 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.repository;
+package org.yoga.jarvis.db;
 
-import org.yoga.jarvis.base.Repository;
-import org.yoga.jarvis.entity.Order;
-import org.yoga.jarvis.entity.OrderId;
+import org.springframework.stereotype.Component;
 
 /**
- * @Description: OrderRepository
+ * @Description: OrderPersistenceHandler
  * @Author: yoga
- * @Date: 2022/6/11 21:02
+ * @Date: 2022/6/14 23:02
  */
-public interface OrderRepository extends Repository<Order, OrderId> {
+@Component
+public class OrderDAO {
+
+    /**
+     * insert to db
+     *
+     * @param orderDO order do
+     */
+    public void insert(OrderDO orderDO) {
+
+    }
+
+    /**
+     * update order
+     *
+     * @param orderDO order do
+     */
+    public void update(OrderDO orderDO) {
+
+    }
 }

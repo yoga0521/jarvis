@@ -14,16 +14,28 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.db;
+package org.yoga.jarvis.converter;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+import org.yoga.jarvis.db.OrderDO;
+import org.yoga.jarvis.entity.Order;
 
 /**
- * @Description: OrderPersistenceHandler
+ * @Description: OrderConverter
  * @Author: yoga
- * @Date: 2022/6/14 23:02
+ * @Date: 2022/6/16 21:51
  */
-@Component
-public class OrderPersistenceHandler {
+@Mapper
+public interface OrderConverter {
 
+    OrderConverter INSTANCE = Mappers.getMapper(OrderConverter.class);
+
+    /**
+     * entity to do
+     *
+     * @param order order entity
+     * @return order do
+     */
+    OrderDO toDO(Order order);
 }
