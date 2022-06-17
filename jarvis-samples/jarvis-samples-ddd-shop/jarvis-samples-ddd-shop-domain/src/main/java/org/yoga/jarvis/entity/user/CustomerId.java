@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.repository;
+package org.yoga.jarvis.entity.user;
 
-import org.yoga.jarvis.base.Repository;
-import org.yoga.jarvis.entity.order.Order;
-import org.yoga.jarvis.entity.order.OrderId;
+import org.yoga.jarvis.base.MarkerInterface;
 
 /**
- * @Description: OrderRepository
+ * @Description: customer id
  * @Author: yoga
- * @Date: 2022/6/11 21:02
+ * @Date: 2022/6/17 22:52
  */
-public interface OrderRepository extends Repository<Order, OrderId> {
+public class CustomerId implements MarkerInterface {
 }

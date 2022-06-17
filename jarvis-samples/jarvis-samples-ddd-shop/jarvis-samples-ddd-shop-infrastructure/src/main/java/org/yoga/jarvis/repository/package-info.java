@@ -14,16 +14,12 @@
  *  limitations under the License.
  */
 
+/**
+ * @Description: package for repository
+ * @Author: yoga
+ * @Date: 2022/6/17 22:57
+ */
+@NonNullApi
 package org.yoga.jarvis.repository;
 
-import org.yoga.jarvis.base.Repository;
-import org.yoga.jarvis.entity.order.Order;
-import org.yoga.jarvis.entity.order.OrderId;
-
-/**
- * @Description: OrderRepository
- * @Author: yoga
- * @Date: 2022/6/11 21:02
- */
-public interface OrderRepository extends Repository<Order, OrderId> {
-}
+import org.springframework.lang.NonNullApi;

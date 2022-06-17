@@ -19,7 +19,7 @@ package org.yoga.jarvis.converter;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.yoga.jarvis.db.OrderDO;
-import org.yoga.jarvis.entity.Order;
+import org.yoga.jarvis.entity.order.Order;
 
 /**
  * @Description: OrderConverter
@@ -38,4 +38,12 @@ public interface OrderConverter {
      * @return order do
      */
     OrderDO toDO(Order order);
+
+    /**
+     * do to entity
+     *
+     * @param orderDO order do
+     * @return order entity
+     */
+    Order toEntity(OrderDO orderDO);
 }

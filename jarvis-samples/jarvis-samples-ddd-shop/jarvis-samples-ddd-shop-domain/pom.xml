@@ -44,6 +44,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- jarvis module -->
+        <dependency>
+            <groupId>org.yoga.jarvis</groupId>
+            <artifactId>jarvis-core</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

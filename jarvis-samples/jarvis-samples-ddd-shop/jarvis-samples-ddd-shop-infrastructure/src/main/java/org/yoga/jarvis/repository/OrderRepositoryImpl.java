@@ -19,8 +19,8 @@ package org.yoga.jarvis.repository;
 import org.springframework.stereotype.Repository;
 import org.yoga.jarvis.converter.OrderConverter;
 import org.yoga.jarvis.db.OrderDAO;
-import org.yoga.jarvis.entity.Order;
-import org.yoga.jarvis.entity.OrderId;
+import org.yoga.jarvis.entity.order.Order;
+import org.yoga.jarvis.entity.order.OrderId;
 
 import java.util.Objects;
 
@@ -40,23 +40,23 @@ public class OrderRepositoryImpl implements OrderRepository {
 
 
     @Override
-    public void attach(Order aggregate) {
+    public void attach(Order order) {
 
     }
 
     @Override
-    public void detach(Order aggregate) {
+    public void detach(Order order) {
 
     }
 
     @Override
-    public Order find(OrderId orderId) {
-        return null;
+    public Order find(OrderId id) {
+        return OrderConverter.INSTANCE.toEntity(orderDAO.selectById(id));
     }
 
     @Override
-    public void remove(Order aggregate) {
-
+    public void remove(Order order) {
+        orderDAO.removeById(order.getId());
     }
 
     @Override

@@ -17,6 +17,7 @@
 package org.yoga.jarvis.db;
 
 import org.springframework.stereotype.Component;
+import org.yoga.jarvis.entity.order.OrderId;
 
 /**
  * @Description: OrderPersistenceHandler
@@ -42,5 +43,22 @@ public class OrderDAO {
      */
     public void update(OrderDO orderDO) {
 
+    }
+
+    /**
+     * select order by id
+     *
+     * @param id order id
+     */
+    public OrderDO selectById(OrderId id) {
+        return new OrderDO();
+    }
+
+    /**
+     * remove order by id
+     *
+     * @param id order id
+     */
+    public void removeById(OrderId id) {
     }
 }

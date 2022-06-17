@@ -14,16 +14,29 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.repository;
+package org.yoga.jarvis.entity.order;
 
-import org.yoga.jarvis.base.Repository;
-import org.yoga.jarvis.entity.order.Order;
-import org.yoga.jarvis.entity.order.OrderId;
+import lombok.Data;
+import org.yoga.jarvis.base.Aggregate;
+
+import java.util.Date;
 
 /**
- * @Description: OrderRepository
+ * @Description: Order Entity
  * @Author: yoga
- * @Date: 2022/6/11 21:02
+ * @Date: 2022/6/11 21:04
  */
-public interface OrderRepository extends Repository<Order, OrderId> {
+@Data
+public class Order implements Aggregate<OrderId> {
+
+
+    /**
+     * order create time
+     */
+    private Date gmtCreated;
+
+    @Override
+    public OrderId getId() {
+        return new OrderId();
+    }
 }

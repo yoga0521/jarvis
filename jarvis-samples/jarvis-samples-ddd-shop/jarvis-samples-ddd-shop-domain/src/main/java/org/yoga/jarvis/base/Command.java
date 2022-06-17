@@ -14,30 +14,12 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.entity;
-
-import lombok.Data;
-import org.yoga.jarvis.base.Aggregate;
-import org.yoga.jarvis.base.MarkerInterface;
-
-import java.util.Date;
+package org.yoga.jarvis.base;
 
 /**
- * @Description: Order Entity
+ * @Description: command
  * @Author: yoga
- * @Date: 2022/6/11 21:04
+ * @Date: 2022/6/17 22:47
  */
-@Data
-public class Order implements Aggregate<OrderId> {
-
-
-    /**
-     * order create time
-     */
-    private Date gmtCreated;
-
-    @Override
-    public OrderId getId() {
-        return new OrderId();
-    }
+public interface Command extends MarkerInterface {
 }

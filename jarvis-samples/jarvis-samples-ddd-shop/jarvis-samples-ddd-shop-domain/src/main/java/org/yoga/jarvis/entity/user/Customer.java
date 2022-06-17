@@ -14,14 +14,24 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.entity;
+package org.yoga.jarvis.entity.user;
 
-import org.yoga.jarvis.base.MarkerInterface;
+import lombok.Data;
+import org.yoga.jarvis.base.Aggregate;
 
 /**
- * @Description: OrderId
+ * @Description: customer
  * @Author: yoga
- * @Date: 2022/6/11 22:18
+ * @Date: 2022/6/17 22:51
  */
-public class OrderId implements MarkerInterface {
+@Data
+public class Customer implements Aggregate<CustomerId> {
+
+    private String name;
+
+
+    @Override
+    public CustomerId getId() {
+        return new CustomerId();
+    }
 }
