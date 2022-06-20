@@ -11,26 +11,11 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>jarvis-samples-ddd-shop-application</artifactId>
+    <artifactId>jarvis-samples-ddd-shop-web</artifactId>
     <name>${project.artifactId}</name>
-    <description>Jarvis Samples DDD Shop Application</description>
+    <description>Jarvis Samples DDD Shop Web</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.yoga.jarvis</groupId>
-            <artifactId>jarvis-samples-ddd-shop-domain</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
 </project>

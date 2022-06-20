@@ -36,6 +36,7 @@
         <module>jarvis-samples-ddd-shop-domain</module>
         <module>jarvis-samples-ddd-shop-infrastructure</module>
         <module>jarvis-samples-ddd-shop-application</module>
+        <module>jarvis-samples-ddd-shop-web</module>
     </modules>
 
     <properties>
