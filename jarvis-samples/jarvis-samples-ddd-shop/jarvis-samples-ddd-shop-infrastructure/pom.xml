@@ -23,6 +23,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.yoga.jarvis</groupId>
+            <artifactId>jarvis-samples-ddd-shop-application</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yoga.jarvis</groupId>
+            <artifactId>jarvis-samples-ddd-shop-web</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
         </dependency>

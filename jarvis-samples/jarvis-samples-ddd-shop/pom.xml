@@ -52,6 +52,18 @@
                 <version>${project.parent.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.yoga.jarvis</groupId>
+                <artifactId>jarvis-samples-ddd-shop-application</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yoga.jarvis</groupId>
+                <artifactId>jarvis-samples-ddd-shop-web</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
