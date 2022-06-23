@@ -14,25 +14,15 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.controller;
+package org.yoga.jarvis.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.yoga.jarvis.service.OrderService;
+import org.springframework.stereotype.Service;
 
 /**
- * @Description: OrderController
+ * @Description: OrderService
  * @Author: yoga
- * @Date: 2022/6/21 17:42
+ * @Date: 2022/6/23 19:31
  */
-@RestController
-@RequestMapping("order")
-public class OrderController {
-
-    private final OrderService orderService;
-
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
+@Service
+public class OrderService {
 }
