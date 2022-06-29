@@ -16,13 +16,22 @@
 
 package org.yoga.jarvis.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.yoga.jarvis.entity.order.Order;
 
 /**
  * @Description: OrderService
  * @Author: yoga
  * @Date: 2022/6/23 19:31
  */
+@Slf4j
 @Service
 public class OrderService {
+
+    private final Order order;
+
+    public OrderService(Order order) {
+        this.order = order;
+    }
 }
