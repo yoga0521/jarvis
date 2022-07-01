@@ -14,24 +14,21 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.service;
+package org.yoga.jarvis;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.yoga.jarvis.entity.order.Order;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @Description: OrderService
+ * @Description: The Start For jarvis-samples-ddd-shop
  * @Author: yoga
- * @Date: 2022/6/23 19:31
+ * @Date: 2022/6/24 21:39
  */
-@Slf4j
-@Service
-public class OrderService {
+@SpringBootApplication
+public class JarvisSamplesDddShopStartApplication {
 
-    private final Order order;
-
-    public OrderService(Order order) {
-        this.order = order;
+    public static void main(String[] args) {
+        SpringApplication.run(JarvisSamplesDddShopStartApplication.class, args);
     }
+
 }

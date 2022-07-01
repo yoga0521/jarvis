@@ -16,10 +16,14 @@
 
 package org.yoga.jarvis.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.yoga.jarvis.service.OrderService;
+import org.yoga.jarvis.bean.Result;
+import org.yoga.jarvis.cmd.CreateOrderAbilityCommand;
+import org.yoga.jarvis.entity.order.OrderId;
+import org.yoga.jarvis.service.OrderApplicationService;
 
 /**
  * @Description: OrderController
@@ -30,9 +34,16 @@ import org.yoga.jarvis.service.OrderService;
 @RequestMapping("order")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderApplicationService orderApplicationService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    public OrderController(OrderApplicationService orderApplicationService) {
+        this.orderApplicationService = orderApplicationService;
     }
+
+    @PostMapping
+    public Result<OrderId> create(@RequestBody CreateOrderAbilityCommand command) {
+
+        return Result.success(null);
+    }
+
 }
