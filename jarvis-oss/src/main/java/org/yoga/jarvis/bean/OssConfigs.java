@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.bean;
 
+import org.yoga.jarvis.util.Assert;
+
 /**
  * @Description: Oss configs
  * @Author: yoga
@@ -52,6 +54,7 @@ public class OssConfigs {
     }
 
     public void setEndpoint(String endpoint) {
+        Assert.notBlank(endpoint, "endpoint must not be blank!");
         this.endpoint = endpoint;
     }
 
@@ -60,6 +63,7 @@ public class OssConfigs {
     }
 
     public void setBucketName(String bucketName) {
+        Assert.notBlank(bucketName, "bucketName must not be blank!");
         this.bucketName = bucketName;
     }
 
@@ -68,6 +72,7 @@ public class OssConfigs {
     }
 
     public void setAccessKeyId(String accessKeyId) {
+        Assert.notBlank(accessKeyId, "accessKeyId must not be blank!");
         this.accessKeyId = accessKeyId;
     }
 
@@ -76,6 +81,7 @@ public class OssConfigs {
     }
 
     public void setAccessKeySecret(String accessKeySecret) {
+        Assert.notBlank(accessKeySecret, "accessKeySecret must not be blank!");
         this.accessKeySecret = accessKeySecret;
     }
 

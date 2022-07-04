@@ -30,6 +30,7 @@ import org.yoga.jarvis.bean.OssConfigs;
 import org.yoga.jarvis.bean.OssResourceDTO;
 import org.yoga.jarvis.constant.DelimiterType;
 import org.yoga.jarvis.constant.OssOperateType;
+import org.yoga.jarvis.exception.OssException;
 import org.yoga.jarvis.factory.ThreadPoolFactory;
 import org.yoga.jarvis.listener.OssProgressListener;
 import org.yoga.jarvis.util.Assert;
@@ -55,28 +56,31 @@ public abstract class AbstractOssHandler implements OssHandler {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractOssHandler.class);
 
+    /**
+     * the threadPool for doing asynchronous task
+     */
     protected static final ExecutorService OSS_THREAD_POOL = ThreadPoolFactory.generateIOThreadPool("oss-pool-%d");
 
     /**
-     * Default folder
+     * default folder
      */
     private static final String DEFAULT_FOLDER = "default";
 
     /**
-     * Oss internal endpoint suffix
+     * oss internal endpoint suffix
      */
     private static final String OSS_INTERNAL_ENDPOINT_SUFFIX = "-internal";
 
     /**
-     * The number of resources to delete in bulk
+     * the number of resources to delete in bulk
      */
     private final int BATCH_DELETE_RESOURCE_NUMBER = 1000;
 
     protected final OssConfigs ossConfigs;
 
     protected AbstractOssHandler(OssConfigs ossConfigs) {
+        Assert.notNull(ossConfigs, "ossConfigs must not be null!");
         this.ossConfigs = ossConfigs;
-        // check param TODO
     }
 
     static {
@@ -87,7 +91,13 @@ public abstract class AbstractOssHandler implements OssHandler {
     }
 
     @Override
-    public OssResourceDTO upload(InputStream input, String resourceName, long resourceSize, @Nullable String objectName, boolean requireFormat, boolean isShowProgressBar) {
+    public OssResourceDTO upload(InputStream input, String resourceName, long resourceSize) throws OssException {
+        return upload(input, resourceName, resourceSize, null, true, false);
+    }
+
+    @Override
+    public OssResourceDTO upload(InputStream input, String resourceName, long resourceSize, @Nullable String objectName,
+                                 boolean requireFormat, boolean isShowProgressBar) throws OssException {
         Assert.notNull(input, "input must not be null!");
         Assert.notBlank(resourceName, "resourceName must not be blank!");
 
@@ -98,38 +108,42 @@ public abstract class AbstractOssHandler implements OssHandler {
                     " but was rejected with an error response for some reason.");
             logger.error("Error Code:{}, Request ID:{}, Host ID:{}, Error Message:{}",
                     oe.getErrorCode(), oe.getRequestId(), oe.getHostId(), oe.getErrorMessage());
+            throw new OssException(oe.getErrorMessage());
         } catch (ClientException ce) {
             logger.error("Caught an ClientException, which means the client encountered a serious internal problem while trying to communicate with OSS," +
                     " such as not being able to access the network.");
             logger.error("Error Message:{}", ce.getMessage());
+            throw new OssException(ce.getMessage());
         }
-        // TODO
-        return null;
     }
 
-    protected abstract OssResourceDTO uploadActual(InputStream input, String resourceName, long resourceSize, String objectName, boolean requireFormat, boolean isShowProgressBar);
+    protected abstract OssResourceDTO uploadActual(InputStream input, String resourceName, long resourceSize, String objectName,
+                                                   boolean requireFormat, boolean isShowProgressBar);
 
     @Override
-    public byte[] download(String objectName) throws IOException {
+    public byte[] download(String objectName) throws OssException {
         Assert.notBlank(objectName, "objectName must not be blank!");
         OSS ossClient = generateOssClient();
         OSSObject ossObject = ossClient.getObject(new GetObjectRequest(ossConfigs.getBucketName(), objectName)
                 .withProgressListener(new OssProgressListener(OssOperateType.download)));
         try (InputStream inputStream = ossObject.getObjectContent()) {
             return IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+            logger.error("Caught an IOException, when download resource.");
+            logger.error("Error Message:{}", e.getMessage());
+            throw new OssException(e.getMessage());
         } finally {
             shutdownOssClient(ossClient);
         }
     }
 
     @Override
-    public String generateOssUrl(String objectName, long expireTime) {
+    public String generateOssUrl(String objectName, long expiration) {
         Assert.notBlank(objectName, "objectName must not be blank!");
-        Assert.isTrue(expireTime > 0, "expireTime must greater than 0!");
+        Assert.isTrue(expiration > 0, "expireTime must greater than 0!");
 
         OSS ossClient = generateOssClient();
-        Date expiration = new Date(System.currentTimeMillis() + expireTime);
-        URL url = ossClient.generatePresignedUrl(ossConfigs.getBucketName(), objectName, expiration);
+        URL url = ossClient.generatePresignedUrl(ossConfigs.getBucketName(), objectName, new Date(System.currentTimeMillis() + expiration));
         shutdownOssClient(ossClient);
         return url.toString();
     }
@@ -161,10 +175,12 @@ public abstract class AbstractOssHandler implements OssHandler {
     }
 
     /**
-     * handle objectName
+     * handle the name of oss object, when the objectName is blank
+     * If the objectName is empty, set the default objectName
      *
-     * @param objectName objectName of oss
-     * @return objectName
+     * @param objectName the name of oss object
+     *                   use UTF-8 encoding, the length must be between 1 and 1023 characters, can't start with a slash (/) or a backslash (\)
+     * @return the name of oss object
      */
     protected String handleObjectName(@Nullable String objectName) {
         if (StringUtils.isBlank(objectName)) {

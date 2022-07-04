@@ -21,7 +21,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.StringJoiner;
 
 /**
- * @Description: Oss Properties
+ * @Description: the properties object of oss
  * @Author: yoga
  * @Date: 2022/5/25 13:22
  */
@@ -29,17 +29,17 @@ import java.util.StringJoiner;
 public class OssProperties {
 
     /**
-     * Whether to enable oss autoconfiguration
+     * whether to enable oss autoconfiguration
      */
     private boolean enabled = true;
 
     /**
-     * Endpoint of oss
+     * endpoint(access domain name) of oss
      */
     private String endpoint;
 
     /**
-     * Bucket name of oss
+     * bucket(storage space) name of oss
      */
     private String bucketName;
 
@@ -54,7 +54,8 @@ public class OssProperties {
     private String accessKeySecret;
 
     /**
-     * Part size for multipart upload, default 100 MB
+     * part size for multipart upload
+     * default 100 MB
      */
     private long partSize = 102_400;
 
