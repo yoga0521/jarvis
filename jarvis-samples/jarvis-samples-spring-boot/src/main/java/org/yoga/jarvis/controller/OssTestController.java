@@ -37,10 +37,10 @@ import java.io.InputStream;
 @RequestMapping("oss")
 public class OssTestController {
 
-    final OssHandler defaultOssHandler;
+    final OssHandler ossHandlerAdapter;
 
-    public OssTestController(OssHandler defaultOssHandler) {
-        this.defaultOssHandler = defaultOssHandler;
+    public OssTestController(OssHandler ossHandlerAdapter) {
+        this.ossHandlerAdapter = ossHandlerAdapter;
     }
 
     @PostMapping("upload")
@@ -49,7 +49,7 @@ public class OssTestController {
             throw new JarvisException("file must not be null!");
         }
         try (InputStream input = file.getInputStream()) {
-            OssResourceDTO ret = defaultOssHandler.upload(file.getInputStream(), file.getOriginalFilename(), file.getSize(),
+            OssResourceDTO ret = ossHandlerAdapter.upload(input, file.getOriginalFilename(), file.getSize(),
                     null, true, false);
             return Result.success(ret);
         } catch (IOException e) {

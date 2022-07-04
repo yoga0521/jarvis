@@ -26,6 +26,7 @@ import org.yoga.jarvis.AbstractOssHandler;
 import org.yoga.jarvis.DefaultOssHandler;
 import org.yoga.jarvis.MultipartOssHandler;
 import org.yoga.jarvis.OssHandler;
+import org.yoga.jarvis.OssHandlerAdapter;
 import org.yoga.jarvis.bean.OssConfigs;
 
 /**
@@ -52,7 +53,7 @@ public class OssAutoConfiguration {
      */
     @Bean("defaultOssHandler")
     @ConditionalOnMissingBean(DefaultOssHandler.class)
-    OssHandler defaultOssHandler() {
+    DefaultOssHandler defaultOssHandler() {
         return new DefaultOssHandler(trans2OssConfigs(ossProperties));
     }
 
@@ -63,8 +64,20 @@ public class OssAutoConfiguration {
      */
     @Bean("multipartOssHandler")
     @ConditionalOnMissingBean(MultipartOssHandler.class)
-    OssHandler multipartOssHandler() {
+    MultipartOssHandler multipartOssHandler() {
         return new MultipartOssHandler(trans2OssConfigs(ossProperties));
+    }
+
+    /**
+     * create OssHandlerAdapter Bean
+     *
+     * @return OssHandlerAdapter {@link org.yoga.jarvis.OssHandlerAdapter}
+     */
+    @Bean("ossHandlerAdapter")
+    @ConditionalOnMissingBean(OssHandlerAdapter.class)
+    OssHandler ossHandlerAdapter(DefaultOssHandler defaultOssHandler,
+                                 MultipartOssHandler multipartOssHandler) {
+        return new OssHandlerAdapter(defaultOssHandler, multipartOssHandler);
     }
 
     /**
