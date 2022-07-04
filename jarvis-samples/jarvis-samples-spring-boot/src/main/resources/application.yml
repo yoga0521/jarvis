@@ -1,0 +1,11 @@
+server:
+  servlet:
+    context-path: /jarvis/boot
+
+jarvis:
+  oss:
+    enabled: true
+    endpoint: a
+    bucket-name: b
+    access-key-id: c
+    access-key-secret: d

@@ -16,8 +16,17 @@
 
 package org.yoga.jarvis.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.yoga.jarvis.OssHandler;
+import org.yoga.jarvis.bean.OssResourceDTO;
+import org.yoga.jarvis.bean.Result;
+import org.yoga.jarvis.exception.JarvisException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @Description: OssTestController
@@ -28,6 +37,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("oss")
 public class OssTestController {
 
+    final OssHandler defaultOssHandler;
 
+    public OssTestController(OssHandler defaultOssHandler) {
+        this.defaultOssHandler = defaultOssHandler;
+    }
+
+    @PostMapping("upload")
+    public Result<OssResourceDTO> testUpload(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new JarvisException("file must not be null!");
+        }
+        try (InputStream input = file.getInputStream()) {
+            OssResourceDTO ret = defaultOssHandler.upload(file.getInputStream(), file.getOriginalFilename(), file.getSize(),
+                    null, true, false);
+            return Result.success(ret);
+        } catch (IOException e) {
+            throw new JarvisException("file upload fail!");
+        }
+    }
 
 }

@@ -16,6 +16,7 @@
 
 package org.yoga.jarvis;
 
+import org.springframework.lang.Nullable;
 import org.yoga.jarvis.bean.OssResourceDTO;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.io.InputStream;
  */
 public interface OssHandler {
 
-    OssResourceDTO upload(InputStream inputStream, String resourceName, long resourceSize, String objectName,
+    OssResourceDTO upload(InputStream inputStream, String resourceName, long resourceSize, @Nullable String objectName,
                           boolean requireFormat, boolean isShowProgressBar);
 
     /**

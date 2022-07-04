@@ -29,7 +29,7 @@ import java.util.StringJoiner;
 public class OssProperties {
 
     /**
-     * Whether to enable oss auto configuration
+     * Whether to enable oss autoconfiguration
      */
     private boolean enabled = true;
 
