@@ -18,13 +18,22 @@ package org.yoga.jarvis.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yoga.jarvis.constant.DelimiterType;
 import org.yoga.jarvis.exception.JarvisException;
 
-import javax.crypto.*;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 /**
@@ -37,31 +46,180 @@ public class AESUtils {
     private static final Logger logger = LoggerFactory.getLogger(AESUtils.class);
 
     /**
-     * 密钥算法
+     * key algorithm
      */
     private static final String ALGORITHM = "AES";
 
     /**
-     * 默认的初始化向量值
+     * default initialization vector value
      */
     private static final String IV_DEFAULT = "mcEiFegEPaOPLKr4";
 
     /**
-     * 随机数实现算法
+     * random Number Implementation Algorithm
      */
     public static final String SECURE_RANDOM_ALGORITHM = "SHA1PRNG";
 
     /**
-     * CBC模式：又称密码分组链接（CBC，Cipher-block chaining）模式。在这种加密模式中，每个密文块都依赖于它前面的所有明文块。
-     * 同时，为了保证每条消息的唯一性，在第一个块中需要使用初始化向量IV。
+     * AES encrypt working mode
      */
-    private static final String TRANSFORM_CBC_PKCS5 = "AES/CBC/PKCS5Padding";
+    enum AesEncryptMode {
+        /**
+         * CFB mode(Cipher feedback)
+         * <p>
+         * Unlike ECB and CBC modes that can only encrypt block data,
+         * CFB can convert block ciphertext (Block Cipher) to stream ciphertext (Stream Cipher)
+         * <p>
+         * Advantage:
+         * The same plaintext is different from the ciphertext, and the block key is converted into a stream cipher.
+         * Disadvantage:
+         * Serial operations are disadvantageous to parallelism, and transmission errors may cause subsequent transmission block errors.
+         */
+        cfb("CFB"),
+
+        /**
+         * OFB mode(Output feedback)
+         * <p>
+         * OFB is to first generate a key stream (keyStream) with a block cipher,
+         * and then XOR the key stream with the plaintext stream to obtain a ciphertext stream.
+         * Decryption is to first generate a keyStream with a block cipher, and then combine the key stream with the encrypted stream.
+         * The text stream is XORed to get the plaintext.
+         * Due to the symmetry of the XOR operation, the encryption and decryption processes are exactly the same.
+         * <p>
+         * Advantage:
+         * The same plaintext is different from the ciphertext, and the block key is converted into a stream cipher.
+         * Disadvantage:
+         * Serial operations are disadvantageous to parallelism, and transmission errors may cause subsequent transmission block errors.
+         */
+        ofb("OFB"),
+
+        /**
+         * ECB mode(Electronic Codebook Book)
+         * <p>
+         * This is the simplest block cipher encryption mode.
+         * Before encryption, it is divided into several blocks according to the encrypted block size (for example, AES is 128 bits),
+         * and then each block is encrypted separately with the same key, and the same is true for decryption.
+         * <p>
+         * Advantage:
+         * 1. Simple, isolated, each block operates independently.
+         * 2. Suitable for parallel operation.
+         * 3. Transmission errors generally only affect the current block.
+         * Disadvantage:
+         * 1. Outputting the same ciphertext with the same plaintext may lead to a plaintext attack.
+         * 2. Many of the AES encrypt we usually use are in ECB mode, which does not require vector IV for encryption.
+         */
+        ecb("ECB"),
+
+        /**
+         * CBC mode(Cipher-block chaining)
+         * <p>
+         * In this mode of encryption, each block of ciphertext depends on all blocks of plaintext that precede it.
+         * At the same time, in order to ensure the uniqueness of each message, the initialization vector IV needs to be used in the first block.
+         * <p>
+         * Advantage:
+         * Serialization operation, same plaintext but different ciphertext.
+         * Disadvantage:
+         * 1. An initial vector is required, but this is not a disadvantage(The CTR below also requires random numbers).
+         * 2. If there is a transmission error, subsequent results may be all wrong after decryption.
+         */
+        cbc("CBC"),
+
+        /**
+         * CTR mode(Counter mode)
+         * <p>
+         * The calculator mode is not common.
+         * In the CTR mode, there is a self-incrementing operator.
+         * This operator uses the key encrypted output and the result of the plaintext XOR to obtain the ciphertext,
+         * which is equivalent to one-time pad. This encryption method is simple, fast, safe and reliable, and can be encrypted in parallel,
+         * but the key can only be used once if the calculator cannot maintain it for a long time.
+         * <p>
+         * Advantage:
+         * No padding, the same plaintext and different ciphertext, each block is operated independently,
+         * suitable for parallel operation.
+         * Disadvantage:
+         * May lead to plaintext attacks.
+         */
+        ctr("CTR");
+
+        /**
+         * AesEncryptMode code
+         */
+        private final String code;
+
+        AesEncryptMode(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return code;
+        }
+    }
 
     /**
-     * ECB模式：又称电码本（ECB，Electronic Codebook Book）模式。这是最简单的块密码加密模式，
-     * 加密前根据加密块大小（如AES为128位）分成若干块，之后将每块使用相同的密钥单独加密，解密同理。
+     * Regarding the padding problem, in the above encryption mode, such as CBC, etc.,
+     * have requirements for the input block, which must be an integer multiple of the block.
+     * For data that is not a whole block, padding is required. There are many methods for padding.
+     * Common There are PKCS 5 and PKCS 7, ISO 10126, etc.
+     * <p>
+     * For example, if grouped by 16 bytes: For the part of less than 16 bytes (assuming that the difference is n full 16 bytes),
+     * fill n bytes (n range (1,15)), and the value of each byte is n.
+     * If it is exactly 16 bytes, then fill a block, that is, add 16 bytes, and the value of each byte is 16.
+     * <p>
+     * CBC、ECB need padding
      */
-    private static final String TRANSFORM_ECB_PKCS5 = "AES/ECB/PKCS5Padding";
+    enum AesPaddingMode {
+
+        /**
+         * No padding, the original data must be an integer multiple of the packet size under this padding,
+         * this mode cannot be used when it is not an integer multiple.
+         */
+        none("NoPadding"),
+
+        /**
+         * Fill to an integer multiple of the block size, and the fill value is the number of fills.
+         * PKCS5PADDING is a subset of PKCS7PADDING, the block size can only be a fixed value of 8.
+         * In the standard AES algorithm, the block size itself is fixed at 8, so PKCS7PADDING and PKCS5PADDING are the same.
+         */
+        pkcs5("PKCS5Padding"),
+
+        /**
+         * Fill to an integer multiple of the block size, and the fill value is the number of fills.
+         * The block size of PKCS7PADDING can be any value from 1 to 255.
+         */
+        pkcs7("PKCS7Padding"),
+
+        /**
+         * Pad to an integer multiple of the block size, the last byte of the padding value is the number of padding,
+         * and other bytes are processed randomly.
+         */
+        iso10126("ISO10126Padding");
+
+        /**
+         * AesPaddingMode code
+         */
+        private final String code;
+
+        AesPaddingMode(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return code;
+        }
+    }
+
+    /**
+     * generate AES working mode
+     *
+     * @param encryptMode the mode of encrypt
+     * @param paddingMode the mode of padding
+     * @return AES working mode
+     */
+    public static String generateAesWorkingMode(AesEncryptMode encryptMode, AesPaddingMode paddingMode) {
+        Assert.notNull(encryptMode, "encryptMode must not be null!");
+        Assert.notNull(paddingMode, "paddingMode must not be null!");
+        return ALGORITHM + DelimiterType.slash.getValue() + encryptMode.getCode() + DelimiterType.slash.getValue() + paddingMode.getCode();
+    }
 
     /**
      * 生成AES密钥,长度为128
@@ -96,160 +254,126 @@ public class AESUtils {
     }
 
     /**
-     * 基于ECB工作模式加密字符串
+     * encrypt str
      *
-     * @param str 输入字符串
-     * @param key 加密key
-     * @return 加密后的字符串
+     * @param str         str to be encrypted
+     * @param key         encryption key
+     * @param iv          offset
+     * @param encryptMode encrypt mode {@link org.yoga.jarvis.util.AESUtils.AesEncryptMode}
+     * @param paddingMode padding mode {@link org.yoga.jarvis.util.AESUtils.AesPaddingMode}
+     * @return encrypted str
      */
-    public static String encryptEcbMode(final String str, String key) {
+    public static String encrypt(final String str, String key, String iv, AesEncryptMode encryptMode, AesPaddingMode paddingMode) {
         Assert.notBlank(str, "str must not be blank!");
-        // 秘密密钥
+        // secret key
         SecretKey secretKey = generateAesKey(key);
+        if (iv == null || iv.length() == 0) {
+            iv = IV_DEFAULT;
+        }
+        // working mode
+        String workingMode = generateAesWorkingMode(encryptMode, paddingMode);
         try {
-            Cipher cipher = Cipher.getInstance(TRANSFORM_ECB_PKCS5);
-            // 初始化Cipher对象，设置为加密模式
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            // 使用AES加密
+            Cipher cipher = Cipher.getInstance(workingMode);
+            // initialize the Cipher object and set it to encryption mode
+            if (AesEncryptMode.cbc.equals(encryptMode)) {
+                // initialization vector
+                final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            }
+            // AES encrypt
             byte[] encryptedBytes = cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
-            // 转成BASE64返回
+            // convert to BASE64 and return
             return Base64.getUrlEncoder().encodeToString(encryptedBytes);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
             logger.error(e.getMessage(), e);
             throw new JarvisException(e);
         }
     }
 
     /**
-     * 基于ECB工作模式解密字符串
+     * decrypt encryptedStr
      *
-     * @param encryptedStr 加密字符串
-     * @param key          加密key
-     * @return 解密后的字符串
+     * @param encryptedStr encrypted str
+     * @param key          encryption key
+     * @param iv           offset
+     * @param encryptMode  encrypt mode {@link org.yoga.jarvis.util.AESUtils.AesEncryptMode}
+     * @param paddingMode  padding mode {@link org.yoga.jarvis.util.AESUtils.AesPaddingMode}
+     * @return encrypted str
      */
-    public static String decryptEcbMode(final String encryptedStr, String key) {
+    public static String decrypt(final String encryptedStr, String key, String iv, AesEncryptMode encryptMode, AesPaddingMode paddingMode) {
         Assert.notBlank(encryptedStr, "encryptedStr must not be blank!");
-        // 秘密密钥
+        // secret key
         SecretKey secretKey = generateAesKey(key);
+        if (iv == null || iv.length() == 0) {
+            iv = IV_DEFAULT;
+        }
+        // working mode
+        String workingMode = generateAesWorkingMode(encryptMode, paddingMode);
         try {
-            Cipher encipher = Cipher.getInstance(TRANSFORM_ECB_PKCS5);
-            // 初始化Cipher对象，设置为解密模式
-            encipher.init(Cipher.DECRYPT_MODE, secretKey);
-            // BASE64解密
+            Cipher encipher = Cipher.getInstance(workingMode);
+            // initialize the Cipher object and set it to decryption mode
+            if (AesEncryptMode.cbc.equals(encryptMode)) {
+                // initialization vector
+                final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
+                encipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            } else {
+                encipher.init(Cipher.DECRYPT_MODE, secretKey);
+            }
+            // BASE64 encrypt
             byte[] encryptedBytes = Base64.getUrlDecoder().decode(encryptedStr);
-            // AES解密
+            // AES encrypt
             return new String(encipher.doFinal(encryptedBytes), StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
             logger.error(e.getMessage(), e);
             throw new JarvisException(e);
         }
     }
 
     /**
-     * 基于ECB工作模式加密流
+     * encrypt str based on ECB working mode
      *
-     * @param inputStream 流
-     * @param key         加密key
-     * @return 加密后的流
+     * @param str str to be encrypted
+     * @param key encryption key
+     * @return encrypted str
      */
-    public static InputStream encryptStreamEcbMode(InputStream inputStream, String key) {
-        Assert.notNull(inputStream, "inputStream must not be null!");
-        // 秘密密钥
-        SecretKey secretKey = generateAesKey(key);
-        try {
-            // 实例化Cipher对象，它用于完成实际的加密操作
-            Cipher cipher = Cipher.getInstance(TRANSFORM_ECB_PKCS5);
-            // 初始化Cipher对象，设置为加密模式
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return new CipherInputStream(inputStream, cipher);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
-            logger.error(e.getMessage(), e);
-            throw new JarvisException(e);
-        }
+    public static String encryptByEcb(final String str, String key) {
+        return encrypt(str, key, null, AesEncryptMode.ecb, AesPaddingMode.pkcs5);
     }
 
     /**
-     * 基于ECB工作模式解密流
+     * decrypt strings based on ECB working mode
      *
-     * @param inputStream 流
-     * @param key         加密key
-     * @return 解密后的流
+     * @param encryptedStr encrypted str
+     * @param key          encryption key
+     * @return decrypted str
      */
-    public static InputStream decryptStreamEcbMode(InputStream inputStream, String key) {
-        Assert.notNull(inputStream, "inputStream must not be null!");
-        // 秘密密钥
-        SecretKey secretKey = generateAesKey(key);
-        try {
-            // 实例化Cipher对象，它用于完成实际的加密操作
-            Cipher cipher = Cipher.getInstance(TRANSFORM_ECB_PKCS5);
-            // 初始化Cipher对象，设置为解密模式
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            return new CipherInputStream(inputStream, cipher);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException e) {
-            logger.error(e.getMessage(), e);
-            throw new JarvisException(e);
-        }
+    public static String decryptByEcb(final String encryptedStr, String key) {
+        return decrypt(encryptedStr, key, null, AesEncryptMode.ecb, AesPaddingMode.pkcs5);
     }
 
     /**
-     * 基于CBC工作模式加密字符串
+     * encrypt string based on CBC working mode
      *
-     * @param str 输入字符串
-     * @param key 加密key
-     * @param iv  偏移量
-     * @return 加密后的字符串
+     * @param str str to be encrypted
+     * @param key encryption key
+     * @param iv  offset
+     * @return encrypted str
      */
     public static String encryptCbcMode(final String str, String key, String iv) {
-        Assert.notBlank(str, "str must not be blank!");
-        if (iv == null || iv.length() == 0) {
-            iv = IV_DEFAULT;
-        }
-        // 秘密密钥
-        SecretKey secretKey = generateAesKey(key);
-        try {
-            // 初始化向量器
-            final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
-            Cipher cipher = Cipher.getInstance(TRANSFORM_CBC_PKCS5);
-            // 初始化Cipher对象，设置为加密模式
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
-            // 使用AES加密
-            byte[] encryptedBytes = cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
-            // 转成BASE64返回
-            return Base64.getUrlEncoder().encodeToString(encryptedBytes);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException | InvalidKeyException e) {
-            logger.error(e.getMessage(), e);
-            throw new JarvisException(e);
-        }
+        return encrypt(str, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
 
     /**
-     * 基于CBC工作模式解密字符串
+     * decrypt strings based on CBC working mode
      *
-     * @param encryptedStr 加密字符串
-     * @param key          加密key
-     * @param iv           偏移量
-     * @return 解密后的字符串
+     * @param encryptedStr encrypted str
+     * @param key          encryption key
+     * @param iv           offset
+     * @return decrypted str
      */
     public static String decryptCbcMode(final String encryptedStr, String key, String iv) {
-        Assert.notBlank(encryptedStr, "encryptedStr must not be blank!");
-        if (iv == null || iv.length() == 0) {
-            iv = IV_DEFAULT;
-        }
-        // 秘密密钥
-        SecretKey secretKey = generateAesKey(key);
-        try {
-            // 初始化向量器
-            final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
-            Cipher cipher = Cipher.getInstance(TRANSFORM_CBC_PKCS5);
-            // 初始化Cipher对象，设置为解密模式
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
-            // BASE64解密
-            byte[] encryptedBytes = Base64.getUrlDecoder().decode(encryptedStr);
-            // AES解密
-            return new String(cipher.doFinal(encryptedBytes));
-        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
-            logger.error(e.getMessage(), e);
-            throw new JarvisException(e);
-        }
+        return decrypt(encryptedStr, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
 }
