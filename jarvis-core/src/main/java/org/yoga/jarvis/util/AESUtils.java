@@ -275,12 +275,12 @@ public class AESUtils {
         try {
             Cipher cipher = Cipher.getInstance(workingMode);
             // initialize the Cipher object and set it to encryption mode
-            if (AesEncryptMode.cbc.equals(encryptMode)) {
+            if (AesEncryptMode.ecb.equals(encryptMode)) {
+                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            } else {
                 // initialization vector
                 final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
-            } else {
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             }
             // AES encrypt
             byte[] encryptedBytes = cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
@@ -332,6 +332,30 @@ public class AESUtils {
     }
 
     /**
+     * encrypt string based on CFB working mode
+     *
+     * @param str str to be encrypted
+     * @param key encryption key
+     * @param iv  offset
+     * @return encrypted str
+     */
+    public static String encryptByCfb(final String str, String key, String iv) {
+        return encrypt(str, key, iv, AesEncryptMode.cfb, AesPaddingMode.none);
+    }
+
+    /**
+     * decrypt strings based on CFB working mode
+     *
+     * @param encryptedStr encrypted str
+     * @param key          encryption key
+     * @param iv           offset
+     * @return decrypted str
+     */
+    public static String decryptByCfb(final String encryptedStr, String key, String iv) {
+        return decrypt(encryptedStr, key, iv, AesEncryptMode.cfb, AesPaddingMode.none);
+    }
+
+    /**
      * encrypt str based on ECB working mode
      *
      * @param str str to be encrypted
@@ -361,7 +385,7 @@ public class AESUtils {
      * @param iv  offset
      * @return encrypted str
      */
-    public static String encryptCbcMode(final String str, String key, String iv) {
+    public static String encryptByCbc(final String str, String key, String iv) {
         return encrypt(str, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
 
@@ -373,7 +397,7 @@ public class AESUtils {
      * @param iv           offset
      * @return decrypted str
      */
-    public static String decryptCbcMode(final String encryptedStr, String key, String iv) {
+    public static String decryptByCbc(final String encryptedStr, String key, String iv) {
         return decrypt(encryptedStr, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
 }
