@@ -51,6 +51,11 @@ public class AESUtils {
     private static final String ALGORITHM = "AES";
 
     /**
+     * default key
+     */
+    private static final String KEY_DEFAULT = "7r5W2gdIxom8UasI";
+
+    /**
      * default initialization vector value
      */
     private static final String IV_DEFAULT = "mcEiFegEPaOPLKr4";
@@ -314,12 +319,12 @@ public class AESUtils {
         try {
             Cipher encipher = Cipher.getInstance(workingMode);
             // initialize the Cipher object and set it to decryption mode
-            if (AesEncryptMode.cbc.equals(encryptMode)) {
+            if (AesEncryptMode.ecb.equals(encryptMode)) {
+                encipher.init(Cipher.DECRYPT_MODE, secretKey);
+            } else {
                 // initialization vector
                 final IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
                 encipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
-            } else {
-                encipher.init(Cipher.DECRYPT_MODE, secretKey);
             }
             // BASE64 encrypt
             byte[] encryptedBytes = Base64.getUrlDecoder().decode(encryptedStr);
@@ -329,6 +334,16 @@ public class AESUtils {
             logger.error(e.getMessage(), e);
             throw new JarvisException(e);
         }
+    }
+
+    /**
+     * encrypt string based on CFB working mode, with default key and iv
+     *
+     * @param str str to be encrypted
+     * @return encrypted str
+     */
+    public static String encryptByCfb(final String str) {
+        return encryptByCfb(str, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
     /**
@@ -344,6 +359,16 @@ public class AESUtils {
     }
 
     /**
+     * decrypt strings based on CFB working mode, with default key and iv
+     *
+     * @param encryptedStr encrypted str
+     * @return decrypted str
+     */
+    public static String decryptByCfb(final String encryptedStr) {
+        return decryptByCfb(encryptedStr, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
+    }
+
+    /**
      * decrypt strings based on CFB working mode
      *
      * @param encryptedStr encrypted str
@@ -353,6 +378,60 @@ public class AESUtils {
      */
     public static String decryptByCfb(final String encryptedStr, String key, String iv) {
         return decrypt(encryptedStr, key, iv, AesEncryptMode.cfb, AesPaddingMode.none);
+    }
+
+    /**
+     * encrypt string based on OFB working mode, with default key and iv
+     *
+     * @param str str to be encrypted
+     * @return encrypted str
+     */
+    public static String encryptByOfb(final String str) {
+        return encryptByOfb(str, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
+    }
+
+    /**
+     * encrypt string based on OFB working mode
+     *
+     * @param str str to be encrypted
+     * @param key encryption key
+     * @param iv  offset
+     * @return encrypted str
+     */
+    public static String encryptByOfb(final String str, String key, String iv) {
+        return encrypt(str, key, iv, AesEncryptMode.ofb, AesPaddingMode.none);
+    }
+
+    /**
+     * decrypt strings based on OFB working mode, with default key and iv
+     *
+     * @param encryptedStr encrypted str
+     * @return decrypted str
+     */
+    public static String decryptByOfb(final String encryptedStr) {
+        return decryptByOfb(encryptedStr, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
+    }
+
+    /**
+     * decrypt strings based on OFB working mode
+     *
+     * @param encryptedStr encrypted str
+     * @param key          encryption key
+     * @param iv           offset
+     * @return decrypted str
+     */
+    public static String decryptByOfb(final String encryptedStr, String key, String iv) {
+        return decrypt(encryptedStr, key, iv, AesEncryptMode.ofb, AesPaddingMode.none);
+    }
+
+    /**
+     * encrypt str based on ECB working mode, with default key
+     *
+     * @param str str to be encrypted
+     * @return encrypted str
+     */
+    public static String encryptByEcb(final String str) {
+        return encryptByEcb(str, AESUtils.KEY_DEFAULT);
     }
 
     /**
@@ -367,6 +446,16 @@ public class AESUtils {
     }
 
     /**
+     * decrypt strings based on ECB working mode, with default key
+     *
+     * @param encryptedStr encrypted str
+     * @return decrypted str
+     */
+    public static String decryptByEcb(final String encryptedStr) {
+        return decryptByEcb(encryptedStr, AESUtils.KEY_DEFAULT);
+    }
+
+    /**
      * decrypt strings based on ECB working mode
      *
      * @param encryptedStr encrypted str
@@ -375,6 +464,16 @@ public class AESUtils {
      */
     public static String decryptByEcb(final String encryptedStr, String key) {
         return decrypt(encryptedStr, key, null, AesEncryptMode.ecb, AesPaddingMode.pkcs5);
+    }
+
+    /**
+     * encrypt string based on CBC working mode, with default key and iv
+     *
+     * @param str str to be encrypted
+     * @return encrypted str
+     */
+    public static String encryptByCbc(final String str) {
+        return encryptByCbc(str, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
     /**
@@ -387,6 +486,16 @@ public class AESUtils {
      */
     public static String encryptByCbc(final String str, String key, String iv) {
         return encrypt(str, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
+    }
+
+    /**
+     * decrypt strings based on CBC working mode, with default key and iv
+     *
+     * @param encryptedStr encrypted str
+     * @return decrypted str
+     */
+    public static String decryptByCbc(final String encryptedStr) {
+        return decryptByCbc(encryptedStr, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
     /**
