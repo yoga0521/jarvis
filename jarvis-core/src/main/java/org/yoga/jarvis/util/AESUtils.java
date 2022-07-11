@@ -242,8 +242,9 @@ public class AESUtils {
      * @param key          key
      * @param aesKeyLength aseKey长度
      * @return secretKey
+     * @throws JarvisException jarvis exception
      */
-    public static SecretKey generateAesKey(String key, int aesKeyLength) {
+    public static SecretKey generateAesKey(String key, int aesKeyLength) throws JarvisException {
         Assert.notBlank(key, "key must not be blank!");
         try {
             // 实例化密钥生成器
@@ -267,8 +268,10 @@ public class AESUtils {
      * @param encryptMode encrypt mode {@link org.yoga.jarvis.util.AESUtils.AesEncryptMode}
      * @param paddingMode padding mode {@link org.yoga.jarvis.util.AESUtils.AesPaddingMode}
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encrypt(final String str, String key, String iv, AesEncryptMode encryptMode, AesPaddingMode paddingMode) {
+    public static String encrypt(final String str, String key, String iv,
+                                 AesEncryptMode encryptMode, AesPaddingMode paddingMode) throws JarvisException {
         Assert.notBlank(str, "str must not be blank!");
         // secret key
         SecretKey secretKey = generateAesKey(key);
@@ -290,7 +293,7 @@ public class AESUtils {
             // AES encrypt
             byte[] encryptedBytes = cipher.doFinal(str.getBytes(StandardCharsets.UTF_8));
             // convert to BASE64 and return
-            return Base64.getUrlEncoder().encodeToString(encryptedBytes);
+            return Base64.getEncoder().encodeToString(encryptedBytes);
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
             logger.error(e.getMessage(), e);
             throw new JarvisException(e);
@@ -306,8 +309,10 @@ public class AESUtils {
      * @param encryptMode  encrypt mode {@link org.yoga.jarvis.util.AESUtils.AesEncryptMode}
      * @param paddingMode  padding mode {@link org.yoga.jarvis.util.AESUtils.AesPaddingMode}
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decrypt(final String encryptedStr, String key, String iv, AesEncryptMode encryptMode, AesPaddingMode paddingMode) {
+    public static String decrypt(final String encryptedStr, String key, String iv,
+                                 AesEncryptMode encryptMode, AesPaddingMode paddingMode) throws JarvisException {
         Assert.notBlank(encryptedStr, "encryptedStr must not be blank!");
         // secret key
         SecretKey secretKey = generateAesKey(key);
@@ -327,7 +332,7 @@ public class AESUtils {
                 encipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
             }
             // BASE64 encrypt
-            byte[] encryptedBytes = Base64.getUrlDecoder().decode(encryptedStr);
+            byte[] encryptedBytes = Base64.getDecoder().decode(encryptedStr);
             // AES encrypt
             return new String(encipher.doFinal(encryptedBytes), StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException e) {
@@ -341,8 +346,9 @@ public class AESUtils {
      *
      * @param str str to be encrypted
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByCfb(final String str) {
+    public static String encryptByCfb(final String str) throws JarvisException {
         return encryptByCfb(str, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
@@ -353,8 +359,9 @@ public class AESUtils {
      * @param key encryption key
      * @param iv  offset
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByCfb(final String str, String key, String iv) {
+    public static String encryptByCfb(final String str, String key, String iv) throws JarvisException {
         return encrypt(str, key, iv, AesEncryptMode.cfb, AesPaddingMode.none);
     }
 
@@ -363,8 +370,9 @@ public class AESUtils {
      *
      * @param encryptedStr encrypted str
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByCfb(final String encryptedStr) {
+    public static String decryptByCfb(final String encryptedStr) throws JarvisException {
         return decryptByCfb(encryptedStr, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
@@ -375,8 +383,9 @@ public class AESUtils {
      * @param key          encryption key
      * @param iv           offset
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByCfb(final String encryptedStr, String key, String iv) {
+    public static String decryptByCfb(final String encryptedStr, String key, String iv) throws JarvisException {
         return decrypt(encryptedStr, key, iv, AesEncryptMode.cfb, AesPaddingMode.none);
     }
 
@@ -385,8 +394,9 @@ public class AESUtils {
      *
      * @param str str to be encrypted
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByOfb(final String str) {
+    public static String encryptByOfb(final String str) throws JarvisException {
         return encryptByOfb(str, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
@@ -397,8 +407,9 @@ public class AESUtils {
      * @param key encryption key
      * @param iv  offset
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByOfb(final String str, String key, String iv) {
+    public static String encryptByOfb(final String str, String key, String iv) throws JarvisException {
         return encrypt(str, key, iv, AesEncryptMode.ofb, AesPaddingMode.none);
     }
 
@@ -407,8 +418,9 @@ public class AESUtils {
      *
      * @param encryptedStr encrypted str
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByOfb(final String encryptedStr) {
+    public static String decryptByOfb(final String encryptedStr) throws JarvisException {
         return decryptByOfb(encryptedStr, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
@@ -419,8 +431,9 @@ public class AESUtils {
      * @param key          encryption key
      * @param iv           offset
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByOfb(final String encryptedStr, String key, String iv) {
+    public static String decryptByOfb(final String encryptedStr, String key, String iv) throws JarvisException {
         return decrypt(encryptedStr, key, iv, AesEncryptMode.ofb, AesPaddingMode.none);
     }
 
@@ -429,8 +442,9 @@ public class AESUtils {
      *
      * @param str str to be encrypted
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByEcb(final String str) {
+    public static String encryptByEcb(final String str) throws JarvisException {
         return encryptByEcb(str, AESUtils.KEY_DEFAULT);
     }
 
@@ -440,8 +454,9 @@ public class AESUtils {
      * @param str str to be encrypted
      * @param key encryption key
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByEcb(final String str, String key) {
+    public static String encryptByEcb(final String str, String key) throws JarvisException {
         return encrypt(str, key, null, AesEncryptMode.ecb, AesPaddingMode.pkcs5);
     }
 
@@ -450,8 +465,9 @@ public class AESUtils {
      *
      * @param encryptedStr encrypted str
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByEcb(final String encryptedStr) {
+    public static String decryptByEcb(final String encryptedStr) throws JarvisException {
         return decryptByEcb(encryptedStr, AESUtils.KEY_DEFAULT);
     }
 
@@ -461,8 +477,9 @@ public class AESUtils {
      * @param encryptedStr encrypted str
      * @param key          encryption key
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByEcb(final String encryptedStr, String key) {
+    public static String decryptByEcb(final String encryptedStr, String key) throws JarvisException {
         return decrypt(encryptedStr, key, null, AesEncryptMode.ecb, AesPaddingMode.pkcs5);
     }
 
@@ -471,8 +488,9 @@ public class AESUtils {
      *
      * @param str str to be encrypted
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByCbc(final String str) {
+    public static String encryptByCbc(final String str) throws JarvisException {
         return encryptByCbc(str, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
@@ -483,8 +501,9 @@ public class AESUtils {
      * @param key encryption key
      * @param iv  offset
      * @return encrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String encryptByCbc(final String str, String key, String iv) {
+    public static String encryptByCbc(final String str, String key, String iv) throws JarvisException {
         return encrypt(str, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
 
@@ -493,8 +512,9 @@ public class AESUtils {
      *
      * @param encryptedStr encrypted str
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByCbc(final String encryptedStr) {
+    public static String decryptByCbc(final String encryptedStr) throws JarvisException {
         return decryptByCbc(encryptedStr, AESUtils.KEY_DEFAULT, AESUtils.IV_DEFAULT);
     }
 
@@ -505,8 +525,9 @@ public class AESUtils {
      * @param key          encryption key
      * @param iv           offset
      * @return decrypted str
+     * @throws JarvisException jarvis exception
      */
-    public static String decryptByCbc(final String encryptedStr, String key, String iv) {
+    public static String decryptByCbc(final String encryptedStr, String key, String iv) throws JarvisException {
         return decrypt(encryptedStr, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
 }
