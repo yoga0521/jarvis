@@ -16,7 +16,11 @@
 
 package org.yoga.jarvis.util;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -105,6 +109,17 @@ public class DateUtils {
     public static LocalDateTime fromMillSeconds(long millSeconds) {
         Assert.isTrue(millSeconds > 0, "mullSeconds must > 0");
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(millSeconds), DEFAULT_ZONE_ID);
+    }
+
+    /**
+     * get timestamp from {@code LocalDateTime}
+     *
+     * @param localDateTime {@code LocalDateTime}, not null
+     * @return {@code long} timestamp (ms)
+     */
+    public static long toTimestamp(LocalDateTime localDateTime) {
+        Assert.notNull(localDateTime, "localDateTime must not be null!");
+        return localDateTime.toInstant(DEFAULT_ZONE_OFFSET).toEpochMilli();
     }
 
 }
