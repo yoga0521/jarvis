@@ -91,6 +91,7 @@
         <module>jarvis-test</module>
         <module>jarivis-build-tools</module>
         <module>jarvis-message</module>
+        <module>jarvis-identifier</module>
     </modules>
 
     <dependencyManagement>
