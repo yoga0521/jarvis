@@ -14,17 +14,20 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.util;
+package org.yoga.jarvis;
+
+import org.yoga.jarvis.util.Assert;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
- * @Description: SnowFlakeId Utils
+ * @Description: SnowFlakeId Generator
+ * when using, you need to ensure a singleton
  * @Author: yoga
  * @Date: 2022/7/12 19:01
  */
-public class SnowFlakeIdUtils {
+public class SnowFlakeIdGenerator {
 
     /**
      * start timestamp (ms)
@@ -103,7 +106,7 @@ public class SnowFlakeIdUtils {
      *
      * @param workerId work machine ID
      */
-    public SnowFlakeIdUtils(long workerId) {
+    public SnowFlakeIdGenerator(long workerId) {
         // calculate the maximum value
         long maxMachineId = (MAX_DATA_CENTER_ID + 1) * (MAX_WORKER_ID + 1) - 1;
         Assert.isTrue(0 <= workerId && workerId <= maxMachineId,
@@ -124,7 +127,7 @@ public class SnowFlakeIdUtils {
      * @param dataCenterId data identification ID (0~31)
      * @param workerId     work machine ID (0~31)
      */
-    public SnowFlakeIdUtils(long dataCenterId, long workerId) {
+    public SnowFlakeIdGenerator(long dataCenterId, long workerId) {
         Assert.isTrue(0 <= workerId && workerId <= MAX_WORKER_ID,
                 String.format("Worker ID can't be greater than %d or less than 0", MAX_WORKER_ID));
 
@@ -161,7 +164,7 @@ public class SnowFlakeIdUtils {
         }
         // timestamp of last ID generation
         lastTimestamp = timestamp;
-        // shift and OR together
+        // shift du OR together
         return ((timestamp - TW_EPOCH) << TIMESTAMP_LEFT_SHIFT)
                 | (dataCenterId << DATA_CENTER_ID_SHIFT)
                 | (workerId << WORKER_ID_SHIFT)
