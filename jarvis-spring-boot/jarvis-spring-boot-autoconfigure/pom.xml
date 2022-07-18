@@ -58,6 +58,12 @@
             <artifactId>jarvis-oss</artifactId>
             <version>${revision}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.yoga.jarvis</groupId>
+            <artifactId>jarvis-identifier</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
 </project>

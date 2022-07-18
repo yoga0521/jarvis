@@ -18,9 +18,6 @@ package org.yoga.jarvis;
 
 import org.yoga.jarvis.util.Assert;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 /**
  * @Description: SnowFlakeId Generator
  * when using, you need to ensure a singleton
@@ -104,7 +101,7 @@ public class SnowFlakeIdGenerator {
      * use the serial number of the work machine (remove the machine room for the machine ID) [0, 1023]
      * the advantage is that it is convenient to number the machine
      *
-     * @param workerId work machine ID
+     * @param workerId work machine ID (0~31)
      */
     public SnowFlakeIdGenerator(long workerId) {
         // calculate the maximum value
@@ -115,7 +112,7 @@ public class SnowFlakeIdGenerator {
         // take the high part as the ID part of the computer room
         this.dataCenterId = (workerId >> WORKER_ID_BITS) & MAX_DATA_CENTER_ID;
 
-        // 取低位部分作为机器ID部分
+        // take the lower part as the machine ID part
         this.workerId = workerId & MAX_WORKER_ID;
     }
 
