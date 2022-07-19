@@ -31,12 +31,12 @@ public class IdentifierProperties {
     /**
      * work machine ID (0~31)
      */
-    private long workerId;
+    private long workerId = 1L;
 
     /**
      * data identification ID (0~31)
      */
-    private long dataCenterId;
+    private long dataCenterId = 1L;
 
     public long getWorkerId() {
         return workerId;

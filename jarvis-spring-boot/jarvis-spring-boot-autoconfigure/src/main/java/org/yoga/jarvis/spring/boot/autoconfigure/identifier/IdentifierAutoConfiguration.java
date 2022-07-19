@@ -17,12 +17,13 @@
 package org.yoga.jarvis.spring.boot.autoconfigure.identifier;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.yoga.jarvis.SnowFlakeIdGenerator;
 
 /**
- * @Description: TODO
+ * @Description: identifier auto configure
  * @Author: yoga
  * @Date: 2022/7/18 17:46
  */
@@ -33,8 +34,17 @@ public class IdentifierAutoConfiguration {
 
     private final IdentifierProperties identifierProperties;
 
-
     public IdentifierAutoConfiguration(IdentifierProperties identifierProperties) {
         this.identifierProperties = identifierProperties;
+    }
+
+    /**
+     * create SnowFlakeIdGenerator Bean
+     *
+     * @return snowFlakeIdGenerator {@link org.yoga.jarvis.SnowFlakeIdGenerator}
+     */
+    @ConditionalOnMissingBean(SnowFlakeIdGenerator.class)
+    SnowFlakeIdGenerator snowFlakeIdGenerator() {
+        return new SnowFlakeIdGenerator(identifierProperties.getWorkerId(), identifierProperties.getDataCenterId());
     }
 }

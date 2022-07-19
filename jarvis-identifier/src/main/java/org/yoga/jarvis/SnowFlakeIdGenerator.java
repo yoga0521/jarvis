@@ -121,10 +121,10 @@ public class SnowFlakeIdGenerator {
      * using work machine ID and data identification ID
      * the advantage is that it is convenient for branch data identification management
      *
-     * @param dataCenterId data identification ID (0~31)
      * @param workerId     work machine ID (0~31)
+     * @param dataCenterId data identification ID (0~31)
      */
-    public SnowFlakeIdGenerator(long dataCenterId, long workerId) {
+    public SnowFlakeIdGenerator(long workerId, long dataCenterId) {
         Assert.isTrue(0 <= workerId && workerId <= MAX_WORKER_ID,
                 String.format("Worker ID can't be greater than %d or less than 0", MAX_WORKER_ID));
 
