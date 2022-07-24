@@ -17,6 +17,9 @@
 package org.yoga.jarvis;
 
 import org.yoga.jarvis.util.Assert;
+import org.yoga.jarvis.util.NetUtils;
+
+import java.lang.management.ManagementFactory;
 
 /**
  * @Description: SnowFlakeId Generator
@@ -166,6 +169,36 @@ public class SnowFlakeIdGenerator {
                 | (dataCenterId << DATA_CENTER_ID_SHIFT)
                 | (workerId << WORKER_ID_SHIFT)
                 | sequence;
+    }
+
+    /**
+     * calculate remainder based on NIC MAC address as data center
+     */
+    protected long getDatacenterId() {
+        byte[] mac = NetUtils.getMacAddress(NetUtils.getLocalIpAddress0());
+        if (null == mac) {
+            return 1L;
+        }
+        long id = ((0x000000FF & (long) mac[mac.length - 2]) | (0x0000FF00 & (((long) mac[mac.length - 1]) << 8))) >> 6;
+        return id % (MAX_DATA_CENTER_ID + 1);
+    }
+
+    /**
+     * get 16 low bits of hashcode based on MAC + PID
+     *
+     * @param dataCenterId data identification ID (0~31)
+     */
+    protected long getWorkerId(long dataCenterId) {
+        StringBuilder mpId = new StringBuilder();
+        mpId.append(dataCenterId);
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        if (name != null && name.length() > 0) {
+            // get jvmPid
+            mpId.append(name.split("@")[0]);
+        }
+
+        // the hashcode of MAC + PID gets 16 low bits
+        return (mpId.toString().hashCode() & 0xffff) % (MAX_WORKER_ID + 1);
     }
 
     private long tilNextMillis(long lastTimestamp) {
