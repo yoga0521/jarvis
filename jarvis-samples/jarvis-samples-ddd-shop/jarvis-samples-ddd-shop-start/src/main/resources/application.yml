@@ -1,3 +1,11 @@
 server:
   servlet:
     context-path: /jarvis/shop
+spring:
+  application:
+    name: jarvis-ddd-shop
+  profiles:
+    active: dev
+log:
+  path: /Users/yoga/logs/${spring.application.name}
+  name: app.log
