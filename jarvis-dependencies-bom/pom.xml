@@ -48,6 +48,9 @@
         <!-- guava -->
         <guava.version>31.1-jre</guava.version>
 
+        <!-- okhttp -->
+        <okhttp.version>4.10.0</okhttp.version>
+
         <!-- caffeine -->
         <caffeine.version>2.9.3</caffeine.version>
 
@@ -101,6 +104,12 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
             </dependency>
 
             <!-- caffeine -->
