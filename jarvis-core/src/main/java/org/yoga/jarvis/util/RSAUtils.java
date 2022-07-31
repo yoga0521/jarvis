@@ -33,6 +33,8 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -51,6 +53,11 @@ public class RSAUtils {
      * key algorithm
      */
     private static final String ALGORITHM = "RSA";
+
+    /**
+     * key signature algorithm
+     */
+    private static final String SIGNATURE_ALGORITHM = "MD5withRSA";
 
     /**
      * The default key length is 1024
@@ -228,6 +235,60 @@ public class RSAUtils {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | InvalidKeySpecException | BadPaddingException | InvalidKeyException e) {
             logger.error(e.getMessage(), e);
             throw new JarvisException(e);
+        }
+    }
+
+    /**
+     * sign
+     *
+     * @param data       original str
+     * @param privateKey private key
+     * @return sign
+     * @throws JarvisException jarvis exception
+     */
+    public static String sign(final String data, final String privateKey) throws JarvisException {
+        Assert.notBlank(data, "data must not be blank!");
+        Assert.notBlank(privateKey, "privateKey must not be blank!");
+
+        PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey));
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
+            // generate private key
+            PrivateKey aPrivateKey = keyFactory.generatePrivate(pkcs8KeySpec);
+            Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+            signature.initSign(aPrivateKey);
+            signature.update(data.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(signature.sign());
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
+            throw new JarvisException(e.getMessage());
+        }
+    }
+
+    /**
+     * verify
+     *
+     * @param data      original str
+     * @param publicKey public key
+     * @param sign      sign
+     * @return Whether the signature is passed
+     * @throws JarvisException jarvis exception
+     */
+    public static boolean verify(final String data, final String publicKey, final String sign) throws JarvisException {
+        Assert.notBlank(data, "data must not be blank!");
+        Assert.notBlank(publicKey, "publicKey must not be blank!");
+        Assert.notBlank(sign, "sign must not be blank!");
+
+        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKey));
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
+            // generate public key
+            PublicKey aPublicKey = keyFactory.generatePublic(x509KeySpec);
+            Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+            signature.initVerify(aPublicKey);
+            signature.update(data.getBytes(StandardCharsets.UTF_8));
+            return signature.verify(Base64.getDecoder().decode(sign.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
+            throw new JarvisException(e.getMessage());
         }
     }
 
