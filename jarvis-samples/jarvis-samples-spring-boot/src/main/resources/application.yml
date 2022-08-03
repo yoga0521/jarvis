@@ -5,7 +5,10 @@ server:
 jarvis:
   oss:
     enabled: true
-    endpoint: a
-    bucket-name: b
-    access-key-id: c
-    access-key-secret: d
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    bucket-name: yoga-jarvis
+    access-key-id: LTAI5tFj2U4DVcsjFqgXqTXB
+    access-key-secret: y3RkH2NX5cwj6KODD6X86qLzV6Ul1X
+  id:
+    worker-id: 1
+    data-center-id: 1
