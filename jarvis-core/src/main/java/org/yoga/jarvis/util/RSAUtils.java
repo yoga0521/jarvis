@@ -292,4 +292,11 @@ public class RSAUtils {
         }
     }
 
+    public static void main(String[] args) {
+        Pair<String, String> pair = generateKeysPairStr();
+        System.out.println(pair.getLeft());
+        System.out.println(pair.getRight());
+        System.out.println(encryptByPrivateKey("qwer1234", pair.getLeft()));
+        System.out.println(decryptByPublicKey(encryptByPrivateKey("qwer1234", pair.getLeft()), pair.getRight()));
+    }
 }

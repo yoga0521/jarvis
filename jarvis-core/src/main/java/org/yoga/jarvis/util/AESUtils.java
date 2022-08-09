@@ -530,4 +530,15 @@ public class AESUtils {
     public static String decryptByCbc(final String encryptedStr, String key, String iv) throws JarvisException {
         return decrypt(encryptedStr, key, iv, AesEncryptMode.cbc, AesPaddingMode.pkcs5);
     }
+
+    public static void main(String[] args) {
+        System.out.println(AESUtils.encryptByCfb("qwer123"));
+        System.out.println(AESUtils.encryptByOfb("qwer123"));
+        System.out.println(AESUtils.encryptByCbc("qwer123"));
+        System.out.println(AESUtils.encryptByEcb("qwer123"));
+        System.out.println(AESUtils.decryptByCfb("FIK9ksmGcA=="));
+        System.out.println(AESUtils.decryptByOfb("FIK9ksmGcA=="));
+        System.out.println(AESUtils.decryptByCbc("hUIoxC5eFpGzf/DIKFDP/A=="));
+        System.out.println(AESUtils.decryptByEcb("jcsYoWGMRenesYmhyhWiWQ=="));
+    }
 }
