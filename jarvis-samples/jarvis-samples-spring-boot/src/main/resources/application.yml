@@ -1,6 +1,21 @@
 server:
+  port: 8088
   servlet:
     context-path: /jarvis/boot
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  application:
+    name: jarvis-samples-spring-boot
+  mvc:
+    # get param
+    format:
+      date: yyyy-MM-dd
 
 jarvis:
   oss:
