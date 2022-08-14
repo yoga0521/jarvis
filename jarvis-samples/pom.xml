@@ -38,6 +38,8 @@
         <spring-boot.version>2.7.0</spring-boot.version>
 
         <mapstruct.version>1.5.1.Final</mapstruct.version>
+
+        <redisson-boot.version>3.17.5</redisson-boot.version>
     </properties>
 
     <modules>
@@ -70,6 +72,12 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson-boot.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
