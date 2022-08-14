@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    配置日志输出相关内容
+    日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL
+-->
+<!-- status 定义内部日志级别 -->
+<configuration>
+    <!-- 日志输出的格式 -->
+    <property name="pattern"
+              value="%date{yyyy-MM-dd HH:mm:ss.SSS} [%-5thread] %-5level %logger{50} - [%method,%line] - %msg%n"/>
+    <!-- 日志文件输出路径 -->
+    <springProperty name="filePath" source="log.path"/>
+    <!-- 日志文件输出名称 -->
+    <springProperty name="fileName" source="log.name"/>
+
+    <!-- 控制台日志输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--输出日志的格式-->
+            <pattern>${pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="org.yoga.jarvis.filter.MyFilter"/>
+    </appender>
+
+    <!-- 文件日志输出 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${filePath}/${fileName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>15</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--输出日志的格式-->
+            <pattern>${pattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!--日志文件最大的大小-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>50MB</MaxFileSize>
+        </triggeringPolicy>
+        <filter class="org.yoga.jarvis.filter.MyFilter"/>
+    </appender>
+
+    <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
+    <logger name="org.mybatis" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <!--监控系统信息-->
+    <!--若是additivity设为false，则 子Logger 只会在自己的appender里输出，而不会在 父Logger 的appender里输出。-->
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- 开发环境（本地），多个使用逗号隔开 -->
+    <springProfile name="dev">
+        <root level="debug">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 测试环境+正式环境 -->
+    <springProfile name="test,prod">
+        <root level="info">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration> 
