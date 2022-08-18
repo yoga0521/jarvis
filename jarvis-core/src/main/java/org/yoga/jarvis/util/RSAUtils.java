@@ -192,7 +192,7 @@ public class RSAUtils {
      * @return string encrypted data
      * @throws JarvisException jarvis exception
      */
-    private static String encryptByPublicKey(final String data, final String publicKey) throws JarvisException {
+    public static String encryptByPublicKey(final String data, final String publicKey) throws JarvisException {
         Assert.notBlank(data, "data must not be blank!");
         Assert.notBlank(publicKey, "publicKey must not be blank!");
 

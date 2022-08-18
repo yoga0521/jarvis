@@ -16,10 +16,21 @@
 
 package org.yoga.jarvis.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
  * @Description: test
  * @Author: yoga
  * @Date: 2022/8/14 20:16
  */
+@RestController
+@RequestMapping("test")
 public class TestController {
+
+    @GetMapping("get")
+    public String test() {
+        return "hello";
+    }
 }
