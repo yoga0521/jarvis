@@ -16,6 +16,7 @@
 
 package org.yoga.jarvis.util;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
@@ -24,6 +25,19 @@ import java.util.Arrays;
  * @Date: 2022/5/16 15:46
  */
 public class ArrayUtils {
+
+    /**
+     * Create an empty array
+     *
+     * @param <T>           generics
+     * @param componentType element type
+     * @param size          array size
+     * @return empty array
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] newArray(Class<?> componentType, int size) {
+        return (T[]) Array.newInstance(componentType, size);
+    }
 
     /**
      * Check an array is {@code null} or has length 0
@@ -57,7 +71,26 @@ public class ArrayUtils {
         return !isEmpty(array);
     }
 
+    /**
+     * Check an array is there a {@code null} element
+     *
+     * @param array the array
+     * @return {@code true} if the array is there a {@code null} element
+     */
+    public static <T> boolean hasNull(T[] array) {
+        return contains(array, null);
+    }
 
+
+    /**
+     * get the index of {@code object} in an array
+     * return -1 if it doesn't exist
+     *
+     * @param array the array
+     * @param obj   {@code object}
+     * @param <T>   generics
+     * @return the index of {@code object} in an array
+     */
     public static <T> int indexOf(T[] array, T obj) {
         if (isEmpty(array)) {
             return -1;
@@ -78,6 +111,12 @@ public class ArrayUtils {
         return -1;
     }
 
+    /**
+     * Check an array is there {@code object}
+     *
+     * @param array the array
+     * @return {@code true} if the array is there {@code object}
+     */
     public static <T> boolean contains(T[] array, T obj) {
         return indexOf(array, obj) != -1;
     }
