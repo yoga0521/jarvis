@@ -16,9 +16,16 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.exception.JarvisException;
+
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 
 /**
  * @Description: I/O utils
@@ -52,6 +59,66 @@ public class IOUtils {
                 output.write(buffer, 0, n);
             }
             return output.toByteArray();
+        }
+    }
+
+    /**
+     * read object from stream
+     *
+     * @param in input stream
+     * @return object
+     * @throws JarvisException throw JarvisException
+     */
+    public static Object readObj(InputStream in) throws JarvisException {
+        ObjectInputStream ois = null;
+        try {
+            ois = in instanceof ObjectInputStream ? (ObjectInputStream) in : new ObjectInputStream(in);
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new JarvisException(e);
+        }
+    }
+
+    /**
+     * write content to the output stream
+     *
+     * @param out           output stream
+     * @param isCloseStream whether to close the stream, if the stream has subsequent operations, it will not be closed
+     * @param contents      what is written
+     * @throws JarvisException throw JarvisException
+     */
+    public static void writeObjects(OutputStream out, boolean isCloseStream, Serializable... contents) throws JarvisException {
+        ObjectOutputStream osw = null;
+        try {
+            osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
+            for (Object content : contents) {
+                if (content != null) {
+                    osw.writeObject(content);
+                }
+            }
+            osw.flush();
+        } catch (IOException e) {
+            throw new JarvisException(e);
+        } finally {
+            if (isCloseStream) {
+                close(osw);
+            }
+        }
+    }
+
+    /**
+     * close
+     * will not throw an exception
+     *
+     * @param closeable object being closed
+     */
+    public static void close(Closeable closeable) {
+        if (null != closeable) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                // do nothing
+            }
         }
     }
 }
