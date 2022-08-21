@@ -19,6 +19,8 @@ package org.yoga.jarvis.util;
 import org.yoga.jarvis.exception.JarvisException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @Description: ReflectUtils
@@ -41,7 +43,9 @@ public class ReflectUtils {
         }
         for (Field field : obj.getClass().getDeclaredFields()) {
             if (field.getName().equals(fieldName)) {
-                field.setAccessible(true);
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
                 try {
                     return field.get(obj);
                 } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -71,6 +75,32 @@ public class ReflectUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * invoke method
+     *
+     * @param methodHostInstance method instance
+     * @param methodName         method name
+     * @param parameterTypes     parameter types
+     * @param args               params
+     * @return invoke result
+     */
+    public static Object invoke(Object methodHostInstance, String methodName,
+                                Class<?>[] parameterTypes, Object[] args) {
+        try {
+            Method method = methodHostInstance.getClass().getDeclaredMethod(methodName, parameterTypes);
+            method.setAccessible(true);
+            try {
+                return method.invoke(methodHostInstance, args);
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+                throw new JarvisException(e);
+            } finally {
+                method.setAccessible(false);
+            }
+        } catch (SecurityException | NoSuchMethodException e) {
+            throw new JarvisException(e);
+        }
     }
 
 }
