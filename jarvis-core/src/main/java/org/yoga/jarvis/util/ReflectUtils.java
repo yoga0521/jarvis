@@ -80,26 +80,59 @@ public class ReflectUtils {
     /**
      * invoke method
      *
-     * @param methodHostInstance method instance
-     * @param methodName         method name
-     * @param parameterTypes     parameter types
-     * @param args               params
+     * @param obj    obj {@code Object}
+     * @param method method
+     * @param args   params
      * @return invoke result
      */
-    public static Object invoke(Object methodHostInstance, String methodName,
-                                Class<?>[] parameterTypes, Object[] args) {
-        try {
-            Method method = methodHostInstance.getClass().getDeclaredMethod(methodName, parameterTypes);
+    @SuppressWarnings("unchecked")
+    public static <T> T invoke(Object obj, Method method, Object... args) {
+        Assert.notNull(obj, "obj must not be null!");
+        Assert.notNull(method, "method must not be null!");
+
+        // method accessible init value
+        boolean isMethodAccessible = method.isAccessible();
+        // set method accessible
+        if (!isMethodAccessible) {
             method.setAccessible(true);
-            try {
-                return method.invoke(methodHostInstance, args);
-            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-                throw new JarvisException(e);
-            } finally {
+        }
+
+        // when the method is the default method, you need to use the handle to execute
+        if (method.isDefault()) {
+            // todo
+        }
+        final Object[] actualArgs;
+        if (method.getParameterCount() > 0) {
+            final Class<?>[] parameterTypes = method.getParameterTypes();
+            actualArgs = new Object[parameterTypes.length];
+            // ignore redundant parameters
+            if (null != args) {
+                // throw an exception if there are not enough args
+                if (args.length < parameterTypes.length) {
+                    throw new JarvisException("the number of args is less than the default number of parameters for the method");
+                }
+                for (int i = 0; i < actualArgs.length; i++) {
+                    // the arg is null, but the target parameter type is a primitive type, use default values for primitive types
+                    if (args[i] == null && parameterTypes[i].isPrimitive()) {
+                        actualArgs[i] = ObjectUtils.getPrimitiveDefaultValue(parameterTypes[i]);
+                    } else {
+                        actualArgs[i] = args[i];
+                    }
+                }
+            }
+        } else {
+            actualArgs = args;
+        }
+
+        try {
+            return (T) method.invoke(obj, actualArgs);
+        } catch (SecurityException | InvocationTargetException | IllegalAccessException e) {
+            throw new JarvisException(e);
+        } finally {
+            // set method accessible init value
+            if (!isMethodAccessible) {
                 method.setAccessible(false);
             }
-        } catch (SecurityException | NoSuchMethodException e) {
-            throw new JarvisException(e);
         }
     }
 

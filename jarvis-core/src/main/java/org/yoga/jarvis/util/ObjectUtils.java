@@ -132,5 +132,39 @@ public class ObjectUtils {
         return Double.valueOf(String.valueOf(obj));
     }
 
+    /**
+     * get the default value of a primitive type
+     *
+     * @param clazz class
+     * @return default value
+     */
+    public static Object getPrimitiveDefaultValue(Class<?> clazz) {
+        if (Boolean.TYPE.equals(clazz)) {
+            return false;
+        }
+        if (Character.TYPE.equals(clazz)) {
+            return (char) 0;
+        }
+        if (Byte.TYPE.equals(clazz)) {
+            return (byte) 0;
+        }
+        if (Short.TYPE.equals(clazz)) {
+            return (short) 0;
+        }
+        if (Integer.TYPE.equals(clazz)) {
+            return 0;
+        }
+        if (Long.TYPE.equals(clazz)) {
+            return 0L;
+        }
+        if (Float.TYPE.equals(clazz)) {
+            return 0f;
+        }
+        if (Double.TYPE.equals(clazz)) {
+            return 0d;
+        }
+        return null;
+    }
+
 
 }
