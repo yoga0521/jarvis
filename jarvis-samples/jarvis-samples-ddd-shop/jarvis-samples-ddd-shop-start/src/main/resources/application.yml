@@ -8,4 +8,4 @@ spring:
     active: dev
 log:
   path: /Users/yoga/logs/${spring.application.name}
-  name: app.log
+  name: app

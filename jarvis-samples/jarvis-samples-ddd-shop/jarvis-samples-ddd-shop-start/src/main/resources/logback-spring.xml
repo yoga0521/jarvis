@@ -24,21 +24,22 @@
 
     <!-- 文件日志输出 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <file>${filePath}/${fileName}.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <FileNamePattern>${filePath}/${fileName}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${filePath}/${fileName}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <!--日志文件保留天数-->
             <MaxHistory>15</MaxHistory>
+            <!--日志文件最大的大小-->
+            <MaxFileSize>50MB</MaxFileSize>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--输出日志的格式-->
             <pattern>${pattern}</pattern>
             <charset>UTF-8</charset>
         </encoder>
-        <!--日志文件最大的大小-->
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>50MB</MaxFileSize>
-        </triggeringPolicy>
+        <filter class="org.yoga.jarvis.filter.MyFilter"/>
     </appender>
 
     <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
