@@ -18,6 +18,7 @@ package org.yoga.jarvis.util;
 
 import org.yoga.jarvis.exception.JarvisException;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,6 +29,28 @@ import java.lang.reflect.Method;
  * @Date: 2022/8/20 23:09
  */
 public class ReflectUtils {
+
+    /**
+     * get constructors
+     *
+     * @param clazz {@code Class}
+     * @return constructors
+     */
+    public static Constructor<?>[] getConstructors(Class<?> clazz) {
+        Assert.notNull(clazz, "clazz must not be null!");
+        return clazz.getDeclaredConstructors();
+    }
+
+    /**
+     * get fields
+     *
+     * @param clazz {@code Class}
+     * @return fields
+     */
+    public static Field[] getFields(Class<?> clazz) {
+        Assert.notNull(clazz, "clazz must not be null!");
+        return clazz.getDeclaredFields();
+    }
 
     /**
      * get field value
