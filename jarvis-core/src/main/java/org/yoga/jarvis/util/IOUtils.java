@@ -65,15 +65,18 @@ public class IOUtils {
     /**
      * read object from stream
      *
-     * @param in input stream
+     * @param in  input stream
+     * @param <T> generics
      * @return object
-     * @throws JarvisException throw JarvisException
+     * @throws JarvisException    throw JarvisException
+     * @throws ClassCastException if the type convert fail, then throw ClassCastException
      */
-    public static Object readObj(InputStream in) throws JarvisException {
-        ObjectInputStream ois = null;
+    @SuppressWarnings("unchecked")
+    public static <T extends Serializable> T readObj(InputStream in) throws JarvisException, ClassCastException {
+        ObjectInputStream ois;
         try {
             ois = in instanceof ObjectInputStream ? (ObjectInputStream) in : new ObjectInputStream(in);
-            return ois.readObject();
+            return (T) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new JarvisException(e);
         }
@@ -103,6 +106,24 @@ public class IOUtils {
             if (isCloseStream) {
                 close(osw);
             }
+        }
+    }
+
+    /**
+     * write content to the output stream, and return byte array
+     *
+     * @param out      output stream
+     * @param contents what is written
+     * @return byte array
+     * @throws JarvisException throw JarvisException
+     */
+    public static byte[] writeObjects(ByteArrayOutputStream out, Serializable... contents) throws JarvisException {
+        Assert.notNull(out, "out must not be null!");
+        try {
+            writeObjects(out, false, contents);
+            return out.toByteArray();
+        } finally {
+            close(out);
         }
     }
 
