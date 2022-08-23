@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.exception.JarvisException;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -26,6 +28,19 @@ import java.io.Serializable;
  * @Date: 2022/8/23 16:39
  */
 public class SerializeUtils {
+
+    /**
+     * cloning by copying the stream after serialize
+     *
+     * @param obj {@code Object}
+     * @param <T> generics
+     * @return cloned object
+     * @throws JarvisException    throw JarvisException
+     * @throws ClassCastException if the type convert fail, then throw ClassCastException
+     */
+    public static <T extends Serializable> T clone(T obj) {
+        return deserialize(serialize(obj));
+    }
 
     /**
      * serialize
