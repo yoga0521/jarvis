@@ -188,6 +188,58 @@ public class ReflectUtils {
     }
 
     /**
+     * set field value
+     *
+     * @param obj   obj {@code Object}
+     * @param field field {@code Field}
+     * @param value value
+     * @throws JarvisException throw JarvisException
+     */
+    public static void setFieldValue(Object obj, Field field, Object value) throws JarvisException {
+        Assert.notNull(obj, "obj must not be null!");
+        Assert.notNull(field, "field must not be null!");
+
+        final Class<?> fieldType = field.getType();
+        if (null != value) {
+            Assert.isTrue(fieldType.isAssignableFrom(value.getClass()), "value type and field type must match!");
+        } else if (fieldType.isPrimitive()) {
+            value = ObjectUtils.getPrimitiveDefaultValue(fieldType);
+        }
+
+        // field accessible init value
+        boolean isFieldAccessible = field.isAccessible();
+        if (!isFieldAccessible) {
+            field.setAccessible(true);
+        }
+
+        try {
+            field.set(obj, value);
+        } catch (IllegalAccessException e) {
+            throw new JarvisException(e);
+        } finally {
+            // set field accessible init value
+            if (!isFieldAccessible) {
+                field.setAccessible(false);
+            }
+        }
+    }
+
+    /**
+     * set field value
+     *
+     * @param obj       obj {@code Object}
+     * @param fieldName fieldName
+     * @param value     value
+     * @throws JarvisException throw JarvisException
+     */
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws JarvisException {
+        Assert.notNull(obj, "obj must not be null!");
+        Assert.notBlank(fieldName, "fieldName must not be blank!");
+
+        setFieldValue(obj, getField(obj, fieldName), value);
+    }
+
+    /**
      * invoke method
      *
      * @param obj    obj {@code Object}
