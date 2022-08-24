@@ -42,6 +42,18 @@ public class ReflectUtils {
     }
 
     /**
+     * get constructors
+     *
+     * @param obj {@code Object}
+     * @return constructors
+     */
+    public static Constructor<?>[] getConstructors(Object obj) {
+        Assert.notNull(obj, "obj must not be null!");
+
+        return getConstructors(obj.getClass());
+    }
+
+    /**
      * get fields
      *
      * @param clazz {@code Class}
@@ -53,30 +65,112 @@ public class ReflectUtils {
     }
 
     /**
+     * get fields
+     *
+     * @param obj {@code Object}
+     * @return fields
+     */
+    public static Field[] getFields(Object obj) {
+        Assert.notNull(obj, "obj must not be null!");
+
+        return getFields(obj.getClass());
+    }
+
+    /**
+     * get field
+     *
+     * @param clazz     {@code Class}
+     * @param fieldName field name
+     * @return field
+     */
+    public static Field getField(Class<?> clazz, String fieldName) {
+        Assert.notNull(clazz, "clazz must not be null!");
+        Assert.notBlank(fieldName, "fieldName must not be blank!");
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                return field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * get field
+     *
+     * @param obj       {@code Object}
+     * @param fieldName field name
+     * @return field
+     */
+    public static Field getField(Object obj, String fieldName) {
+        Assert.notNull(obj, "obj must not be null!");
+        Assert.notBlank(fieldName, "fieldName must not be blank!");
+
+        return getField(obj.getClass(), fieldName);
+    }
+
+    /**
+     * get field value
+     *
+     * @param obj   obj {@code Object}
+     * @param field field {@code Field}
+     * @return field value
+     * @throws JarvisException throw JarvisException
+     */
+    public static Object getFieldValue(Object obj, Field field) throws JarvisException {
+        Assert.notNull(obj, "obj must not be null!");
+        Assert.notNull(field, "field must not be null!");
+
+        // field accessible init value
+        boolean isFieldAccessible = field.isAccessible();
+        if (!isFieldAccessible) {
+            field.setAccessible(true);
+        }
+        try {
+            return field.get(obj);
+        } catch (IllegalAccessException e) {
+            throw new JarvisException(e);
+        } finally {
+            // set field accessible init value
+            if (!isFieldAccessible) {
+                field.setAccessible(false);
+            }
+        }
+    }
+
+    /**
      * get field value
      *
      * @param obj       obj {@code Object}
      * @param fieldName fieldName
      * @return field value
+     * @throws JarvisException throw JarvisException
      */
-    public static Object getFieldValue(Object obj, String fieldName) {
+    public static Object getFieldValue(Object obj, String fieldName) throws JarvisException {
+        Assert.notNull(obj, "obj must not be null!");
         Assert.notBlank(fieldName, "fieldName must not be blank!");
-        if (obj == null) {
-            return null;
-        }
-        for (Field field : obj.getClass().getDeclaredFields()) {
-            if (field.getName().equals(fieldName)) {
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-                try {
-                    return field.get(obj);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    throw new JarvisException(e);
-                }
+
+        Field field = getField(obj, fieldName);
+        return null == field ? null : getFieldValue(obj, field);
+    }
+
+    /**
+     * does the field exist
+     *
+     * @param clazz     clazz {@code Class}
+     * @param fieldName fieldName
+     * @return does the field exist
+     */
+    public static boolean isFieldExist(Class<?> clazz, String fieldName) {
+        Assert.notNull(clazz, "clazz must not be null!");
+        Assert.notBlank(fieldName, "fieldName must not be blank!");
+
+        for (Field field : getFields(clazz)) {
+            if (fieldName.equals(field.getName())) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     /**
@@ -87,17 +181,10 @@ public class ReflectUtils {
      * @return does the field exist
      */
     public static boolean isFieldExist(Object obj, String fieldName) {
+        Assert.notNull(obj, "obj must not be null!");
         Assert.notBlank(fieldName, "fieldName must not be blank!");
-        if (obj == null) {
-            return false;
-        }
-        Field[] fields = obj.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            if (field.getName().equals(fieldName)) {
-                return true;
-            }
-        }
-        return false;
+
+        return isFieldExist(obj.getClass(), fieldName);
     }
 
     /**
