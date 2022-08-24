@@ -155,4 +155,34 @@ public class ArrayUtils {
         }
         return result;
     }
+
+    /**
+     * is class array all equals
+     *
+     * @param array1 class array
+     * @param array2 class array
+     * @return is class array all equals
+     */
+    public static boolean isEquals(Class<?>[] array1, Class<?>[] array2) {
+        if (null == array1 && null == array2) {
+            return true;
+        }
+        if (null == array1 || null == array2) {
+            return false;
+        }
+        if (array1.length == 0 && array2.length == 0) {
+            return true;
+        }
+        if (array1.length != array2.length) {
+            return false;
+        }
+
+        for (int i = 0; i < array1.length; i++) {
+            // 处理基础类型的转换 todo
+            if (!array1[i].isAssignableFrom(array2[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

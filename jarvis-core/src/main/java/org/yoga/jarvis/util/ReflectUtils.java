@@ -18,6 +18,7 @@ package org.yoga.jarvis.util;
 
 import org.yoga.jarvis.exception.JarvisException;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -55,6 +56,32 @@ public class ReflectUtils {
         Assert.notNull(obj, "obj must not be null!");
 
         return getConstructors(obj.getClass());
+    }
+
+    /**
+     * get constructor
+     *
+     * @param clazz          {@code Class}
+     * @param parameterTypes constructor parameter types
+     * @param <T>            generics
+     * @return constructor
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes) {
+        Assert.notNull(clazz, "clazz must not be null!");
+
+        final Constructor<?>[] constructors = getConstructors(clazz);
+
+        for (Constructor<?> constructor : constructors) {
+            // no-argument constructor
+            if (ArrayUtils.isEmpty(parameterTypes) && ArrayUtils.isEmpty(constructor.getParameterTypes())) {
+                return (Constructor<T>) constructor;
+            } else if (ArrayUtils.isEquals(constructor.getParameterTypes(), parameterTypes)) {
+                // constructor
+                return (Constructor<T>) constructor;
+            }
+        }
+        return null;
     }
 
     /**
@@ -299,12 +326,92 @@ public class ReflectUtils {
     }
 
     /**
+     * instance object
+     *
+     * @param clazz  clazz {@code Class}
+     * @param params constructor params
+     * @param <T>    generics
+     * @return instance object
+     * @throws JarvisException throw JarvisException
+     */
+    public static <T> T newInstance(Class<T> clazz, Object... params) throws JarvisException {
+
+        final Class<?>[] paramTypes = ClassUtils.getClasses(params);
+        final Constructor<T> constructor = getConstructor(clazz, paramTypes);
+        if (null == constructor) {
+            throw new JarvisException("no constructor available");
+        }
+        // constructor accessible init value
+        boolean isConstructorAccessible = constructor.isAccessible();
+        // set constructor accessible
+        if (!isConstructorAccessible) {
+            constructor.setAccessible(true);
+        }
+
+        try {
+            return constructor.newInstance(params);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new JarvisException(e);
+        } finally {
+            // set constructor accessible init value
+            if (!isConstructorAccessible) {
+                constructor.setAccessible(false);
+            }
+        }
+    }
+
+    /**
+     * invoke default method or proxy object's method
+     *
+     * @param obj    obj {@code Object}
+     * @param method method {@code Method}
+     * @param args   params
+     * @param <T>    generics
+     * @return invoke result
+     * @throws JarvisException throw JarvisException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeDefaultOrProxyObjectMethod(Object obj, Method method, Object... args) {
+        Assert.notNull(obj, "obj must not be null!");
+        Assert.notNull(method, "method must not be null!");
+
+        final Constructor<MethodHandles.Lookup> constructor;
+        try {
+            constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+        } catch (NoSuchMethodException e) {
+            throw new JarvisException(e);
+        }
+        // constructor accessible init value
+        boolean isConstructorAccessible = constructor.isAccessible();
+        // set constructor accessible
+        if (!isConstructorAccessible) {
+            constructor.setAccessible(true);
+        }
+        try {
+            return (T) constructor.newInstance(method.getDeclaringClass(), MethodHandles.Lookup.PRIVATE
+                            | MethodHandles.Lookup.PROTECTED | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC)
+                    .unreflectSpecial(method, method.getDeclaringClass())
+                    .bindTo(obj)
+                    .invokeWithArguments(args);
+        } catch (Throwable e) {
+            throw new JarvisException(e);
+        } finally {
+            // set constructor accessible init value
+            if (!isConstructorAccessible) {
+                constructor.setAccessible(false);
+            }
+        }
+    }
+
+
+    /**
      * invoke method
      *
      * @param obj    obj {@code Object}
-     * @param method method
+     * @param method method {@code Method}
      * @param args   params
      * @return invoke result
+     * @throws JarvisException throw JarvisException
      */
     @SuppressWarnings("unchecked")
     public static <T> T invoke(Object obj, Method method, Object... args) {
@@ -320,7 +427,7 @@ public class ReflectUtils {
 
         // when the method is the default method, you need to use the handle to execute
         if (method.isDefault()) {
-            // todo
+            return invokeDefaultOrProxyObjectMethod(obj, method, args);
         }
         final Object[] actualArgs;
         if (method.getParameterCount() > 0) {
