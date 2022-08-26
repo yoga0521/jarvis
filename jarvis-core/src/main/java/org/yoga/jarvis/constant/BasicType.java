@@ -16,6 +16,9 @@
 
 package org.yoga.jarvis.constant;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @Description: Basic Type
  * @Author: yoga
@@ -69,6 +72,25 @@ public enum BasicType {
      * default value when null
      */
     private final Object defaultValue;
+
+    /**
+     * key: {@link BasicType#getPrimitiveClazz()}
+     * value: {@link BasicType}
+     */
+    public static final Map<Class<?>, BasicType> PRIMITIVE_BASIC_TYPE_MAP = new ConcurrentHashMap<>(8);
+
+    /**
+     * key: {@link BasicType#getWrapperClazz()}
+     * value: {@link BasicType}
+     */
+    public static final Map<Class<?>, BasicType> WRAPPER_BASIC_TYPE_MAP = new ConcurrentHashMap<>(8);
+
+    static {
+        for (BasicType type : BasicType.values()) {
+            PRIMITIVE_BASIC_TYPE_MAP.put(type.getPrimitiveClazz(), type);
+            WRAPPER_BASIC_TYPE_MAP.put(type.getWrapperClazz(), type);
+        }
+    }
 
     BasicType(Class<?> primitiveClazz, Class<?> wrapperClazz, Object defaultValue) {
         this.primitiveClazz = primitiveClazz;
