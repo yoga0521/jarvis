@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yoga.jarvis.exception.JarvisException;
-import org.yoga.jarvis.util.AESUtils;
 import org.yoga.jarvis.util.JsonUtils;
-import org.yoga.jarvis.util.RSAUtils;
+import org.yoga.jarvis.util.crypto.AESUtils;
+import org.yoga.jarvis.util.crypto.RSAUtils;
 import org.yoga.jarvis.vo.OpenRequestBaseParam;
 
 import java.util.TreeMap;

@@ -1,25 +1,26 @@
 /*
- * Copyright 2022 yoga
+ *  Copyright 2022 yoga
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
-package org.yoga.jarvis.util;
+package org.yoga.jarvis.util.crypto;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yoga.jarvis.constant.DelimiterType;
 import org.yoga.jarvis.exception.JarvisException;
+import org.yoga.jarvis.util.Assert;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -265,8 +266,8 @@ public class AESUtils {
      * @param str         str to be encrypted
      * @param key         encryption key
      * @param iv          offset
-     * @param encryptMode encrypt mode {@link org.yoga.jarvis.util.AESUtils.AesEncryptMode}
-     * @param paddingMode padding mode {@link org.yoga.jarvis.util.AESUtils.AesPaddingMode}
+     * @param encryptMode encrypt mode {@link AESUtils.AesEncryptMode}
+     * @param paddingMode padding mode {@link AESUtils.AesPaddingMode}
      * @return encrypted str
      * @throws JarvisException jarvis exception
      */
@@ -306,8 +307,8 @@ public class AESUtils {
      * @param encryptedStr encrypted str
      * @param key          encryption key
      * @param iv           offset
-     * @param encryptMode  encrypt mode {@link org.yoga.jarvis.util.AESUtils.AesEncryptMode}
-     * @param paddingMode  padding mode {@link org.yoga.jarvis.util.AESUtils.AesPaddingMode}
+     * @param encryptMode  encrypt mode {@link AESUtils.AesEncryptMode}
+     * @param paddingMode  padding mode {@link AESUtils.AesPaddingMode}
      * @return encrypted str
      * @throws JarvisException jarvis exception
      */
