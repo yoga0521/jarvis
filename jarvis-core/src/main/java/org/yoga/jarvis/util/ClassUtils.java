@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.constant.BasicType;
+
 /**
  * @Description: ClassUtils
  * @Author: yoga
@@ -41,5 +43,31 @@ public class ClassUtils {
             classes[i] = objects[i] == null ? Object.class : objects[i].getClass();
         }
         return classes;
+    }
+
+    /**
+     * whether it is a wrapper
+     *
+     * @param clazz clazz {@code Class}
+     * @return whether it is a wrapper
+     */
+    public static boolean isPrimitiveWrapper(Class<?> clazz) {
+        if (null == clazz) {
+            return false;
+        }
+        return BasicType.WRAPPER_BASIC_TYPE_MAP.containsKey(clazz);
+    }
+
+    /**
+     * whether it is a basic type (including wrapper and primitive)
+     *
+     * @param clazz clazz {@code Class}
+     * @return whether it is a basic type
+     */
+    public static boolean isBasicType(Class<?> clazz) {
+        if (null == clazz) {
+            return false;
+        }
+        return clazz.isPrimitive() || isPrimitiveWrapper(clazz);
     }
 }

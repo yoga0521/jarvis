@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.constant.BasicType;
+
 /**
  * @Description: ObjectUtils
  * @Author: yoga
@@ -139,31 +141,7 @@ public class ObjectUtils {
      * @return default value
      */
     public static Object getPrimitiveDefaultValue(Class<?> clazz) {
-        if (Boolean.TYPE.equals(clazz)) {
-            return false;
-        }
-        if (Character.TYPE.equals(clazz)) {
-            return (char) 0;
-        }
-        if (Byte.TYPE.equals(clazz)) {
-            return (byte) 0;
-        }
-        if (Short.TYPE.equals(clazz)) {
-            return (short) 0;
-        }
-        if (Integer.TYPE.equals(clazz)) {
-            return 0;
-        }
-        if (Long.TYPE.equals(clazz)) {
-            return 0L;
-        }
-        if (Float.TYPE.equals(clazz)) {
-            return 0f;
-        }
-        if (Double.TYPE.equals(clazz)) {
-            return 0d;
-        }
-        return null;
+        return BasicType.PRIMITIVE_BASIC_TYPE_MAP.containsKey(clazz) ? BasicType.PRIMITIVE_BASIC_TYPE_MAP.get(clazz).getDefaultValue() : null;
     }
 
 
