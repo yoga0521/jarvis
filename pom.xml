@@ -88,6 +88,7 @@
         <module>jarvis-distribution</module>
         <module>jarvis-cache</module>
         <module>jarvis-filter</module>
+        <module>jarvis-gateway</module>
         <module>jarvis-test</module>
         <module>jarivis-build-tools</module>
         <module>jarvis-message</module>
