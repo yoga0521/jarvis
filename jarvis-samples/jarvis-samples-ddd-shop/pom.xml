@@ -36,8 +36,9 @@
         <module>jarvis-samples-ddd-shop-domain</module>
         <module>jarvis-samples-ddd-shop-infrastructure</module>
         <module>jarvis-samples-ddd-shop-application</module>
-        <module>jarvis-samples-ddd-shop-start</module>
+        <module>jarvis-samples-ddd-shop-acl</module>
         <module>jarvis-samples-ddd-shop-web</module>
+        <module>jarvis-samples-ddd-shop-start</module>
     </modules>
 
     <properties>
@@ -62,6 +63,12 @@
             <dependency>
                 <groupId>org.yoga.jarvis</groupId>
                 <artifactId>jarvis-samples-ddd-shop-application</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yoga.jarvis</groupId>
+                <artifactId>jarvis-samples-ddd-shop-acl</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
 
