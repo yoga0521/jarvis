@@ -18,9 +18,7 @@ package org.yoga.jarvis;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,17 +39,10 @@ public class CaffeineCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
             .maximumSize(100)
             // 60 second refresh after setting write cache
             .expireAfterWrite(60, TimeUnit.SECONDS)
-            // 60 second after setting write cache expires
-            .expireAfterWrite(60, TimeUnit.SECONDS)
             // Set the hit rate of the cache to be counted
             .recordStats()
             // Set cache removal notifications
-            .removalListener(new RemovalListener<K, V>() {
-                @Override
-                public void onRemoval(@Nullable K k, @Nullable V v, RemovalCause removalCause) {
-                    System.out.println(k + " has removed, reason: " + v);
-                }
-            })
+            .removalListener((RemovalListener<K, V>) (k, v, removalCause) -> System.out.println(k + " has removed, reason: " + v))
             .build();
 
     @Override

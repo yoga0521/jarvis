@@ -27,7 +27,7 @@ public abstract class AbstractCacheHandler<K, V> implements CacheHandler<K, V> {
 
     /**
      * Default cache effective time(ms)
-     * 1 hours
+     * an hour
      */
     protected static final long DEFAULT_EFFECTIVE_TIME = 60 * 60 * 60 * 1000L;
 
