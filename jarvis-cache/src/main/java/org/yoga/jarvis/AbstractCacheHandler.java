@@ -25,38 +25,25 @@ import org.yoga.jarvis.util.Assert;
  */
 public abstract class AbstractCacheHandler<K, V> implements CacheHandler<K, V> {
 
-    /**
-     * Default cache effective time(ms)
-     * an hour
-     */
-    protected static final long DEFAULT_EFFECTIVE_TIME = 60 * 60 * 60 * 1000L;
+	/**
+	 * Default cache size
+	 */
+	protected static final int DEFAULT_SIZE = 1000;
 
-    /**
-     * Default cache size
-     */
-    protected static final int DEFAULT_SIZE = 1000;
+	@Override
+	public void put(K k, V v) {
+		Assert.notNull(k, "key must not be null!");
+		Assert.notNull(v, "value must not be null!");
+	}
 
-    @Override
-    public void add(K k, V v) {
-        Assert.notNull(k, "key must not be null!");
-        Assert.notNull(v, "value must not be null!");
-    }
-
-    @Override
-    public void add(K k, V v, long effectiveTime) {
-        Assert.notNull(k, "key must not be null!");
-        Assert.notNull(v, "value must not be null!");
-        Assert.isTrue(effectiveTime > 0, "effectiveTime must > 0!");
-    }
-
-    /**
-     * If there is no cache, get it through this method
-     *
-     * @param k key
-     * @return getIfKNotExist value
-     */
-    protected V getIfNotExist(K k) {
-        return null;
-    }
+	/**
+	 * If there is no cache, get it through this method
+	 *
+	 * @param k key
+	 * @return getIfKNotExist value
+	 */
+	protected V getIfNotExist(K k) {
+		return null;
+	}
 
 }

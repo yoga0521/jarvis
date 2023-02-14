@@ -16,7 +16,7 @@
 
 package org.yoga.jarvis;
 
-import java.util.concurrent.ExecutionException;
+import javax.annotation.Nullable;
 
 /**
  * @Description: Cache Handler
@@ -25,44 +25,35 @@ import java.util.concurrent.ExecutionException;
  */
 public interface CacheHandler<K, V> {
 
-    /**
-     * add cache
-     *
-     * @param k key, not null
-     * @param v value, not null
-     */
-    void add(K k, V v);
+	/**
+	 * add cache
+	 *
+	 * @param k key, not null
+	 * @param v value, not null
+	 */
+	void put(K k, V v);
 
-    /**
-     * add cache
-     *
-     * @param k             key, not null
-     * @param v             value, not null
-     * @param effectiveTime key effective time(ms), granter than 0
-     */
-    void add(K k, V v, long effectiveTime);
+	/**
+	 * get cache
+	 *
+	 * @param k key, not null
+	 * @return value
+	 */
+	@Nullable
+	V getIfPresent(K k);
 
-    /**
-     * get cache
-     *
-     * @param k key, not null
-     * @return value
-     */
-    V get(K k) throws ExecutionException;
+	/**
+	 * remove cache
+	 *
+	 * @param k key
+	 */
+	void remove(K k);
 
-    /**
-     * remove cache
-     *
-     * @param k key
-     * @return value
-     */
-    V remove(K k);
+	/**
+	 * clear all cache
+	 */
+	void clear();
 
-    /**
-     * clear all cache
-     */
-    void clear();
-
-    long size();
+	long size();
 
 }

@@ -20,7 +20,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,54 +29,54 @@ import java.util.concurrent.TimeUnit;
  */
 public class GuavaCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
-    Cache<K, V> cache = CacheBuilder.newBuilder()
-            // Set the concurrency level is the same as the number of cpus
-            // the concurrency level refers to the number of threads
-            // that can write to the cache at the same time
-            .concurrencyLevel(Runtime.getRuntime().availableProcessors())
-            // 1 hours refresh after setting write cache
-            .refreshAfterWrite(1, TimeUnit.HOURS)
-            // Set the initial capacity of the cache container to 1000
-            .initialCapacity(1000)
-            // Set the maximum cache capacity to 1000
-            // After more than 100, the cache items will be removed according to the LRU algorithm
-            // that is rarely used recently.
-            .maximumSize(1000)
-            // Set the hit rate of the cache to be counted
-            .recordStats()
-            // Set cache removal notifications
-            .removalListener((RemovalListener<K, V>) notification ->
-                    System.out.println(notification.getKey() + " has removed, reason: " + notification.getCause()))
-            // CacheLoader todo
-            .build();
+	private final Cache<K, V> cache;
 
-    @Override
-    public void add(K k, V v) {
-        super.add(k, v);
-        cache.put(k, v);
-    }
+	public GuavaCacheHandler(int initialCapacity, int maximumSize, long expireIntervalSeconds) {
+		this.cache = CacheBuilder.newBuilder()
+				// Set the concurrency level is the same as the number of cpus
+				// the concurrency level refers to the number of threads
+				// that can write to the cache at the same time
+				.concurrencyLevel(Runtime.getRuntime().availableProcessors())
+				// Set the initial capacity of the cache container to {@code initialCapacity}
+				.initialCapacity(initialCapacity)
+				// Set the maximum cache capacity to 1000
+				// After more than 100, the cache items will be removed according to the LRU algorithm
+				// that is rarely used recently.
+				.maximumSize(maximumSize)
+				// expire after setting write cache
+				.expireAfterWrite(expireIntervalSeconds, TimeUnit.SECONDS)
+				// Set the hit rate of the cache to be counted
+				.recordStats()
+				// Set cache removal notifications
+				.removalListener((RemovalListener<K, V>) notification -> System.out.println(notification.getKey() +
+						" has removed, val: " + notification.getValue() + ", reason: " + notification.getCause()))
+				.build();
+	}
 
-    @Override
-    public V get(K k) throws ExecutionException {
-        return cache.get(k, () -> getIfNotExist(k));
-    }
+	@Override
+	public void put(K k, V v) {
+		super.put(k, v);
+		cache.put(k, v);
+	}
 
-    @Override
-    public V remove(K k) {
+	@Override
+	public V getIfPresent(K k) {
+		return cache.getIfPresent(k);
+	}
 
-        cache.invalidate(k);
-        return null;
-    }
+	@Override
+	public void remove(K k) {
+		cache.invalidate(k);
+	}
 
-    @Override
-    public void clear() {
-        if (size() > 0) {
-            cache.invalidateAll();
-        }
-    }
+	@Override
+	public void clear() {
+		cache.invalidateAll();
+	}
 
-    @Override
-    public long size() {
-        return cache.size();
-    }
+	@Override
+	public long size() {
+		cache.cleanUp();
+		return cache.size();
+	}
 }
