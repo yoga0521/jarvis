@@ -49,7 +49,7 @@ public class CacheAutoConfiguration {
 	 */
 	@Bean("guavaCacheHandler")
 	@ConditionalOnMissingBean(GuavaCacheHandler.class)
-	CacheHandler guavaCacheHandler() {
+	GuavaCacheHandler guavaCacheHandler() {
 		return new GuavaCacheHandler(cacheProperties.getInitialCapacity(), cacheProperties.getMaximumSize(), cacheProperties.getExpireIntervalSeconds());
 	}
 
@@ -60,7 +60,7 @@ public class CacheAutoConfiguration {
 	 */
 	@Bean("caffeineCacheHandler")
 	@ConditionalOnMissingBean(CaffeineCacheHandler.class)
-	CacheHandler caffeineCacheHandler() {
+	CaffeineCacheHandler caffeineCacheHandler() {
 		return new CaffeineCacheHandler(cacheProperties.getInitialCapacity(), cacheProperties.getMaximumSize(), cacheProperties.getExpireIntervalSeconds());
 	}
 
