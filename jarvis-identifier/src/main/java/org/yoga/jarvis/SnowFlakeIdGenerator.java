@@ -31,7 +31,7 @@ public class SnowFlakeIdGenerator {
 
     /**
      * start timestamp (ms)
-     * 20212-07-01 00:00:00
+     * 2022-07-01 00:00:00
      */
     private static final long TW_EPOCH = 1656604800000L;
 

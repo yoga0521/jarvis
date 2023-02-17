@@ -25,11 +25,6 @@ import org.yoga.jarvis.util.Assert;
  */
 public abstract class AbstractCacheHandler<K, V> implements CacheHandler<K, V> {
 
-	/**
-	 * Default cache size
-	 */
-	protected static final int DEFAULT_SIZE = 1000;
-
 	@Override
 	public void put(K k, V v) {
 		Assert.notNull(k, "key must not be null!");
