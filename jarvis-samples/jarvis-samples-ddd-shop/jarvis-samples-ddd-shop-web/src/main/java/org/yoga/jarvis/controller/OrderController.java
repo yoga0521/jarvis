@@ -16,20 +16,26 @@
 
 package org.yoga.jarvis.controller;
 
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.yoga.jarvis.base.Aggregate;
 import org.yoga.jarvis.bean.Result;
 import org.yoga.jarvis.cmd.CreateOrderAbilityCommand;
 import org.yoga.jarvis.entity.order.OrderId;
 import org.yoga.jarvis.service.OrderApplicationService;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @Description: OrderController
  * @Author: yoga
  * @Date: 2022/6/21 17:42
  */
+@Validated
 @RestController
 @RequestMapping("order")
 public class OrderController {
@@ -42,6 +48,12 @@ public class OrderController {
 
     @PostMapping
     public Result<OrderId> create(@RequestBody CreateOrderAbilityCommand command) {
+
+        return Result.success(null);
+    }
+
+    @GetMapping
+    public Result<Aggregate<OrderId>> get(@NotNull(message = "订单id为空") OrderId orderId) {
 
         return Result.success(null);
     }
