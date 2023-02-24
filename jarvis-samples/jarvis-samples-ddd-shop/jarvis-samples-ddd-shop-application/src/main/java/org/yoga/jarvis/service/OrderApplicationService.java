@@ -19,7 +19,9 @@ package org.yoga.jarvis.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.yoga.jarvis.cmd.CreateOrderAbilityCommand;
+import org.yoga.jarvis.entity.order.Order;
 import org.yoga.jarvis.entity.order.OrderId;
+import org.yoga.jarvis.repository.OrderRepository;
 
 /**
  * @Description: OrderService
@@ -30,8 +32,18 @@ import org.yoga.jarvis.entity.order.OrderId;
 @Service
 public class OrderApplicationService {
 
+	private final OrderRepository orderRepository;
+
+	public OrderApplicationService(OrderRepository orderRepository) {
+		this.orderRepository = orderRepository;
+	}
+
 	public OrderId createOrder(CreateOrderAbilityCommand command) {
-		return null;
+		// 校验商品库存
+		// todo
+		Order order = new Order();
+		orderRepository.save(order);
+		return order.getId();
 	}
 
 }
