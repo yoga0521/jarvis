@@ -19,6 +19,7 @@ package org.yoga.jarvis.entity.order;
 import lombok.Data;
 import org.yoga.jarvis.base.Aggregate;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -29,11 +30,55 @@ import java.util.Date;
 @Data
 public class Order implements Aggregate<OrderId> {
 
+    /**
+     * 订单编号
+     */
+    private String serialNo;
 
     /**
-     * order create time
+     * 用户id
+     */
+    private Long userId;
+
+    /**
+     * 订单状态
+     */
+    private String status;
+
+    /**
+     * 订单总价
+     */
+    private BigDecimal totalPrice;
+
+    /**
+     * 订单实付价格
+     */
+    private BigDecimal actualPrice;
+
+    /**
+     * 订单备注
+     */
+    private String remark;
+
+    /**
+     * 订单创建时间
      */
     private Date gmtCreated;
+
+    /**
+     * 订单付款时间
+     */
+    private Date gmtPaid;
+
+    /**
+     * 订单发货时间
+     */
+    private Date gmtDelivery;
+
+    /**
+     * 订单成交时间
+     */
+    private Date gmtCompleted;
 
     @Override
     public OrderId getId() {

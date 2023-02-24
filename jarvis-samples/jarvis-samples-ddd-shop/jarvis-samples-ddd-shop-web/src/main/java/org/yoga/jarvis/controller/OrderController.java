@@ -46,10 +46,15 @@ public class OrderController {
         this.orderApplicationService = orderApplicationService;
     }
 
+    /**
+     * 创建订单
+     *
+     * @param command 创建订单command
+     * @return 订单id
+     */
     @PostMapping
     public Result<OrderId> create(@RequestBody CreateOrderAbilityCommand command) {
-
-        return Result.success(null);
+        return Result.success(orderApplicationService.createOrder(command));
     }
 
     @GetMapping

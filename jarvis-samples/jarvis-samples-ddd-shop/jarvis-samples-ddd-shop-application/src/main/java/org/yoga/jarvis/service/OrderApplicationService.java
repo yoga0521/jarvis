@@ -18,6 +18,8 @@ package org.yoga.jarvis.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.yoga.jarvis.cmd.CreateOrderAbilityCommand;
+import org.yoga.jarvis.entity.order.OrderId;
 
 /**
  * @Description: OrderService
@@ -27,5 +29,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class OrderApplicationService {
+
+	public OrderId createOrder(CreateOrderAbilityCommand command) {
+		return null;
+	}
 
 }
