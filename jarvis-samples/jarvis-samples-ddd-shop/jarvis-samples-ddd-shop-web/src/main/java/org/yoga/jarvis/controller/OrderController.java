@@ -26,6 +26,7 @@ import org.yoga.jarvis.base.Aggregate;
 import org.yoga.jarvis.bean.Result;
 import org.yoga.jarvis.cmd.CreateOrderAbilityCommand;
 import org.yoga.jarvis.entity.order.OrderId;
+import org.yoga.jarvis.query.OrderQuery;
 import org.yoga.jarvis.service.OrderApplicationService;
 
 import javax.validation.constraints.NotNull;
@@ -59,6 +60,13 @@ public class OrderController {
 
     @GetMapping
     public Result<Aggregate<OrderId>> get(@NotNull(message = "订单id为空") OrderId orderId) {
+
+        return Result.success(null);
+    }
+
+
+    @GetMapping
+    public Result<Aggregate<OrderId>> get(@RequestBody OrderQuery orderQuery) {
 
         return Result.success(null);
     }
