@@ -14,27 +14,26 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.entity.order;
+package org.yoga.jarvis.query;
 
 import lombok.Data;
-import org.yoga.jarvis.base.MarkerInterface;
 
 /**
- * @Description: OrderId
+ * @Description: 基础查询对象
  * @Author: yoga
- * @Date: 2022/6/11 22:18
+ * @Date: 2023/2/28 11:13
  */
 @Data
-public class OrderId implements MarkerInterface {
+public class BaseQuery {
 
 	/**
-	 * 加密的值
+	 * 当前页码
 	 */
-	private String encryptedValue;
+	private int currentPage;
 
 	/**
-	 * 值
+	 * 每页参数
 	 */
-	private Long value;
+	private int pageSize;
 
 }

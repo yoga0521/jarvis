@@ -18,6 +18,7 @@ package org.yoga.jarvis.entity.order;
 
 import lombok.Data;
 import org.yoga.jarvis.base.Aggregate;
+import org.yoga.jarvis.bussiness.constant.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -29,6 +30,8 @@ import java.util.Date;
  */
 @Data
 public class Order implements Aggregate<OrderId> {
+
+    private OrderId id;
 
     /**
      * 订单编号
@@ -43,7 +46,7 @@ public class Order implements Aggregate<OrderId> {
     /**
      * 订单状态
      */
-    private String status;
+    private OrderStatus status;
 
     /**
      * 订单总价
@@ -80,8 +83,4 @@ public class Order implements Aggregate<OrderId> {
      */
     private Date gmtCompleted;
 
-    @Override
-    public OrderId getId() {
-        return new OrderId();
-    }
 }

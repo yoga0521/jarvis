@@ -24,5 +24,11 @@ import lombok.Data;
  * @Date: 2023/2/27 16:29
  */
 @Data
-public class OrderQuery {
+public class OrderQuery extends BaseQuery {
+
+	/**
+	 * 商品名称
+	 */
+	private String commodityName;
+
 }
