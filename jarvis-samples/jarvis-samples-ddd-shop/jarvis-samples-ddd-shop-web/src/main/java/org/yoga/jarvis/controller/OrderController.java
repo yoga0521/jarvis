@@ -58,8 +58,8 @@ public class OrderController {
         return Result.success(orderApplicationService.createOrder(command));
     }
 
-    @GetMapping
-    public Result<Aggregate<OrderId>> get(@NotNull(message = "订单id为空") OrderId orderId) {
+    @GetMapping("byId")
+    public Result<Aggregate<OrderId>> getById(@NotNull(message = "订单id为空") OrderId orderId) {
 
         return Result.success(null);
     }

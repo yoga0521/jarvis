@@ -17,6 +17,8 @@
 package org.yoga.jarvis.assembler;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.yoga.jarvis.dto.OrderDTO;
 import org.yoga.jarvis.entity.order.Order;
@@ -29,21 +31,27 @@ import org.yoga.jarvis.entity.order.Order;
 @Mapper
 public interface OrderAssembler {
 
-    OrderAssembler INSTANCE = Mappers.getMapper(OrderAssembler.class);
+	OrderAssembler INSTANCE = Mappers.getMapper(OrderAssembler.class);
 
-    /**
-     * entity to dto
-     *
-     * @param order order entity
-     * @return order dto
-     */
-    OrderDTO toDTO(Order order);
+	/**
+	 * entity to dto
+	 *
+	 * @param order order entity
+	 * @return order dto
+	 */
+	@Mappings({
+			@Mapping(expression = "java(order.getStatus() == null ? null : order.getStatus().name())", target = "status")
+	})
+	OrderDTO toDTO(Order order);
 
-    /**
-     * dto to entity
-     *
-     * @param orderDTO order dto
-     * @return order entity
-     */
-    Order toEntity(OrderDTO orderDTO);
+	/**
+	 * dto to entity
+	 *
+	 * @param orderDTO order dto
+	 * @return order entity
+	 */
+	@Mappings({
+			@Mapping(expression = "java(OrderStatus.getOrderStatusByName(orderDTO.getStatus()))", target = "status")
+	})
+	Order toEntity(OrderDTO orderDTO);
 }

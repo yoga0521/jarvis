@@ -18,18 +18,67 @@ package org.yoga.jarvis.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @Description: TODO
+ * @Description: 订单dto
  * @Author: yoga
  * @Date: 2022/6/19 17:44
  */
 @Data
-public class OrderDTO {
+public class OrderDTO implements Serializable {
 
-    /**
-     * order create time
-     */
-    private Date gmtCreated;
+	private static final long serialVersionUID = -409137581725608407L;
+
+	/**
+	 * 订单编号
+	 */
+	private String serialNo;
+
+	/**
+	 * 用户id
+	 */
+	private Long userId;
+
+	/**
+	 * 订单状态
+	 */
+	private String status;
+
+	/**
+	 * 订单总价
+	 */
+	private BigDecimal totalPrice;
+
+	/**
+	 * 订单实付价格
+	 */
+	private BigDecimal actualPrice;
+
+	/**
+	 * 订单备注
+	 */
+	private String remark;
+
+	/**
+	 * 订单创建时间
+	 */
+	private Date gmtCreated;
+
+	/**
+	 * 订单付款时间
+	 */
+	private Date gmtPaid;
+
+	/**
+	 * 订单发货时间
+	 */
+	private Date gmtDelivery;
+
+	/**
+	 * 订单成交时间
+	 */
+	private Date gmtCompleted;
 }
