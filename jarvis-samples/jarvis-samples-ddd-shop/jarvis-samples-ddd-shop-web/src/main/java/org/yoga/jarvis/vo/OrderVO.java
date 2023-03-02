@@ -14,24 +14,20 @@
  *  limitations under the License.
  */
 
-package org.yoga.jarvis.entity.order;
+package org.yoga.jarvis.vo;
 
 import lombok.Data;
-import org.yoga.jarvis.base.Aggregate;
-import org.yoga.jarvis.bussiness.constant.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @Description: Order Entity
+ * @Description: 订单vo
  * @Author: yoga
- * @Date: 2022/6/11 21:04
+ * @Date: 2023/3/2 15:27
  */
 @Data
-public class Order implements Aggregate<OrderId> {
-
-	private OrderId id;
+public class OrderVO {
 
 	/**
 	 * 订单编号
@@ -46,7 +42,7 @@ public class Order implements Aggregate<OrderId> {
 	/**
 	 * 订单状态
 	 */
-	private OrderStatus status;
+	private String status;
 
 	/**
 	 * 订单总价
@@ -82,5 +78,4 @@ public class Order implements Aggregate<OrderId> {
 	 * 订单成交时间
 	 */
 	private Date gmtCompleted;
-
 }
