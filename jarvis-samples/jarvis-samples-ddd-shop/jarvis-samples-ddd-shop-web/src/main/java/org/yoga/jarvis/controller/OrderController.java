@@ -16,18 +16,19 @@
 
 package org.yoga.jarvis.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.yoga.jarvis.base.Aggregate;
 import org.yoga.jarvis.bean.Result;
 import org.yoga.jarvis.cmd.CreateOrderAbilityCommand;
 import org.yoga.jarvis.entity.order.OrderId;
 import org.yoga.jarvis.query.OrderQuery;
 import org.yoga.jarvis.service.OrderApplicationService;
+import org.yoga.jarvis.vo.OrderVO;
 
 import javax.validation.constraints.NotNull;
 
@@ -59,14 +60,14 @@ public class OrderController {
     }
 
     @GetMapping("byId")
-    public Result<Aggregate<OrderId>> getById(@NotNull(message = "订单id为空") OrderId orderId) {
+    public Result<OrderVO> getById(@NotNull(message = "订单id为空") OrderId orderId) {
 
         return Result.success(null);
     }
 
 
     @GetMapping
-    public Result<Aggregate<OrderId>> get(@RequestBody OrderQuery orderQuery) {
+    public Result<Page<OrderVO>> get(@RequestBody OrderQuery orderQuery) {
 
         return Result.success(null);
     }
