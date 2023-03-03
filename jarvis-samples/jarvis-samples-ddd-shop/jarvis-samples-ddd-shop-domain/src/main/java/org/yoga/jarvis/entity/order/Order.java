@@ -16,7 +16,10 @@
 
 package org.yoga.jarvis.entity.order;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Setter;
 import org.yoga.jarvis.base.Aggregate;
 import org.yoga.jarvis.bussiness.constant.OrderStatus;
 
@@ -29,6 +32,8 @@ import java.util.Date;
  * @Date: 2022/6/11 21:04
  */
 @Data
+@Setter(AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class Order implements Aggregate<OrderId> {
 
 	private OrderId id;
