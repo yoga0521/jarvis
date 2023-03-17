@@ -19,9 +19,14 @@ package org.yoga.jarvis.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
+import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
 /**
@@ -36,6 +41,16 @@ public class NetUtils {
     private static final Pattern IP_PATTERN = Pattern.compile("^([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$");
 
     private static final Pattern MAC_PATTERN = Pattern.compile("^([0-9A-Fa-f]{2})(-[0-9A-Fa-f]{2}){5}$");
+
+    /**
+     * windows
+     */
+    public static final String WINDOWS = "Windows";
+
+    /**
+     * mac
+     */
+    public static final String MAC = "Mac OS";
 
 
     /**
@@ -141,6 +156,61 @@ public class NetUtils {
             }
         } catch (Exception e) {
             logger.warn("getMacAddress: {}", e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * ping
+     *
+     * @param ipAddress ip/domain
+     * @param pingTimes ping times
+     * @param timeout   windowsOS is the timeout for waiting for each reply(ms),
+     *                  linuxOS is the timeout period of the ping process(s)
+     * @return ping result
+     */
+    public static String ping(String ipAddress, int pingTimes, int timeout) {
+        if (StringUtils.isBlank(ipAddress) || pingTimes < 1 || timeout < 1) {
+            return null;
+        }
+        String osName = System.getProperty("os.name");
+        String pingCommand;
+        if (osName.contains(WINDOWS)) {
+            // 防止因timeout设置的太小而失败
+            pingCommand = "ping " + ipAddress + " -n " + pingTimes + " -w " + Math.max(timeout, 500);
+        } else if (osName.contains(MAC)) {
+            pingCommand = "ping " + "-c " + pingTimes + " -t " + timeout + " " + ipAddress;
+        } else {
+            pingCommand = "ping " + "-c " + pingTimes + " -w " + timeout + " " + ipAddress;
+        }
+        Process process = null;
+        InputStream is = null;
+        InputStreamReader isReader = null;
+        BufferedReader br = null;
+        try {
+            process = Runtime.getRuntime().exec(pingCommand);
+            if (process == null) {
+                return null;
+            }
+            is = process.getInputStream();
+            isReader = new InputStreamReader(is, Charset.forName("GBK"));
+            br = new BufferedReader(isReader);
+
+            StringJoiner sj = new StringJoiner("\n");
+            String line;
+            while ((line = br.readLine()) != null) {
+                sj.add(line);
+            }
+            return sj.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.close(br);
+            IOUtils.close(isReader);
+            IOUtils.close(is);
+            if (process != null) {
+                process.destroy();
+            }
         }
         return null;
     }
