@@ -52,6 +52,16 @@ public class NetUtils {
      */
     public static final String MAC = "Mac OS";
 
+    /**
+     * The ttl format for windowsOS ping
+     */
+    public static final String TTL_4_WINDOWS_OS = "TTL=";
+
+    /**
+     * The ttl format for linuxOS ping
+     */
+    public static final String TTL_4_LINUX_OS = "ttl=";
+
 
     /**
      * get ip address
@@ -213,6 +223,21 @@ public class NetUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * is ping ok
+     *
+     * @param ipAddress ip/domain
+     * @return is ping ok
+     */
+    public static boolean isPingOk(String ipAddress) {
+        String pingInfo = ping(ipAddress, 2, 2);
+        if (StringUtils.isBlank(pingInfo)) {
+            return false;
+        }
+        String ttl = System.getProperty("os.name").contains(WINDOWS) ? TTL_4_WINDOWS_OS : TTL_4_LINUX_OS;
+        return pingInfo.substring(pingInfo.indexOf("\n")).contains(ttl);
     }
 
 }
