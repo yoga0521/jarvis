@@ -107,7 +107,7 @@ public class DateUtils {
      * @return {@code LocalDateTime}
      */
     public static LocalDateTime fromMillSeconds(long millSeconds) {
-        Assert.isTrue(millSeconds > 0, "mullSeconds must > 0");
+        Assert.isTrue(millSeconds > 0, "millSeconds must > 0");
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(millSeconds), DEFAULT_ZONE_ID);
     }
 
