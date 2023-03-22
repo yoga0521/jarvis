@@ -115,12 +115,23 @@ public class StringUtils {
         return !isBlank(cs);
     }
 
+
     public static String removeStart(final String str, final String removeStr) {
         if (isEmpty(str) || isEmpty(removeStr)) {
             return str;
         }
         if (str.startsWith(removeStr)) {
             return str.substring(removeStr.length());
+        }
+        return str;
+    }
+
+    public static String removeEnd(final String str, final String removeStr) {
+        if (isEmpty(str) || isEmpty(removeStr)) {
+            return str;
+        }
+        if (str.endsWith(removeStr)) {
+            return str.substring(0, str.length() - removeStr.length());
         }
         return str;
     }
