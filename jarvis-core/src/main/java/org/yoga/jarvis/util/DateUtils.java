@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.constant.DateFormatConstant;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -40,6 +42,16 @@ public class DateUtils {
      * default zone offset
      */
     private static final ZoneOffset DEFAULT_ZONE_OFFSET = DEFAULT_ZONE_ID.getRules().getOffset(Instant.now());
+
+    /**
+     * {@code Date} format as a string with default pattern{@link  DateFormatConstant#FMT_YMD_HMS}
+     *
+     * @param date {@code Date}, not null
+     * @return {@code String}
+     */
+    public static String format(Date date) {
+        return format(date, DateFormatConstant.FMT_YMD_HMS);
+    }
 
     /**
      * {@code Date} format as a string with pattern
