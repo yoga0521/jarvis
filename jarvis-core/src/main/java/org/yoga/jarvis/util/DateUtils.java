@@ -67,6 +67,16 @@ public class DateUtils {
 	}
 
 	/**
+	 * Convert string to {@code LocalDateTime} with default pattern{@link  DateFormatConstant#FMT_YMD_HMS}
+	 *
+	 * @param dateStr string(date), not blank
+	 * @return {@code LocalDateTime}
+	 */
+	public static LocalDateTime parseLdt(String dateStr) {
+		return parseLdt(dateStr, DateFormatConstant.FMT_YMD_HMS);
+	}
+
+	/**
 	 * Convert string to {@code LocalDateTime} with pattern
 	 *
 	 * @param dateStr string(date), not blank
