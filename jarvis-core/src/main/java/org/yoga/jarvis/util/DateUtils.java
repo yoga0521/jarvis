@@ -17,7 +17,10 @@
 package org.yoga.jarvis.util;
 
 import org.yoga.jarvis.constant.DateFormatConstant;
+import org.yoga.jarvis.exception.JarvisException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -87,6 +90,25 @@ public class DateUtils {
 		Assert.notBlank(dateStr, "dateStr must not be blank!");
 		Assert.notBlank(pattern, "pattern must not be blank!");
 		return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern(pattern));
+	}
+
+	/**
+	 * Convert string to {@code Date} with pattern
+	 *
+	 * @param dateStr string(date), not blank
+	 * @param pattern pattern, not blank
+	 * @return {@code Date}
+	 * @throws JarvisException ParseException
+	 */
+	public static Date parse(String dateStr, String pattern) {
+		Assert.notBlank(dateStr, "dateStr must not be blank!");
+		Assert.notBlank(pattern, "pattern must not be blank!");
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		try {
+			return format.parse(dateStr);
+		} catch (ParseException e) {
+			throw new JarvisException(e);
+		}
 	}
 
 	/**
