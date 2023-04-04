@@ -112,6 +112,23 @@ public class DateUtils {
 	}
 
 	/**
+	 * Convert string to {@code Date} with default pattern{@link  DateFormatConstant#FMT_YMD_HMS}
+	 *
+	 * @param dateStr string(date), not blank
+	 * @return {@code Date}
+	 * @throws JarvisException ParseException
+	 */
+	public static Date parse(String dateStr) {
+		Assert.notBlank(dateStr, "dateStr must not be blank!");
+		SimpleDateFormat format = new SimpleDateFormat(DateFormatConstant.FMT_YMD_HMS);
+		try {
+			return format.parse(dateStr);
+		} catch (ParseException e) {
+			throw new JarvisException(e);
+		}
+	}
+
+	/**
 	 * {@code LocalDateTime} format as a string with pattern
 	 *
 	 * @param localDateTime {@code LocalDateTime}, not null
