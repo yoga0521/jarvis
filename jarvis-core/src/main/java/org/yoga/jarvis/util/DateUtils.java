@@ -119,13 +119,7 @@ public class DateUtils {
 	 * @throws JarvisException ParseException
 	 */
 	public static Date parse(String dateStr) {
-		Assert.notBlank(dateStr, "dateStr must not be blank!");
-		SimpleDateFormat format = new SimpleDateFormat(DateFormatConstant.FMT_YMD_HMS);
-		try {
-			return format.parse(dateStr);
-		} catch (ParseException e) {
-			throw new JarvisException(e);
-		}
+		return parse(dateStr, DateFormatConstant.FMT_YMD_HMS);
 	}
 
 	/**
