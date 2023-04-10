@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.util;
 
+import java.math.BigDecimal;
+
 /**
  * @Description: NumberUtils
  * @Author: yoga
@@ -23,57 +25,75 @@ package org.yoga.jarvis.util;
  */
 public class NumberUtils {
 
-    /**
-     * whether it is a integer
-     *
-     * @param s str
-     * @return whether it is a integer
-     */
-    public static boolean isInteger(String s) {
-        if (StringUtils.isBlank(s)) {
-            return false;
-        }
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
+	/**
+	 * whether it is a integer
+	 *
+	 * @param s str
+	 * @return whether it is a integer
+	 */
+	public static boolean isInteger(String s) {
+		if (StringUtils.isBlank(s)) {
+			return false;
+		}
+		try {
+			Integer.parseInt(s);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
 
-    /**
-     * whether it is a long
-     *
-     * @param s str
-     * @return whether it is a long
-     */
-    public static boolean isLong(String s) {
-        if (StringUtils.isBlank(s)) {
-            return false;
-        }
-        try {
-            Long.parseLong(s);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
+	/**
+	 * whether it is a long
+	 *
+	 * @param s str
+	 * @return whether it is a long
+	 */
+	public static boolean isLong(String s) {
+		if (StringUtils.isBlank(s)) {
+			return false;
+		}
+		try {
+			Long.parseLong(s);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
 
-    /**
-     * whether it is a double
-     *
-     * @param s str
-     * @return whether it is a double
-     */
-    public static boolean isDouble(String s) {
-        if (StringUtils.isBlank(s)) {
-            return false;
-        }
-        try {
-            Double.parseDouble(s);
-        } catch (NumberFormatException ignore) {
-            return false;
-        }
-        return s.contains(".");
-    }
+	/**
+	 * whether it is a double
+	 *
+	 * @param s str
+	 * @return whether it is a double
+	 */
+	public static boolean isDouble(String s) {
+		if (StringUtils.isBlank(s)) {
+			return false;
+		}
+		try {
+			Double.parseDouble(s);
+		} catch (NumberFormatException ignore) {
+			return false;
+		}
+		return s.contains(".");
+	}
+
+	/**
+	 * whether it is a bigDecimal
+	 *
+	 * @param s str
+	 * @return whether it is a bigDecimal
+	 */
+	public static boolean isBigDecimal(String s) {
+		if (StringUtils.isBlank(s)) {
+			return false;
+		}
+		try {
+			new BigDecimal(s);
+		} catch (NumberFormatException ignore) {
+			return false;
+		}
+		return true;
+	}
 }
