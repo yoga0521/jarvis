@@ -29,57 +29,58 @@ import java.util.Locale;
  */
 public class FileUtils {
 
-	/**
-	 * NUMBER PATTERN
-	 */
-	private static final String NUMBER_PATTERN = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
+    /**
+     * NUMBER PATTERN
+     */
+    private static final String NUMBER_PATTERN = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
-	/**
-	 * make files sorted according to WindowsOS sorting rules
-	 * tips: null last
-	 *
-	 * @param fileList file list
-	 */
-	public static void sortByWindowsRule(List<File> fileList) {
-		if (CollectionUtils.isEmpty(fileList)) {
-			return;
-		}
-		fileList.sort((f1, f2) -> {
-			if (f2 == null) {
-				return -1;
-			}
-			if (f1 == null) {
-				return 1;
-			}
-			if (f1.isDirectory()) {
-				return -1;
-			}
-			if (f2.isDirectory()) {
-				return 1;
-			}
-			if (StringUtils.isBlank(f2.getName())) {
-				return -1;
-			}
-			if (StringUtils.isBlank(f1.getName())) {
-				return 1;
-			}
-			String[] arr1 = f1.getName().split(NUMBER_PATTERN);
-			String[] arr2 = f2.getName().split(NUMBER_PATTERN);
-			int i = 0;
-			while (i < arr1.length && i < arr2.length) {
-				if (arr1[i].equals(arr2[i])) {
-					i++;
-				} else if (NumberUtils.isBigDecimal(arr1[i]) && NumberUtils.isBigDecimal(arr2[i])) {
-					return new BigDecimal(arr1[i]).compareTo(new BigDecimal(arr2[i]));
-				} else {
-					return Collator.getInstance(Locale.CHINA).compare(arr1[i], arr2[i]);
-				}
-			}
-			return arr1.length - arr2.length;
-		});
-	}
+    /**
+     * make files sorted according to WindowsOS sorting rules
+     * tips: null last
+     *
+     * @param fileList file list
+     */
+    public static void sortByWindowsRule(List<File> fileList) {
+        if (CollectionUtils.isEmpty(fileList)) {
+            return;
+        }
+        fileList.sort((f1, f2) -> {
+            if (f1 == null && f2 == null) {
+                return 0;
+            } else if (f2 == null) {
+                return -1;
+            } else if (f1 == null) {
+                return 1;
+            }
+            if (f1.isDirectory() && !f2.isDirectory()) {
+                return -1;
+            }
+            if (!f1.isDirectory() && f2.isDirectory()) {
+                return 1;
+            }
+            if (StringUtils.isNotBlank(f1.getName()) && StringUtils.isBlank(f2.getName())) {
+                return -1;
+            }
+            if (StringUtils.isBlank(f1.getName()) && StringUtils.isNotBlank(f2.getName())) {
+                return 1;
+            }
+            String[] arr1 = f1.getName().split(NUMBER_PATTERN);
+            String[] arr2 = f2.getName().split(NUMBER_PATTERN);
+            int i = 0;
+            while (i < arr1.length && i < arr2.length) {
+                if (arr1[i].equals(arr2[i])) {
+                    i++;
+                } else if (NumberUtils.isBigDecimal(arr1[i]) && NumberUtils.isBigDecimal(arr2[i])) {
+                    return new BigDecimal(arr1[i]).compareTo(new BigDecimal(arr2[i]));
+                } else {
+                    return Collator.getInstance(Locale.CHINA).compare(arr1[i], arr2[i]);
+                }
+            }
+            return arr1.length - arr2.length;
+        });
+    }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-	}
+    }
 }
