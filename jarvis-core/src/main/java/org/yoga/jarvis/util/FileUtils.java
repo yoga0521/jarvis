@@ -19,6 +19,7 @@ package org.yoga.jarvis.util;
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.Collator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,6 +82,15 @@ public class FileUtils {
     }
 
     public static void main(String[] args) {
-
+        File file = new File("/Users/yoga/Downloads");
+        if (file.exists() && ArrayUtils.isNotEmpty(file.listFiles())) {
+            System.out.println(file.listFiles().length);
+            List<File> files = new LinkedList<>();
+            for (File f : file.listFiles()) {
+                files.add(f);
+            }
+            sortByWindowsRule(files);
+            files.forEach(f -> System.out.println(f.getName()));
+        }
     }
 }
