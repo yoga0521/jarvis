@@ -30,67 +30,90 @@ import java.util.Locale;
  */
 public class FileUtils {
 
-    /**
-     * NUMBER PATTERN
-     */
-    private static final String NUMBER_PATTERN = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
+	/**
+	 * NUMBER PATTERN
+	 */
+	private static final String NUMBER_PATTERN = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
-    /**
-     * make files sorted according to WindowsOS sorting rules
-     * tips: null last
-     *
-     * @param fileList file list
-     */
-    public static void sortByWindowsRule(List<File> fileList) {
-        if (CollectionUtils.isEmpty(fileList)) {
-            return;
-        }
-        fileList.sort((f1, f2) -> {
-            if (f1 == null && f2 == null) {
-                return 0;
-            } else if (f2 == null) {
-                return -1;
-            } else if (f1 == null) {
-                return 1;
-            }
-            if (f1.isDirectory() && !f2.isDirectory()) {
-                return -1;
-            }
-            if (!f1.isDirectory() && f2.isDirectory()) {
-                return 1;
-            }
-            if (StringUtils.isNotBlank(f1.getName()) && StringUtils.isBlank(f2.getName())) {
-                return -1;
-            }
-            if (StringUtils.isBlank(f1.getName()) && StringUtils.isNotBlank(f2.getName())) {
-                return 1;
-            }
-            String[] arr1 = f1.getName().split(NUMBER_PATTERN);
-            String[] arr2 = f2.getName().split(NUMBER_PATTERN);
-            int i = 0;
-            while (i < arr1.length && i < arr2.length) {
-                if (arr1[i].equals(arr2[i])) {
-                    i++;
-                } else if (NumberUtils.isBigDecimal(arr1[i]) && NumberUtils.isBigDecimal(arr2[i])) {
-                    return new BigDecimal(arr1[i]).compareTo(new BigDecimal(arr2[i]));
-                } else {
-                    return Collator.getInstance(Locale.CHINA).compare(arr1[i], arr2[i]);
-                }
-            }
-            return arr1.length - arr2.length;
-        });
-    }
+	/**
+	 * Get the file name suffix
+	 *
+	 * @param fileName file name
+	 * @return suffix
+	 */
+	public static String getFileSuffix(String fileName) {
+		if (StringUtils.isBlank(fileName)) {
+			return null;
+		}
+		if (!fileName.contains(".")) {
+			return null;
+		}
+		if (fileName.endsWith(".")) {
+			return null;
+		}
+		String[] arr = fileName.split("\\.");
+		if (ArrayUtils.isEmpty(arr)) {
+			return null;
+		}
+		return arr[arr.length - 1];
+	}
 
-    public static void main(String[] args) {
-        File file = new File("/Users/yoga/Downloads");
-        if (file.exists() && ArrayUtils.isNotEmpty(file.listFiles())) {
-            System.out.println(file.listFiles().length);
-            List<File> files = new LinkedList<>();
-            for (File f : file.listFiles()) {
-                files.add(f);
-            }
-            sortByWindowsRule(files);
-            files.forEach(f -> System.out.println(f.getName()));
-        }
-    }
+	/**
+	 * make files sorted according to WindowsOS sorting rules
+	 * tips: null last
+	 *
+	 * @param fileList file list
+	 */
+	public static void sortByWindowsRule(List<File> fileList) {
+		if (CollectionUtils.isEmpty(fileList)) {
+			return;
+		}
+		fileList.sort((f1, f2) -> {
+			if (f1 == null && f2 == null) {
+				return 0;
+			} else if (f2 == null) {
+				return -1;
+			} else if (f1 == null) {
+				return 1;
+			}
+			if (f1.isDirectory() && !f2.isDirectory()) {
+				return -1;
+			}
+			if (!f1.isDirectory() && f2.isDirectory()) {
+				return 1;
+			}
+			if (StringUtils.isNotBlank(f1.getName()) && StringUtils.isBlank(f2.getName())) {
+				return -1;
+			}
+			if (StringUtils.isBlank(f1.getName()) && StringUtils.isNotBlank(f2.getName())) {
+				return 1;
+			}
+			String[] arr1 = f1.getName().split(NUMBER_PATTERN);
+			String[] arr2 = f2.getName().split(NUMBER_PATTERN);
+			int i = 0;
+			while (i < arr1.length && i < arr2.length) {
+				if (arr1[i].equals(arr2[i])) {
+					i++;
+				} else if (NumberUtils.isBigDecimal(arr1[i]) && NumberUtils.isBigDecimal(arr2[i])) {
+					return new BigDecimal(arr1[i]).compareTo(new BigDecimal(arr2[i]));
+				} else {
+					return Collator.getInstance(Locale.CHINA).compare(arr1[i], arr2[i]);
+				}
+			}
+			return arr1.length - arr2.length;
+		});
+	}
+
+	public static void main(String[] args) {
+		File file = new File("/Users/yoga/Downloads");
+		if (file.exists() && ArrayUtils.isNotEmpty(file.listFiles())) {
+			System.out.println(file.listFiles().length);
+			List<File> files = new LinkedList<>();
+			for (File f : file.listFiles()) {
+				files.add(f);
+			}
+			sortByWindowsRule(files);
+			files.forEach(f -> System.out.println(f.getName()));
+		}
+	}
 }
