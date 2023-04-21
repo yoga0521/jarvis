@@ -73,8 +73,7 @@ public class CollectionUtils {
      * @param downstream original stream
      * @return the new stream
      */
-    public static <T, A, R> Collector<T, A, R> filtering(
-            Predicate<? super T> filter, Collector<T, A, R> downstream) {
+    public static <T, A, R> Collector<T, A, R> filtering(Predicate<? super T> filter, Collector<T, A, R> downstream) {
         BiConsumer<A, T> accumulator = downstream.accumulator();
         Set<Collector.Characteristics> characteristics = downstream.characteristics();
         return Collector.of(downstream.supplier(), (acc, t) -> {
