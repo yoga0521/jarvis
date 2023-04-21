@@ -17,6 +17,10 @@
 package org.yoga.jarvis.util;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
 
 /**
  * @Description: Collection Utils
@@ -56,5 +60,28 @@ public class CollectionUtils {
      */
     public static <T> boolean isNotEmpty(final Collection<T> collection) {
         return !isEmpty(collection);
+    }
+
+    /**
+     * Returns a stream consisting of the elements of this stream that match
+     * the given predicate.
+     *
+     * @param filter     a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                   <a href="package-summary.html#Statelessness">stateless</a>
+     *                   predicate to apply to each element to determine if it
+     *                   should be included
+     * @param downstream original stream
+     * @return the new stream
+     */
+    public static <T, A, R> Collector<T, A, R> filtering(
+            Predicate<? super T> filter, Collector<T, A, R> downstream) {
+        BiConsumer<A, T> accumulator = downstream.accumulator();
+        Set<Collector.Characteristics> characteristics = downstream.characteristics();
+        return Collector.of(downstream.supplier(), (acc, t) -> {
+                    if (filter.test(t)) {
+                        accumulator.accept(acc, t);
+                    }
+                }, downstream.combiner(), downstream.finisher(),
+                characteristics.toArray(new Collector.Characteristics[0]));
     }
 }
