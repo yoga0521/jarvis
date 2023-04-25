@@ -26,6 +26,22 @@ import java.util.regex.Pattern;
 public class PatternUtils {
 
 	/**
+	 * Number
+	 */
+	public static final Pattern NUMBER = Pattern.compile("\\d+");
+
+	/**
+	 * Letter
+	 */
+	public static final Pattern LETTER = Pattern.compile("[a-zA-Z]+");
+
+	/**
+	 * Chinese
+	 */
+	public static final Pattern CHINESE = Pattern.compile("[⺀-\u2eff⼀-\u2fdf㇀-\u31ef㐀-䶿一-\u9fff豈-\ufaff\ud840\udc00-\ud869\udedf\ud869\udf00-\ud86d\udf3f\ud86d\udf40-\ud86e\udc1f\ud86e\udc20-\ud873\udeaf\ud87e\udc00-\ud87e\ude1f]");
+
+
+	/**
 	 * Mobile
 	 */
 	public static final Pattern MOBILE = Pattern.compile("(?:0|86|\\+86)?1[3-9]\\d{9}");
