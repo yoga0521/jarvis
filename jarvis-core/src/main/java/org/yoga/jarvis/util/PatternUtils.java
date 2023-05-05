@@ -76,4 +76,10 @@ public class PatternUtils {
 	 */
 	public static final Pattern MAC_ADDRESS = Pattern.compile("((?:[a-fA-F0-9]{1,2}[:-]){5}[a-fA-F0-9]{1,2})|0x(\\d{12}).+ETHER", 2);
 
+	/**
+	 * strong password
+	 * At least 6 characters, including at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
+	 */
+	public static final Pattern STRONG_PASSWORD = Pattern.compile("\\S*(?=\\S{8,})(?=\\S*\\d)(?=\\S*[A-Z])(?=\\S*[a-z])(?=\\S*[!@#$%^&*? ])\\S*", 2);
+
 }
