@@ -40,6 +40,10 @@ public class PatternUtils {
 	 */
 	public static final Pattern CHINESE = Pattern.compile("[⺀-\u2eff⼀-\u2fdf㇀-\u31ef㐀-䶿一-\u9fff豈-\ufaff\ud840\udc00-\ud869\udedf\ud869\udf00-\ud86d\udf3f\ud86d\udf40-\ud86e\udc1f\ud86e\udc20-\ud873\udeaf\ud87e\udc00-\ud87e\ude1f]");
 
+	/**
+	 * ID Card
+	 */
+	public static final Pattern ID_CARD = Pattern.compile("\\d{6}((((((19|20)\\d{2})(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|(((19|20)\\d{2})(0[13578]|1[02])31)|((19|20)\\d{2})02(0[1-9]|1\\d|2[0-8])|((((19|20)([13579][26]|[2468][048]|0[48]))|(2000))0229))\\d{3})|((((\\d{2})(0[13-9]|1[012])(0[1-9]|[12]\\d|30))|((\\d{2})(0[13578]|1[02])31)|((\\d{2})02(0[1-9]|1\\d|2[0-8]))|(([13579][26]|[2468][048]|0[048])0229))\\d{2}))(\\d|X|x)");
 
 	/**
 	 * Mobile
@@ -80,6 +84,6 @@ public class PatternUtils {
 	 * strong password
 	 * At least 6 characters, including at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character
 	 */
-	public static final Pattern STRONG_PASSWORD = Pattern.compile("\\S*(?=\\S{8,})(?=\\S*\\d)(?=\\S*[A-Z])(?=\\S*[a-z])(?=\\S*[!@#$%^&*? ])\\S*", 2);
+	public static final Pattern STRONG_PASSWORD = Pattern.compile("\\S*(?=\\S{8,})(?=\\S*\\d)(?=\\S*[A-Z])(?=\\S*[a-z])(?=\\S*[!@#$%^&*? ])\\S*");
 
 }
