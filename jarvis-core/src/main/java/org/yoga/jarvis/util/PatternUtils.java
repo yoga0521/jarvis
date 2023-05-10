@@ -51,6 +51,11 @@ public class PatternUtils {
 	public static final Pattern ID_CARD_HK = Pattern.compile("[a-zA-Z]\\d{6}\\([\\dA]\\)");
 
 	/**
+	 * Macau ID Card
+	 */
+	public static final Pattern ID_CARD_MO = Pattern.compile("[1|5|7]\\d{6}\\(\\d\\)");
+
+	/**
 	 * Mobile
 	 */
 	public static final Pattern MOBILE = Pattern.compile("(?:0|86|\\+86)?1[3-9]\\d{9}");
