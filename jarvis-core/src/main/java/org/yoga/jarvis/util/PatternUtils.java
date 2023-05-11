@@ -56,6 +56,11 @@ public class PatternUtils {
 	public static final Pattern ID_CARD_MO = Pattern.compile("[1|5|7]\\d{6}\\(\\d\\)");
 
 	/**
+	 * Taiwan ID Card
+	 */
+	public static final Pattern ID_CARD_TW = Pattern.compile("[a-zA-Z][0-9]{9}");
+
+	/**
 	 * Mobile
 	 */
 	public static final Pattern MOBILE = Pattern.compile("(?:0|86|\\+86)?1[3-9]\\d{9}");
