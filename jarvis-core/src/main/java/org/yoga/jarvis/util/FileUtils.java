@@ -16,7 +16,11 @@
 
 package org.yoga.jarvis.util;
 
+import net.lingala.zip4j.ZipFile;
+import org.yoga.jarvis.exception.JarvisException;
+
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Collator;
 import java.util.LinkedList;
@@ -29,6 +33,11 @@ import java.util.Locale;
  * @Date: 2023/4/10 10:06
  */
 public class FileUtils {
+
+    /**
+     * UNZIP PATH
+     */
+    private static final String UNZIP_PATH = System.getProperty("user.dir") + "/file_unzip_tmp";
 
     /**
      * NUMBER PATTERN
@@ -109,6 +118,23 @@ public class FileUtils {
             }
             return arr1.length - arr2.length;
         });
+    }
+
+    /**
+     * unzip file
+     *
+     * @param file     file
+     * @param password unzip password
+     */
+    private static void unzip(File file, char[] password) {
+        try (ZipFile zipFile = new ZipFile(file)) {
+            if (zipFile.isEncrypted()) {
+                zipFile.setPassword(password);
+            }
+            zipFile.extractAll(UNZIP_PATH);
+        } catch (IOException e) {
+            throw new JarvisException("unzip fail", e);
+        }
     }
 
     public static void main(String[] args) {
