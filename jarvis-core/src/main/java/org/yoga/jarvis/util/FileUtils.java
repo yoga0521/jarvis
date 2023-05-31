@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Collator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -123,30 +122,33 @@ public class FileUtils {
     /**
      * unzip file
      *
-     * @param file     file
-     * @param password unzip password
+     * @param file      file
+     * @param password  unzip password
+     * @param unzipPath unzip path
      */
-    private static void unzip(File file, char[] password) {
+    public static void unzip(File file, String password, String unzipPath) {
         try (ZipFile zipFile = new ZipFile(file)) {
             if (zipFile.isEncrypted()) {
-                zipFile.setPassword(password);
+                zipFile.setPassword(password.toCharArray());
             }
-            zipFile.extractAll(UNZIP_PATH);
+            zipFile.extractAll(StringUtils.isBlank(unzipPath) ? UNZIP_PATH : unzipPath);
         } catch (IOException e) {
             throw new JarvisException("unzip fail", e);
         }
     }
 
     public static void main(String[] args) {
-        File file = new File("/Users/yoga/Downloads");
-        if (file.exists() && ArrayUtils.isNotEmpty(file.listFiles())) {
-            System.out.println(file.listFiles().length);
-            List<File> files = new LinkedList<>();
-            for (File f : file.listFiles()) {
-                files.add(f);
-            }
-            sortByWindowsRule(files);
-            files.forEach(f -> System.out.println(f.getName()));
-        }
+//        File file = new File("/Users/yoga/Downloads");
+//        if (file.exists() && ArrayUtils.isNotEmpty(file.listFiles())) {
+//            System.out.println(file.listFiles().length);
+//            List<File> files = new LinkedList<>();
+//            for (File f : file.listFiles()) {
+//                files.add(f);
+//            }
+//            sortByWindowsRule(files);
+//            files.forEach(f -> System.out.println(f.getName()));
+//        }
+        File file = new File("/Users/yoga/Downloads/mysql-connector-java-5.1.46.zip");
+        unzip(file, null, "/Users/yoga/Downloads/tmp");
     }
 }
