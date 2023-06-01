@@ -122,18 +122,43 @@ public class FileUtils {
     /**
      * unzip file
      *
+     * @param file file
+     */
+    public static void unzip(File file) {
+        unzip(file, null, null);
+    }
+
+    /**
+     * unzip file
+     *
+     * @param file     file
+     * @param password unzip password
+     */
+    public static void unzip(File file, String password) {
+        unzip(file, password, null);
+    }
+
+    /**
+     * unzip file
+     *
      * @param file      file
      * @param password  unzip password
      * @param unzipPath unzip path
      */
     public static void unzip(File file, String password, String unzipPath) {
+        if (file == null) {
+            throw new JarvisException("file is null!");
+        }
         try (ZipFile zipFile = new ZipFile(file)) {
             if (zipFile.isEncrypted()) {
+                if (StringUtils.isBlank(password)) {
+                    throw new JarvisException("password is blank!");
+                }
                 zipFile.setPassword(password.toCharArray());
             }
             zipFile.extractAll(StringUtils.isBlank(unzipPath) ? UNZIP_PATH : unzipPath);
         } catch (IOException e) {
-            throw new JarvisException("unzip fail", e);
+            throw new JarvisException("unzip fail!", e);
         }
     }
 
