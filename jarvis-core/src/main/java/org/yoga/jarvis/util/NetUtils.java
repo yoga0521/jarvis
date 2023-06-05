@@ -43,16 +43,6 @@ public class NetUtils {
 	private static final Pattern MAC_PATTERN = Pattern.compile("^([0-9A-Fa-f]{2})(-[0-9A-Fa-f]{2}){5}$");
 
 	/**
-	 * windows
-	 */
-	public static final String WINDOWS = "Windows";
-
-	/**
-	 * mac
-	 */
-	public static final String MAC = "Mac OS";
-
-	/**
 	 * The ttl format for windowsOS ping
 	 */
 	public static final String TTL_4_WINDOWS_OS = "TTL=";
@@ -185,10 +175,10 @@ public class NetUtils {
 		}
 		String osName = System.getProperty("os.name");
 		String pingCommand;
-		if (osName.contains(WINDOWS)) {
+		if (OSUtils.isWindows()) {
 			// 防止因timeout设置的太小而失败
 			pingCommand = "ping " + ipAddress + " -n " + pingTimes + " -w " + Math.max(timeout, 500);
-		} else if (osName.contains(MAC)) {
+		} else if (OSUtils.isMAC()) {
 			pingCommand = "ping " + "-c " + pingTimes + " -t " + timeout + " " + ipAddress;
 		} else {
 			pingCommand = "ping " + "-c " + pingTimes + " -w " + timeout + " " + ipAddress;
@@ -250,7 +240,7 @@ public class NetUtils {
 		if (StringUtils.isBlank(pingInfo)) {
 			return false;
 		}
-		String ttl = System.getProperty("os.name").contains(WINDOWS) ? TTL_4_WINDOWS_OS : TTL_4_LINUX_OS;
+		String ttl = OSUtils.isWindows() ? TTL_4_WINDOWS_OS : TTL_4_LINUX_OS;
 		return pingInfo.substring(pingInfo.indexOf("\n")).contains(ttl);
 	}
 
