@@ -44,6 +44,16 @@ public class FileUtils {
     private static final String NUMBER_PATTERN = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
     /**
+     * unrar shell
+     * x:unrar to full path
+     * -r:recursive unrar
+     * -ad:append file name to target path
+     * -y:set all answers toyes
+     */
+    private static final String UNRAR_SHELL = "unrar x -ad -r -y %s %s";
+
+
+    /**
      * Get the file name suffix
      *
      * @param fileName file name
