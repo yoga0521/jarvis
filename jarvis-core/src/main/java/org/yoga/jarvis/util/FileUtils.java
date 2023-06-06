@@ -45,6 +45,7 @@ public class FileUtils {
 
     /**
      * unrar shell
+     * the decompress path must end with slash
      * x:unrar to full path
      * -r:recursive unrar
      * -ad:append file name to target path
@@ -55,15 +56,14 @@ public class FileUtils {
     /**
      * unzip shell
      * -n:do not overwrite existing files
-     * -r:recursive unzip
      * -q:quiet mode, do not display the execution process of the command
      * -d:specify unzip path, will be created automatically if the path does not exist
      */
-    private static final String UNZIP_SHELL = "unzip x -n -r -q %s -d %s";
+    private static final String UNZIP_SHELL = "unzip -n -q %s -d %s";
 
     /**
      * unzip shell
-     * x:unrar to full path
+     * x:unzip to full path
      * -r:recursive unzip 7z
      * -o:specify unzip 7z path, -o directly to the path (no spaces)
      */
