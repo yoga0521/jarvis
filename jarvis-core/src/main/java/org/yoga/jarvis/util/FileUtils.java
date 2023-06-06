@@ -61,7 +61,13 @@ public class FileUtils {
      */
     private static final String UNZIP_SHELL = "unzip x -n -r -q %s -d %s";
 
-
+    /**
+     * unzip shell
+     * x:unrar to full path
+     * -r:recursive unzip 7z
+     * -o:specify unzip 7z path, -o directly to the path (no spaces)
+     */
+    private static final String UN7ZIP_SHELL = "7z x -r %s -o%s";
 
     /**
      * Get the file name suffix
