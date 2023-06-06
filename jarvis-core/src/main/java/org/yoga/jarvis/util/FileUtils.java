@@ -52,6 +52,16 @@ public class FileUtils {
      */
     private static final String UNRAR_SHELL = "unrar x -ad -r -y %s %s";
 
+    /**
+     * unzip shell
+     * -n:do not overwrite existing files
+     * -r:recursive unzip
+     * -q:quiet mode, do not display the execution process of the command
+     * -d:specify unzip path, will be created automatically if the path does not exist
+     */
+    private static final String UNZIP_SHELL = "unzip x -n -r -q %s -d %s";
+
+
 
     /**
      * Get the file name suffix
