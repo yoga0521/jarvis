@@ -16,6 +16,15 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.exception.JarvisException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.stream.Collectors;
+
 /**
  * @Description: OS Utils
  * @Author: yoga
@@ -51,4 +60,47 @@ public class OSUtils {
         return System.getProperty("os.name").contains(MAC);
     }
 
+    /**
+     * check command is installed
+     *
+     * @param command command
+     * @return command is installed
+     */
+    public static boolean checkCommand(String command) {
+        if (StringUtils.isBlank(command)) {
+            throw new JarvisException("command is blank!");
+        }
+        command = command.split(" ")[0];
+        String noCommandKeyInfo = isMAC() ? "not found" : String.format("no %s in", command);
+        Process process = null;
+        InputStream is = null;
+        InputStreamReader isReader = null;
+        BufferedReader br = null;
+        try {
+            process = Runtime.getRuntime().exec("which " + command);
+            if (process == null) {
+                throw new JarvisException("check command fail!");
+            }
+            is = process.getInputStream();
+            isReader = new InputStreamReader(is, Charset.forName("GBK"));
+            br = new BufferedReader(isReader);
+            String commandResult = br.lines().collect(Collectors.joining());
+            return StringUtils.isNotBlank(commandResult) && !commandResult.contains(noCommandKeyInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new JarvisException("check command fail!" + e.getMessage());
+        } finally {
+            IOUtils.close(br);
+            IOUtils.close(isReader);
+            IOUtils.close(is);
+            if (process != null) {
+                process.destroy();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(checkCommand("java"));
+        System.out.println(checkCommand("abc"));
+    }
 }
