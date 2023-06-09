@@ -61,7 +61,22 @@ public enum MediaType {
     /**
      * html
      */
-    HTML("html", "text/html");
+    HTML("html", "text/html"),
+
+    /**
+     * zip
+     */
+    APPLICATION_ZIP("zip", "application/zip"),
+
+    /**
+     * rar
+     */
+    APPLICATION_RAR("rar", "application/x-rar-compressed"),
+
+    /**
+     * 7z
+     */
+    APPLICATION_7Z("7z", "application/x-7z-compressed");
 
     /**
      * media name suffix
