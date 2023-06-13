@@ -63,6 +63,8 @@
         <!-- zip -->
         <zip4j.version>2.11.5</zip4j.version>
 
+        <tika.version>2.8.0</tika.version>
+
         <!-- Maven plugins -->
         <maven_flatten.version>1.2.7</maven_flatten.version>
 
@@ -141,6 +143,12 @@
                 <groupId>net.lingala.zip4j</groupId>
                 <artifactId>zip4j</artifactId>
                 <version>${zip4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

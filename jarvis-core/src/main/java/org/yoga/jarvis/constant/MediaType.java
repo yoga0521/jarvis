@@ -16,6 +16,9 @@
 
 package org.yoga.jarvis.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Description: media type
  * @Author: yoga
@@ -88,9 +91,17 @@ public enum MediaType {
      */
     private final String value;
 
+    private final static Map<String, MediaType> VALUE_MAP = new HashMap<>(MediaType.values().length);
+
     MediaType(String suffix, String value) {
         this.suffix = suffix;
         this.value = value;
+    }
+
+    static {
+        for (MediaType type : MediaType.values()) {
+            VALUE_MAP.put(type.getValue(), type);
+        }
     }
 
     public String getSuffix() {
@@ -101,4 +112,13 @@ public enum MediaType {
         return value;
     }
 
+    /**
+     * get mediaType by value
+     *
+     * @param value media type value
+     * @return mediaType
+     */
+    public static MediaType getByValue(String value) {
+        return VALUE_MAP.get(value);
+    }
 }
