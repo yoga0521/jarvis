@@ -17,14 +17,17 @@
 package org.yoga.jarvis.util;
 
 import net.lingala.zip4j.ZipFile;
+import org.apache.tika.Tika;
+import org.yoga.jarvis.constant.MediaType;
 import org.yoga.jarvis.exception.JarvisException;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * @Description: FileUtils
@@ -44,16 +47,6 @@ public class FileUtils {
     private static final String NUMBER_PATTERN = "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)";
 
     /**
-     * unrar shell
-     * the decompress path must end with slash
-     * x:unrar to full path
-     * -r:recursive unrar
-     * -ad:append file name to target path
-     * -y:set all answers toyes
-     */
-    private static final String UNRAR_SHELL = "unrar x -ad -r -y %s %s";
-
-    /**
      * unzip shell
      * -n:do not overwrite existing files
      * -q:quiet mode, do not display the execution process of the command
@@ -62,12 +55,33 @@ public class FileUtils {
     private static final String UNZIP_SHELL = "unzip -n -q %s -d %s";
 
     /**
+     * unrar shell
+     * the decompress path must end with slash
+     * x:unrar to full path
+     * -r:recursive unrar
+     * -ad:append file name to target path
+     * -y:set all answers to yes
+     */
+    private static final String UNRAR_SHELL = "unrar x -ad -r -y %s %s";
+
+    /**
      * unzip shell
      * x:unzip to full path
      * -r:recursive unzip 7z
+     * -y:set all answers to yes
      * -o:specify unzip 7z path, -o directly to the path (no spaces)
      */
-    private static final String UN7ZIP_SHELL = "7z x -r %s -o%s";
+    private static final String UN7ZIP_SHELL = "7z x -y %s -o%s";
+
+    /**
+     * key info for unrar decompress successful
+     */
+    private static final String UNRAR_SUCCESS_KEY_MSG = "All OK";
+
+    /**
+     * key info for 7z decompress successful
+     */
+    private static final String UN7ZIP_SUCCESS_KEY_MSG = "Everything is Ok";
 
     /**
      * Get the file name suffix
@@ -185,6 +199,66 @@ public class FileUtils {
             zipFile.extractAll(StringUtils.isBlank(unzipPath) ? UNZIP_PATH : unzipPath);
         } catch (IOException e) {
             throw new JarvisException("unzip fail!", e);
+        }
+    }
+
+    public static void decompress(File srcFile, String destTmpPath) {
+        Assert.notNull(srcFile, "srcFile is null");
+        Assert.notBlank(destTmpPath, "decompress temp dir path is empty");
+        Process process = null;
+        InputStream is = null;
+        InputStreamReader isReader = null;
+        BufferedReader br = null;
+        long startTime = System.currentTimeMillis();
+        try {
+            String val = new Tika().detect(srcFile);
+            MediaType mediaType = MediaType.getByValue(val);
+            Assert.notNull(mediaType, "this type (" + val + ") of file is not support decompress");
+
+            String command;
+            String decompressCommand;
+            String decompressSuccessKeyMsg;
+            // rar
+            if (MediaType.APPLICATION_RAR.equals(mediaType)) {
+                command = "unrar";
+                decompressCommand = String.format(UNRAR_SHELL, srcFile.getPath(),
+                        destTmpPath.endsWith(File.separator) ? destTmpPath : (destTmpPath + File.separator));
+                decompressSuccessKeyMsg = UNRAR_SUCCESS_KEY_MSG;
+            }
+            // 7z
+            else if (MediaType.APPLICATION_7Z.equals(mediaType)) {
+                command = "7z";
+                decompressCommand = String.format(UN7ZIP_SHELL, srcFile.getPath(), destTmpPath);
+                decompressSuccessKeyMsg = UN7ZIP_SUCCESS_KEY_MSG;
+            }
+            // zip
+            else {
+                command = "unzip";
+                decompressCommand = String.format(UNZIP_SHELL, srcFile.getPath(), destTmpPath);
+                decompressSuccessKeyMsg = "";
+            }
+            Assert.isTrue(OSUtils.checkCommand(command), "the system is not support " + command + " command");
+            // 解压
+            process = Runtime.getRuntime().exec(decompressCommand);
+            Assert.notNull(process, "decompress command execution failed");
+            is = process.getInputStream();
+            isReader = new InputStreamReader(is, Charset.forName("GBK"));
+            br = new BufferedReader(isReader);
+            String commandResult = br.lines().collect(Collectors.joining("\n"));
+            boolean noErrorMsg = StringUtils.isBlank(commandResult) && StringUtils.isBlank(decompressSuccessKeyMsg);
+            boolean hasSuccessMsg = StringUtils.isNotBlank(commandResult) && commandResult.replace("\n", "").contains(decompressSuccessKeyMsg);
+            if (!noErrorMsg && !hasSuccessMsg) {
+                throw new JarvisException(commandResult);
+            }
+        } catch (IOException e) {
+            throw new JarvisException(e.getMessage(), e);
+        } finally {
+            IOUtils.close(br);
+            IOUtils.close(isReader);
+            IOUtils.close(is);
+            if (process != null) {
+                process.destroy();
+            }
         }
     }
 
