@@ -21,7 +21,11 @@ import org.apache.tika.Tika;
 import org.yoga.jarvis.constant.MediaType;
 import org.yoga.jarvis.exception.JarvisException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.text.Collator;
@@ -202,6 +206,12 @@ public class FileUtils {
         }
     }
 
+    /**
+     * decompress
+     *
+     * @param srcFile     source file
+     * @param destTmpPath temp directory for decompressed files
+     */
     public static void decompress(File srcFile, String destTmpPath) {
         Assert.notNull(srcFile, "srcFile is null");
         Assert.notBlank(destTmpPath, "decompress temp dir path is empty");
