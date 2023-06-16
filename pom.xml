@@ -87,6 +87,7 @@
         <module>jarvis-samples</module>
         <module>jarvis-distribution</module>
         <module>jarvis-cache</module>
+        <module>jarvis-file</module>
         <module>jarvis-filter</module>
         <module>jarvis-gateway</module>
         <module>jarvis-test</module>
