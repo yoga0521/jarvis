@@ -23,7 +23,7 @@ import java.io.File;
  * @Author: yoga
  * @Date: 2023/6/21 13:10
  */
-public interface DecompressApi {
+public interface Decompress {
 
     /**
      * decompress
