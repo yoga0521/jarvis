@@ -7,40 +7,37 @@ import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.OSUtils;
 import org.yoga.jarvis.util.StringUtils;
 
-import java.io.File;
-
 /**
- * @Description: rar cmd decompress
+ * @Description: 7zip cmd decompress
  * @Author: yoga
- * @Date: 2023/6/26 10:03
+ * @Date: 2023/6/27 13:37
  */
 @Slf4j
-public class RarCmdDecompressImpl extends AbstractCmdDecompress {
+public class Zip7zCmdDecompressImpl extends AbstractCmdDecompress {
 
     /**
-     * unrar shell
-     * the decompress path must end with slash
-     * x:unrar to full path
-     * -r:recursive unrar
-     * -ad:append file name to target path
+     * 7z shell
+     * x:7z unzip to full path
+     * -r:recursive 7z unzip
      * -y:set all answers to yes
+     * -o:specify 7z unzip path, -o directly to the path (no spaces)
      */
-    private static final String UNRAR_SHELL = "unrar x -ad -y %s %s";
+    private static final String UN7ZIP_SHELL = "7z x -y %s -o%s";
 
     @NonNull
     @Override
     protected String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
-        return String.format(UNRAR_SHELL, srcFilePath,
-                destDirPath.endsWith(File.separator) ? destDirPath : (destDirPath + File.separator));
+        // macOS安装了7z命令
+        return String.format(UN7ZIP_SHELL, srcFilePath, destDirPath);
     }
 
     @Override
     protected void checkDecompressCmd() {
-        Assert.isTrue(OSUtils.checkCommand("unrar"), "The OS don't support unrar decompress command!");
+        Assert.isTrue(OSUtils.checkCommand("7z"), "The OS don't support 7z decompress command!");
     }
 
     /**
-     * unrar is success
+     * 7z is success
      *
      * @param decompressInfo decompress info
      * @return is success
@@ -48,6 +45,7 @@ public class RarCmdDecompressImpl extends AbstractCmdDecompress {
     @Override
     protected boolean isCmdDecompressSuccess(String decompressInfo) {
         return StringUtils.isNotBlank(decompressInfo)
-                && decompressInfo.replace("\n", "").contains("All OK");
+                && decompressInfo.replace("\n", "").contains("Everything is Ok");
     }
+
 }
