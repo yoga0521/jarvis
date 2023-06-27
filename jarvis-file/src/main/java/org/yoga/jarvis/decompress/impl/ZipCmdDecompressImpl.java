@@ -31,6 +31,6 @@ public class ZipCmdDecompressImpl extends AbstractCmdDecompress {
 
     @Override
     protected void checkDecompressCmd() {
-        Assert.isTrue(OSUtils.checkCommand("unzip"), "The OS don‘t support unzip decompress command!");
+        Assert.isTrue(OSUtils.checkCommand("unzip"), "The OS don't support unzip decompress command!");
     }
 }

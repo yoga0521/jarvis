@@ -36,7 +36,7 @@ public class RarCmdDecompressImpl extends AbstractCmdDecompress {
 
     @Override
     protected void checkDecompressCmd() {
-        Assert.isTrue(OSUtils.checkCommand("unrar"), "The OS don‘t support unrar decompress command!");
+        Assert.isTrue(OSUtils.checkCommand("unrar"), "The OS don't support unrar decompress command!");
     }
 
     /**
