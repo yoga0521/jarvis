@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.compress;
 
+import org.springframework.lang.NonNull;
+
 import java.io.File;
 
 /**
@@ -31,5 +33,5 @@ public interface Compress {
      * @param srcFile need compress source file
      * @param destDir compressed file dir
      */
-    void compress(File srcFile, File destDir);
+    void compress(@NonNull File srcFile, @NonNull File destDir);
 }
