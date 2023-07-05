@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.decompress;
 
+import org.springframework.lang.NonNull;
+
 import java.io.File;
 
 /**
@@ -31,5 +33,5 @@ public interface Decompress {
      * @param srcFile compress source file
      * @param destDir decompressed file dir
      */
-    void decompress(File srcFile, File destDir);
+    void decompress(@NonNull File srcFile, @NonNull File destDir);
 }

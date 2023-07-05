@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.preview;
 
+import org.springframework.lang.NonNull;
+
 import java.io.File;
 
 /**
@@ -31,5 +33,5 @@ public interface PreviewApi {
      * @param srcFile need preview source file
      * @param destDir previewed file dir
      */
-    void preview(File srcFile, File destDir);
+    void preview(@NonNull File srcFile, @NonNull File destDir);
 }
