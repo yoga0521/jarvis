@@ -17,6 +17,7 @@
 package org.yoga.jarvis.preview;
 
 import org.springframework.lang.NonNull;
+import org.yoga.jarvis.FileHandler;
 
 import java.io.File;
 
@@ -25,7 +26,7 @@ import java.io.File;
  * @Author: yoga
  * @Date: 2023/6/21 13:12
  */
-public interface PreviewApi {
+public interface Preview extends FileHandler {
 
     /**
      * preview
