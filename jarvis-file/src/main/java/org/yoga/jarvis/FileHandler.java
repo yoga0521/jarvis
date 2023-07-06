@@ -37,7 +37,6 @@ public interface FileHandler {
     default void verifyFile(@NonNull File file, @NonNull String fileName) {
         Assert.notNull(file, fileName + " is null!");
         Assert.isTrue(file.exists(), fileName + " not exist!");
-        Assert.isTrue(file.canRead(), fileName + " has no read permission!");
         Assert.isTrue(file.isFile(), fileName + " is not a file!");
     }
 
@@ -50,7 +49,6 @@ public interface FileHandler {
     default void verifyDir(@NonNull File dir, @NonNull String dirName) {
         Assert.notNull(dir, dirName + " is null!");
         Assert.isTrue(dir.exists(), dirName + " not exist!");
-        Assert.isTrue(dir.canExecute(), dirName + " has no exec permission!");
         Assert.isTrue(dir.isDirectory(), dirName + " is not a directory!");
     }
 }
