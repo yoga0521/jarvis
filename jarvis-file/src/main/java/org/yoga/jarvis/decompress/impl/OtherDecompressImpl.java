@@ -21,12 +21,11 @@ public class OtherDecompressImpl extends AbstractDecompress {
     @Override
     protected void decompressActual(@NonNull File srcFile, @NonNull File destDir) {
         try {
-
             String fileType = new Tika().detect(srcFile);
             log.error("It don't support the decompression of the {} file type!", fileType);
             throw new JarvisException("It don't support the decompression of the " + fileType + " file type");
         } catch (IOException e) {
-            log.error("Other decompress impl class fail to get the file type", e);
+            log.error("Other decompress impl class fail to get the file type, use suffix!", e);
             throw new JarvisException("It don't support the decompression of the " + FilenameUtils.getExtension(srcFile.getName()) + " file type");
         }
     }
