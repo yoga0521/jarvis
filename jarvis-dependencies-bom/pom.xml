@@ -172,6 +172,12 @@
                 <artifactId>libreoffice</artifactId>
                 <version>${libreoffice.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.jodconverter</groupId>
+                <artifactId>jodconverter-spring-boot-starter</artifactId>
+                <version>${jodconverter.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
