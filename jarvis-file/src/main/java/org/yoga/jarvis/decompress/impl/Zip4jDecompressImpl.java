@@ -19,6 +19,7 @@ package org.yoga.jarvis.decompress.impl;
 import lombok.extern.slf4j.Slf4j;
 import net.lingala.zip4j.ZipFile;
 import org.springframework.lang.NonNull;
+import org.yoga.jarvis.constant.Charsets;
 import org.yoga.jarvis.decompress.AbstractDecompress;
 import org.yoga.jarvis.exception.JarvisException;
 
@@ -35,15 +36,21 @@ public class Zip4jDecompressImpl extends AbstractDecompress {
 
     @Override
     protected void decompressActual(@NonNull File srcFile, @NonNull File destDir) {
-        try (ZipFile zipFile = new ZipFile(srcFile)) {
-            if (zipFile.isEncrypted()) {
-                throw new JarvisException("zip file is encrypted!");
+        for (int i = 0; i < Charsets.values().length; i++) {
+            try (ZipFile zipFile = new ZipFile(srcFile)) {
+                zipFile.setCharset(Charsets.values()[i].getCharset());
+                if (zipFile.isEncrypted()) {
+                    throw new JarvisException("zip file is encrypted!");
 //                zipFile.setPassword(password.toCharArray());
+                }
+                zipFile.extractAll(destDir.getPath());
+                break;
+            } catch (IOException e) {
+                log.error("failed to decompress with {} encoding!", Charsets.values()[i].getCharsetName(), e);
+                if (i == Charsets.values().length - 1) {
+                    throw new JarvisException("decompress fail!");
+                }
             }
-            zipFile.extractAll(destDir.getPath());
-        } catch (IOException e) {
-            log.error("decompress fail!", e);
-            throw new JarvisException("decompress fail!");
         }
     }
 }
