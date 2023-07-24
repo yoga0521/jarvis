@@ -17,6 +17,8 @@
 package org.yoga.jarvis.constant;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description: charset
@@ -50,6 +52,16 @@ public enum Charsets {
      */
     private final Charset charset;
 
+    /**
+     * chinese charsets
+     */
+    private final static List<Charsets> CHINESE_CHARSETS = new ArrayList<>();
+
+    static {
+        CHINESE_CHARSETS.add(Charsets.GBK);
+        CHINESE_CHARSETS.add(Charsets.UTF_8);
+    }
+
     Charsets(String charsetName, Charset charset) {
         this.charsetName = charsetName;
         this.charset = charset;
@@ -61,5 +73,9 @@ public enum Charsets {
 
     public Charset getCharset() {
         return charset;
+    }
+
+    public static List<Charsets> getChineseCharsets() {
+        return CHINESE_CHARSETS;
     }
 }
