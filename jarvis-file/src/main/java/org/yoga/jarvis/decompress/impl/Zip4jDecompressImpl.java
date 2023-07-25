@@ -36,9 +36,9 @@ public class Zip4jDecompressImpl extends AbstractDecompress {
 
     @Override
     protected void decompressActual(@NonNull File srcFile, @NonNull File destDir) {
-        for (int i = 0; i < Charsets.values().length; i++) {
+        for (int i = 0; i < Charsets.getChineseCharsets().size(); i++) {
             try (ZipFile zipFile = new ZipFile(srcFile)) {
-                zipFile.setCharset(Charsets.values()[i].getCharset());
+                zipFile.setCharset(Charsets.getChineseCharsets().get(i).getCharset());
                 if (zipFile.isEncrypted()) {
                     throw new JarvisException("zip file is encrypted!");
 //                zipFile.setPassword(password.toCharArray());
@@ -46,8 +46,8 @@ public class Zip4jDecompressImpl extends AbstractDecompress {
                 zipFile.extractAll(destDir.getPath());
                 break;
             } catch (IOException e) {
-                log.error("failed to decompress with {} encoding!", Charsets.values()[i].getCharsetName(), e);
-                if (i == Charsets.values().length - 1) {
+                log.error("failed to decompress with {} encoding!", Charsets.getChineseCharsets().get(i).getCharsetName(), e);
+                if (i == Charsets.getChineseCharsets().size() - 1) {
                     throw new JarvisException("decompress fail!");
                 }
             }
