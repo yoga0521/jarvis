@@ -16,6 +16,7 @@
 
 package org.yoga.jarvis.preview.bean;
 
+import lombok.Data;
 import org.jodconverter.local.office.LocalOfficeManager;
 
 /**
@@ -23,6 +24,7 @@ import org.jodconverter.local.office.LocalOfficeManager;
  * @Author: yoga
  * @Date: 2023/7/17 11:11
  */
+@Data
 public class OfficeLocalConverterConfigs {
 
     /**
