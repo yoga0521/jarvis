@@ -33,6 +33,7 @@ public interface Preview extends FileHandler {
      *
      * @param srcFile need preview source file
      * @param destDir previewed file dir
+     * @return previewed file
      */
-    void preview(@NonNull File srcFile, @NonNull File destDir);
+    File preview(@NonNull File srcFile, @NonNull File destDir);
 }
