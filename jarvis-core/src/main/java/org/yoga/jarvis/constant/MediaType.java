@@ -16,8 +16,11 @@
 
 package org.yoga.jarvis.constant;
 
+import org.yoga.jarvis.util.FileUtils;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @Description: media type
@@ -82,6 +85,32 @@ public enum MediaType {
     APPLICATION_7Z("7z", "application/x-7z-compressed");
 
     /**
+     * The suffix type that needs to be converted to html preview
+     */
+    private static final String[] PREVIEW_BY_HTML_SUFFIX_TYPE = {"xls", "xlsx", "csv", "xlsm", "et", "xlt", "xltm", "ett", "xlam"};
+
+    /**
+     * The suffix type of office file
+     */
+    private static final String[] OFFICE_SUFFIX_TYPES = {"docx", "wps", "doc", "docm", "xls", "xlsx", "csv", "xlsm", "ppt", "pptx", "vsd", "rtf", "odt", "wmf", "emf", "dps", "et", "ods", "ots", "tsv", "odp", "otp", "sxi", "ott", "vsdx", "fodt", "fods", "xltx", "tga", "psd", "dotm", "ett", "xlt", "xltm", "wpt", "dot", "xlam", "dotx", "xla", "pages"};
+
+    /**
+     * The suffix type for simple files
+     */
+    private static final String[] SIM_TEXT_SUFFIX_TYPES = {"txt", "html", "htm", "asp", "jsp", "xml", "json", "properties", "md", "gitignore", "log", "java", "py", "c", "cpp", "sql", "sh", "bat", "m", "bas", "prg", "cmd"};
+
+    /**
+     * multimedia type
+     */
+    private static final String[] MEDIA_SUFFIX_TYPES = {"mp3", "wav", "mp4", "flv", "rmvb"};
+
+    /**
+     * The suffix type of the file that can be directly previewed
+     */
+    private static final String[] CAN_PREVIEW_DIRECTLY_SUFFIX_TYPES = {"jpg", "jpeg", "png", "gif", "bmp", "ico", "jfif", "webp", "pdf"};
+
+
+    /**
      * media name suffix
      */
     private final String suffix;
@@ -120,5 +149,16 @@ public enum MediaType {
      */
     public static MediaType getByValue(String value) {
         return VALUE_MAP.get(value);
+    }
+
+    /**
+     * Does the office document need to be converted to html preview
+     *
+     * @param fileName file name
+     * @return dose need to convert to html preview
+     */
+    public static boolean isOfficePreviewByHtml(String fileName) {
+        return Stream.of(PREVIEW_BY_HTML_SUFFIX_TYPE)
+                .anyMatch(suffix -> suffix.equalsIgnoreCase(FileUtils.getFileSuffix(fileName)));
     }
 }
