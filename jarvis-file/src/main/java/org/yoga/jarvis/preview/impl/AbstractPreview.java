@@ -33,15 +33,16 @@ import java.io.File;
 public abstract class AbstractPreview implements Preview {
 
     @Override
-    public void preview(@NonNull File srcFile, @NonNull File destDir) {
+    public File preview(@NonNull File srcFile, @NonNull File destDir) {
         verifyFile(srcFile, "source file");
         Assert.isTrue(srcFile.canRead(), "source file has no read permission!");
         verifyDir(destDir, "dest dir");
         Assert.isTrue(destDir.canExecute(), "dest dir has no exec permission!");
         long startTime = System.currentTimeMillis();
-        previewActual(srcFile, destDir);
+        File previewedFile = previewActual(srcFile, destDir);
         log.info("preview success，need preview file size：{}B，previewed file size：{}B，cost：{}ms",
                 FileUtils.sizeOfAsBigInteger(srcFile), FileUtils.sizeOfAsBigInteger(destDir), System.currentTimeMillis() - startTime);
+        return previewedFile;
     }
 
     /**
@@ -49,7 +50,9 @@ public abstract class AbstractPreview implements Preview {
      *
      * @param srcFile need preview source file
      * @param destDir previewed file dir
+     * @return previewed file
      */
-    protected abstract void previewActual(@NonNull File srcFile, @NonNull File destDir);
+    @NonNull
+    protected abstract File previewActual(@NonNull File srcFile, @NonNull File destDir);
 
 }

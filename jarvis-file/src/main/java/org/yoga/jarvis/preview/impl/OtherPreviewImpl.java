@@ -34,7 +34,8 @@ import java.io.IOException;
 public class OtherPreviewImpl extends AbstractPreview {
 
     @Override
-    protected void previewActual(@NonNull File srcFile, @NonNull File destDir) {
+    @NonNull
+    protected File previewActual(@NonNull File srcFile, @NonNull File destDir) {
         try {
             String fileType = new Tika().detect(srcFile);
             log.error("It don't support the preview of the {} file type!", fileType);
