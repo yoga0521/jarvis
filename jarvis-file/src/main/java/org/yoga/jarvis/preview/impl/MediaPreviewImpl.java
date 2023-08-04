@@ -19,9 +19,12 @@ package org.yoga.jarvis.preview.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.yoga.jarvis.constant.DelimiterType;
+import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.FileUtils;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,6 +35,11 @@ import java.util.UUID;
 @Slf4j
 public class MediaPreviewImpl extends AbstractPreview {
 
+    /**
+     * need convert suffix list
+     */
+    public static final List<String> NEED_CONVERT_SUFFIX_LIST = Arrays.asList("avi", "mov", "wmv", "mkv");
+
     @Override
     @NonNull
     protected File previewActual(@NonNull File srcFile, @NonNull File destDir) {
@@ -40,5 +48,16 @@ public class MediaPreviewImpl extends AbstractPreview {
 
 
         return previewTmpFile;
+    }
+
+    /**
+     * check file is need convert
+     *
+     * @param fileName file name
+     * @return is need convert
+     */
+    private boolean checkIsNeedConvert(String fileName) {
+        Assert.notBlank(fileName, "file name is blank!");
+        return NEED_CONVERT_SUFFIX_LIST.contains(FileUtils.getFileSuffix(fileName));
     }
 }
