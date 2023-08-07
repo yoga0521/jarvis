@@ -46,7 +46,10 @@ public class MediaPreviewImpl extends AbstractPreview {
         File previewTmpFile = new File(destDir.getPath() + File.separator + UUID.randomUUID() +
                 DelimiterType.point.getValue() + FileUtils.getFileSuffix(srcFile.getName()));
 
+        // convert src file
+        if (checkIsNeedConvert(srcFile.getName())) {
 
+        }
         return previewTmpFile;
     }
 
