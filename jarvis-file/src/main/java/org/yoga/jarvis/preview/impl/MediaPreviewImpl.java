@@ -17,8 +17,15 @@
 package org.yoga.jarvis.preview.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bytedeco.ffmpeg.global.avcodec;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.FrameRecorder;
 import org.springframework.lang.NonNull;
 import org.yoga.jarvis.constant.DelimiterType;
+import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.FileUtils;
 
@@ -44,11 +51,45 @@ public class MediaPreviewImpl extends AbstractPreview {
     @NonNull
     protected File previewActual(@NonNull File srcFile, @NonNull File destDir) {
         File previewTmpFile = new File(destDir.getPath() + File.separator + UUID.randomUUID() +
-                DelimiterType.point.getValue() + FileUtils.getFileSuffix(srcFile.getName()));
+                DelimiterType.point.getValue() + "mp4");
 
         // convert src file
         if (checkIsNeedConvert(srcFile.getName())) {
-
+            try (FrameGrabber fg = new FFmpegFrameGrabber(srcFile)) {
+                fg.start();
+                try (FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(previewTmpFile.getPath() + File.separator + previewTmpFile.getName(),
+                        fg.getImageWidth(), fg.getImageHeight(), fg.getAudioChannels())) {
+                    recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
+                    recorder.setFormat("mp4");
+                    recorder.setFrameRate(fg.getFrameRate());
+                    recorder.setSampleRate(fg.getSampleRate());
+                    recorder.setVideoBitrate(fg.getVideoBitrate());
+                    recorder.setAspectRatio(fg.getAspectRatio());
+                    recorder.setAudioBitrate(fg.getAudioBitrate());
+                    recorder.setAudioOptions(fg.getAudioOptions());
+                    recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
+                    recorder.setAudioChannels(fg.getAudioChannels());
+                    recorder.start();
+                    while (true) {
+                        try (Frame capturedFrame = fg.grabFrame()) {
+                            if (capturedFrame == null) {
+                                log.info("transcoding completed!");
+                                break;
+                            }
+                            recorder.setTimestamp(fg.getTimestamp());
+                            recorder.record(capturedFrame);
+                        }
+                    }
+                    recorder.stop();
+                    recorder.release();
+                } catch (FrameRecorder.Exception e) {
+                    throw new JarvisException(e);
+                } finally {
+                    fg.stop();
+                }
+            } catch (FrameGrabber.Exception e) {
+                throw new JarvisException(e);
+            }
         }
         return previewTmpFile;
     }
