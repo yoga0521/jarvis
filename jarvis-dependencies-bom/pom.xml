@@ -69,6 +69,14 @@
 
         <libreoffice.version>7.5.3</libreoffice.version>
 
+        <bytedeco.version>1.5.9</bytedeco.version>
+
+        <opencv.version>4.7.0-1.5.9</opencv.version>
+
+        <openblas.version>0.3.23-1.5.9</openblas.version>
+
+        <ffmpeg.version>6.0-1.5.9</ffmpeg.version>
+
         <!-- Maven plugins -->
         <maven_flatten.version>1.2.7</maven_flatten.version>
 
@@ -178,6 +186,39 @@
                 <artifactId>jodconverter-spring-boot-starter</artifactId>
                 <version>${jodconverter.version}</version>
             </dependency>
+
+            <!-- byte deco -->
+            <!-- javacv based on opencv ffmpeg package for video processing -->
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>javacv</artifactId>
+                <version>${bytedeco.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>javacpp</artifactId>
+                <version>${bytedeco.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>opencv</artifactId>
+                <version>${opencv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>openblas</artifactId>
+                <version>${openblas.version}</version>
+            </dependency>
+
+            <!-- ffmpeg -->
+            <dependency>
+                <groupId>org.bytedeco</groupId>
+                <artifactId>ffmpeg</artifactId>
+                <version>${ffmpeg.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
