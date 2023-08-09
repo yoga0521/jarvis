@@ -36,6 +36,7 @@ import java.util.UUID;
 
 /**
  * @Description: media preview
+ * ep: mp3,wav,mp4,flv,avi, mov, wmv, mkv
  * @Author: yoga
  * @Date: 2023/8/4 17:34
  */

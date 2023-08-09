@@ -32,6 +32,7 @@ import java.util.UUID;
 
 /**
  * @Description: sim text file preview
+ * ep: txt,html,htm,asp,jsp,xml,json,properties,md,gitignore,log,java,py,c,cpp,sql,sh,bat,m,bas,prg,cmd
  * @Author: yoga
  * @Date: 2023/8/1 16:23
  */

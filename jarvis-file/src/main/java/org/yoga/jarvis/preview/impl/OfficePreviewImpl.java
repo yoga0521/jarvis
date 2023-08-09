@@ -41,6 +41,8 @@ import java.util.UUID;
 
 /**
  * @Description: office file preview
+ * ep: docx, wps, doc, docm, xls, xlsx, csv ,xlsm, ppt, pptx, vsd, rtf, odt, wmf, emf, dps, et, ods, ots, tsv, odp, otp,
+ * sxi, ott, vsdx, fodt, fods, xltx,tga,psd,dotm,ett,xlt,xltm,wpt,dot,xlam,dotx,xla,pages
  * @Author: yoga
  * @Date: 2023/7/14 17:25
  */
