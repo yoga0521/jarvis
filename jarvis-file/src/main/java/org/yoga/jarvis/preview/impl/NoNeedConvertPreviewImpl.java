@@ -30,6 +30,7 @@ import java.util.UUID;
 
 /**
  * @Description: no need convert preview
+ * ep: jpg,jpeg,png,pdf
  * @Author: yoga
  * @Date: 2023/8/9 10:59
  */
