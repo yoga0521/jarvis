@@ -29,19 +29,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 /**
- * @Description: no need convert preview
- * ep: jpg,jpeg,png,pdf
+ * @Description: common preview
+ * ep: jpg,jpeg,png,svg,ofd,bpmn,pdf,XMind,ePub,eml,draw.io,ccm
  * @Author: yoga
  * @Date: 2023/8/9 10:59
  */
 @Slf4j
-public class NoNeedConvertPreviewImpl extends AbstractPreview {
+public class CommonPreviewImpl extends AbstractPreview {
 
     @Override
     @NonNull
     protected File previewActual(@NonNull File srcFile, @NonNull File destDir) {
-        File previewTmpFile = new File(destDir.getPath() + File.separator + UUID.randomUUID() + DelimiterType.point.getValue()
-                + FileUtils.getFileSuffix(srcFile.getName()));
+        File previewTmpFile = new File(destDir.getPath() + File.separator + UUID.randomUUID()
+                + DelimiterType.point.getValue() + FileUtils.getFileSuffix(srcFile.getName()));
         try {
             Files.copy(srcFile.toPath(), previewTmpFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES,
                     StandardCopyOption.REPLACE_EXISTING);
