@@ -121,5 +121,11 @@
             <groupId>org.bytedeco</groupId>
             <artifactId>ffmpeg</artifactId>
         </dependency>
+
+        <!-- itextpdf -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+        </dependency>
     </dependencies>
 </project>
