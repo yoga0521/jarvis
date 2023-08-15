@@ -16,11 +16,20 @@
 
 package org.yoga.jarvis.preview.impl;
 
+import com.aspose.cad.CodePages;
+import com.aspose.cad.Color;
+import com.aspose.cad.Image;
+import com.aspose.cad.LoadOptions;
+import com.aspose.cad.imageoptions.CadRasterizationOptions;
+import com.aspose.cad.imageoptions.PdfOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.yoga.jarvis.constant.DelimiterType;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.UUID;
 
 /**
@@ -37,6 +46,25 @@ public class CadPreviewImpl extends AbstractPreview {
         File previewTmpFile = new File(destDir.getPath() + File.separator + UUID.randomUUID()
                 + DelimiterType.point.getValue() + "pdf");
 
+        // srcFile options
+        LoadOptions loadOptions = new LoadOptions();
+        loadOptions.setSpecifiedEncoding(CodePages.SimpChinese);
+        // pdf options
+        CadRasterizationOptions cadRasterizationOptions = new CadRasterizationOptions();
+        cadRasterizationOptions.setBackgroundColor(Color.getWhite());
+        cadRasterizationOptions.setPageWidth(1400);
+        cadRasterizationOptions.setPageHeight(650);
+        cadRasterizationOptions.setAutomaticLayoutsScaling(true);
+        cadRasterizationOptions.setNoScaling(false);
+        cadRasterizationOptions.setDrawType(1);
+        PdfOptions pdfOptions = new PdfOptions();
+        pdfOptions.setVectorRasterizationOptions(cadRasterizationOptions);
+        try (Image cadImage = Image.load(srcFile.getPath(), loadOptions);
+             OutputStream os = Files.newOutputStream(previewTmpFile.toPath())) {
+            cadImage.save(os, pdfOptions);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return previewTmpFile;
     }
 }
