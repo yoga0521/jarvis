@@ -122,10 +122,15 @@
             <artifactId>ffmpeg</artifactId>
         </dependency>
 
-        <!-- itextpdf -->
+        <!-- itext-pdf -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aspose</groupId>
+            <artifactId>aspose-cad</artifactId>
         </dependency>
     </dependencies>
 </project>
