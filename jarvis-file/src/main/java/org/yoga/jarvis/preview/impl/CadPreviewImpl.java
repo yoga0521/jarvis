@@ -20,6 +20,7 @@ import com.aspose.cad.CodePages;
 import com.aspose.cad.Color;
 import com.aspose.cad.Image;
 import com.aspose.cad.LoadOptions;
+import com.aspose.cad.fileformats.cad.CadDrawTypeMode;
 import com.aspose.cad.imageoptions.CadRasterizationOptions;
 import com.aspose.cad.imageoptions.PdfOptions;
 import lombok.extern.slf4j.Slf4j;
@@ -51,12 +52,13 @@ public class CadPreviewImpl extends AbstractPreview {
         loadOptions.setSpecifiedEncoding(CodePages.SimpChinese);
         // pdf options
         CadRasterizationOptions cadRasterizationOptions = new CadRasterizationOptions();
-        cadRasterizationOptions.setBackgroundColor(Color.getWhite());
-        cadRasterizationOptions.setPageWidth(1400);
-        cadRasterizationOptions.setPageHeight(650);
+        cadRasterizationOptions.setPageWidth(1600);
+        cadRasterizationOptions.setPageHeight(1600);
+        // auto Scaling
         cadRasterizationOptions.setAutomaticLayoutsScaling(true);
         cadRasterizationOptions.setNoScaling(false);
-        cadRasterizationOptions.setDrawType(1);
+        cadRasterizationOptions.setDrawType(CadDrawTypeMode.UseDrawColor);
+        cadRasterizationOptions.setBackgroundColor(Color.getWhite());
         PdfOptions pdfOptions = new PdfOptions();
         pdfOptions.setVectorRasterizationOptions(cadRasterizationOptions);
         try (Image cadImage = Image.load(srcFile.getPath(), loadOptions);
