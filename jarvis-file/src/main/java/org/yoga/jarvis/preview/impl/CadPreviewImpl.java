@@ -26,6 +26,7 @@ import com.aspose.cad.imageoptions.PdfOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.yoga.jarvis.constant.DelimiterType;
+import org.yoga.jarvis.exception.JarvisException;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class CadPreviewImpl extends AbstractPreview {
              OutputStream os = Files.newOutputStream(previewTmpFile.toPath())) {
             cadImage.save(os, pdfOptions);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JarvisException(e);
         }
         return previewTmpFile;
     }
