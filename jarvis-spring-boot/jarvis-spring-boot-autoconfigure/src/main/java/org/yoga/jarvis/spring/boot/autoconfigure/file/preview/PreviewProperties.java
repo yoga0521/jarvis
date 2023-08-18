@@ -16,11 +16,14 @@
 
 package org.yoga.jarvis.spring.boot.autoconfigure.file.preview;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
  * @Description: the properties object of preview
  * @Author: yoga
  * @Date: 2023/8/18 11:11
  */
+@ConfigurationProperties(prefix = "jarvis.file.preview")
 public class PreviewProperties {
 
     /**
