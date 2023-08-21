@@ -70,6 +70,12 @@
             <artifactId>jarvis-cache</artifactId>
             <version>${revision}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.yoga.jarvis</groupId>
+            <artifactId>jarvis-file</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
 </project>

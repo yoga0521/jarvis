@@ -16,9 +16,17 @@
 
 package org.yoga.jarvis.spring.boot.autoconfigure.file.preview;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
+import org.yoga.jarvis.preview.Preview;
+import org.yoga.jarvis.preview.bean.OfficeLocalConverterConfigs;
+import org.yoga.jarvis.preview.impl.AbstractPreview;
+import org.yoga.jarvis.preview.impl.OfficePreviewImpl;
 
 /**
  * @Description: preview auto configure
@@ -27,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnProperty(prefix = "jarvis.file.preview", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnClass({Preview.class, AbstractPreview.class, OfficePreviewImpl.class})
 @EnableConfigurationProperties(PreviewProperties.class)
 public class PreviewAutoConfiguration {
 
@@ -34,5 +43,28 @@ public class PreviewAutoConfiguration {
 
     public PreviewAutoConfiguration(PreviewProperties previewProperties) {
         this.previewProperties = previewProperties;
+    }
+
+    @Bean("officePreview")
+    @ConditionalOnMissingBean(OfficePreviewImpl.class)
+    OfficePreviewImpl OfficePreview(final ResourceLoader resourceLoader) {
+        return new OfficePreviewImpl(resourceLoader, trans2OfficeLocalconverterConfigs(previewProperties));
+    }
+
+    /**
+     * PreviewProperties to Office Preview Configs
+     *
+     * @param previewProperties previewProperties {@link PreviewProperties}
+     * @return officeLocalConverterConfigs {@link OfficeLocalConverterConfigs}
+     */
+    OfficeLocalConverterConfigs trans2OfficeLocalconverterConfigs(PreviewProperties previewProperties) {
+        OfficeLocalConverterConfigs officeLocalConverterConfigs = new OfficeLocalConverterConfigs();
+        officeLocalConverterConfigs.setEnabled(previewProperties.isEnabled());
+        officeLocalConverterConfigs.setOfficeHome(previewProperties.getOfficeHome());
+        officeLocalConverterConfigs.setHostName(previewProperties.getHostName());
+        if (previewProperties.getPortNumbers() != null && previewProperties.getPortNumbers().length > 0) {
+            officeLocalConverterConfigs.setPortNumbers(previewProperties.getPortNumbers());
+        }
+        return officeLocalConverterConfigs;
     }
 }

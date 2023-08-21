@@ -57,7 +57,7 @@ public class OfficePreviewImpl extends AbstractPreview {
 
     protected final DocumentConverter documentConverter;
 
-    protected OfficePreviewImpl(ResourceLoader resourceLoader, OfficeLocalConverterConfigs configs) {
+    public OfficePreviewImpl(ResourceLoader resourceLoader, OfficeLocalConverterConfigs configs) {
         Assert.notNull(resourceLoader, "resourceLoader isn't exist!");
         this.configs = configs;
 
