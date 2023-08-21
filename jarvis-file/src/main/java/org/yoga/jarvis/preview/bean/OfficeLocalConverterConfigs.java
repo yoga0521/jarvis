@@ -51,4 +51,20 @@ public class OfficeLocalConverterConfigs {
      * each port number.
      */
     private int[] portNumbers = {2002};
+
+    /**
+     * Template profile directory to copy to a created office profile directory when an office processed is launched.
+     */
+    private String templateProfileDir;
+
+    /**
+     * Process timeout (milliseconds). Used when trying to execute an office process call (start/connect/terminate).
+     */
+    private long processTimeout = LocalOfficeManager.DEFAULT_PROCESS_TIMEOUT;
+
+    /**
+     * Process retry interval (milliseconds). Used for waiting between office process call tries (start/connect/terminate).
+     */
+    private long processRetryInterval = LocalOfficeManager.DEFAULT_PROCESS_RETRY_INTERVAL;
+
 }
