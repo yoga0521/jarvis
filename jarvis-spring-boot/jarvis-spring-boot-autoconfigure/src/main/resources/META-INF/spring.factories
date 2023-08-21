@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   org.yoga.jarvis.spring.boot.autoconfigure.oss.OssAutoConfiguration,\
-  org.yoga.jarvis.spring.boot.autoconfigure.identifier.IdentifierAutoConfiguration
+  org.yoga.jarvis.spring.boot.autoconfigure.identifier.IdentifierAutoConfiguration,\
+  org.yoga.jarvis.spring.boot.autoconfigure.file.preview.PreviewAutoConfiguration
