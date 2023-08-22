@@ -17,7 +17,9 @@
 package org.yoga.jarvis.compress;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.lang.NonNull;
+import org.yoga.jarvis.util.Assert;
 
 import java.io.File;
 
@@ -30,7 +32,28 @@ import java.io.File;
 public abstract class AbstractCompress implements Compress {
 
     @Override
-    public void compress(@NonNull File srcDir, @NonNull File destDir) {
+    public void compress(@NonNull File srcFileDir, @NonNull File destDir) {
+        Assert.notNull(srcFileDir, "source file dir is null!");
+        Assert.isTrue(srcFileDir.exists(), "source file dir not exist!");
+        Assert.isTrue(srcFileDir.canRead(), "source file dir has no read permission!");
+        Assert.isTrue(srcFileDir.isDirectory(), "source file dir is not a directory!");
+        Assert.isTrue(srcFileDir.length() > 0, "source file dir is empty!");
+        Assert.notNull(destDir, "dest dir is null!");
+        Assert.isTrue(destDir.exists(), "dest dir not exist!");
+        Assert.isTrue(destDir.canExecute(), "dest dir has no exec permission!");
+        Assert.isTrue(destDir.isDirectory(), "dest dir is not a directory!");
+        long startTime = System.currentTimeMillis();
+        compressActual(srcFileDir, destDir);
+        log.info("compress success，need compress file size：{}B，compressed file size：{}B，cost：{}ms",
+                FileUtils.sizeOfAsBigInteger(srcFileDir), FileUtils.sizeOfAsBigInteger(destDir), System.currentTimeMillis() - startTime);
 
     }
+
+    /**
+     * compress actual function
+     *
+     * @param srcFileDir need compress source file dir
+     * @param destDir    compressed file dir
+     */
+    protected abstract void compressActual(@NonNull File srcFileDir, @NonNull File destDir);
 }

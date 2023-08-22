@@ -30,8 +30,8 @@ public interface Compress {
     /**
      * compress
      *
-     * @param srcDir need compress source file dir
-     * @param destDir compressed file dir
+     * @param srcFileDir need compress source file dir
+     * @param destDir    compressed file dir
      */
-    void compress(@NonNull File srcDir, @NonNull File destDir);
+    void compress(@NonNull File srcFileDir, @NonNull File destDir);
 }
