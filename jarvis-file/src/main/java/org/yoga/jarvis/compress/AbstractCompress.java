@@ -16,22 +16,21 @@
 
 package org.yoga.jarvis.compress;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
 import java.io.File;
 
 /**
- * @Description: compress
+ * @Description: Abstract Compress
  * @Author: yoga
- * @Date: 2023/7/4 13:55
+ * @Date: 2023/8/22 10:02
  */
-public interface Compress {
+@Slf4j
+public abstract class AbstractCompress implements Compress {
 
-    /**
-     * compress
-     *
-     * @param srcDir need compress source file dir
-     * @param destDir compressed file dir
-     */
-    void compress(@NonNull File srcDir, @NonNull File destDir);
+    @Override
+    public void compress(@NonNull File srcDir, @NonNull File destDir) {
+
+    }
 }
