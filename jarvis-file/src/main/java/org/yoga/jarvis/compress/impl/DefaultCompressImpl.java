@@ -98,6 +98,8 @@ public class DefaultCompressImpl extends AbstractCompress {
             while ((len = fis.read(buf)) > 0) {
                 zos.write(buf, 0, len);
             }
+        } finally {
+            zos.closeEntry();
         }
     }
 }
