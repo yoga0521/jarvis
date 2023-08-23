@@ -36,8 +36,6 @@ public abstract class AbstractCompress implements Compress {
         Assert.notNull(srcFileDir, "source file dir is null!");
         Assert.isTrue(srcFileDir.exists(), "source file dir not exist!");
         Assert.isTrue(srcFileDir.canRead(), "source file dir has no read permission!");
-        Assert.isTrue(srcFileDir.isDirectory(), "source file dir is not a directory!");
-        Assert.isTrue(srcFileDir.length() > 0, "source file dir is empty!");
         Assert.notNull(destDir, "dest dir is null!");
         Assert.isTrue(destDir.exists(), "dest dir not exist!");
         Assert.isTrue(destDir.canExecute(), "dest dir has no exec permission!");
