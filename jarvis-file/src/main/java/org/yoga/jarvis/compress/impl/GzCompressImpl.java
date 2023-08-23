@@ -17,6 +17,10 @@
 package org.yoga.jarvis.compress.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
+import org.yoga.jarvis.compress.AbstractCompress;
+
+import java.io.File;
 
 /**
  * @Description: gz compress
@@ -24,5 +28,10 @@ import lombok.extern.slf4j.Slf4j;
  * @Date: 2023/8/23 10:08
  */
 @Slf4j
-public class GzCompressImpl {
+public class GzCompressImpl extends AbstractCompress {
+
+    @Override
+    protected void compressActual(@NonNull File srcFileDir, @NonNull File destDir) {
+
+    }
 }
