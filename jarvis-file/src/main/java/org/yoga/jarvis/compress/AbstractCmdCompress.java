@@ -21,17 +21,20 @@ import org.springframework.lang.NonNull;
 import java.io.File;
 
 /**
- * @Description: compress
+ * @Description: Abstract Cmd Compress
  * @Author: yoga
- * @Date: 2023/7/4 13:55
+ * @Date: 2023/8/24 16:32
  */
-public interface Compress {
+public abstract class AbstractCmdCompress extends AbstractCompress {
+
+    @Override
+    protected void compressActual(@NonNull File srcFile, @NonNull File destDir) {
+
+    }
 
     /**
-     * compress
-     *
-     * @param srcFile need compress source file dir
-     * @param destDir compressed file dir
+     * acquire the compress shell script
      */
-    void compress(@NonNull File srcFile, @NonNull File destDir);
+    @NonNull
+    protected abstract String acquireShell(@NonNull String srcFile, @NonNull String destDir);
 }

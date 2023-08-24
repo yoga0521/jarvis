@@ -32,26 +32,26 @@ import java.io.File;
 public abstract class AbstractCompress implements Compress {
 
     @Override
-    public void compress(@NonNull File srcFileDir, @NonNull File destDir) {
-        Assert.notNull(srcFileDir, "source file dir is null!");
-        Assert.isTrue(srcFileDir.exists(), "source file dir not exist!");
-        Assert.isTrue(srcFileDir.canRead(), "source file dir has no read permission!");
+    public void compress(@NonNull File srcFile, @NonNull File destDir) {
+        Assert.notNull(srcFile, "source file dir is null!");
+        Assert.isTrue(srcFile.exists(), "source file dir not exist!");
+        Assert.isTrue(srcFile.canRead(), "source file dir has no read permission!");
         Assert.notNull(destDir, "dest dir is null!");
         Assert.isTrue(destDir.exists(), "dest dir not exist!");
         Assert.isTrue(destDir.canExecute(), "dest dir has no exec permission!");
         Assert.isTrue(destDir.isDirectory(), "dest dir is not a directory!");
         long startTime = System.currentTimeMillis();
-        compressActual(srcFileDir, destDir);
+        compressActual(srcFile, destDir);
         log.info("compress success，need compress file size：{}B，compressed file size：{}B，cost：{}ms",
-                FileUtils.sizeOfAsBigInteger(srcFileDir), FileUtils.sizeOfAsBigInteger(destDir), System.currentTimeMillis() - startTime);
+                FileUtils.sizeOfAsBigInteger(srcFile), FileUtils.sizeOfAsBigInteger(destDir), System.currentTimeMillis() - startTime);
 
     }
 
     /**
      * compress actual function
      *
-     * @param srcFileDir need compress source file dir
-     * @param destDir    compressed file dir
+     * @param srcFile need compress source file
+     * @param destDir compressed file dir
      */
-    protected abstract void compressActual(@NonNull File srcFileDir, @NonNull File destDir);
+    protected abstract void compressActual(@NonNull File srcFile, @NonNull File destDir);
 }
