@@ -26,7 +26,7 @@ public class Zip7zCmdDecompressImpl extends AbstractCmdDecompress {
 
     @NonNull
     @Override
-    protected String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
+    public String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
         // macOS安装了7z命令
         return String.format(UN7ZIP_SHELL, srcFilePath, destDirPath);
     }

@@ -29,7 +29,7 @@ public class RarCmdDecompressImpl extends AbstractCmdDecompress {
 
     @NonNull
     @Override
-    protected String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
+    public String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
         return String.format(UNRAR_SHELL, srcFilePath,
                 destDirPath.endsWith(File.separator) ? destDirPath : (destDirPath + File.separator));
     }

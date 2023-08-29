@@ -25,7 +25,7 @@ public class ZipCmdDecompressImpl extends AbstractCmdDecompress {
 
     @NonNull
     @Override
-    protected String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
+    public String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath) {
         return String.format(UNZIP_SHELL, srcFilePath, destDirPath);
     }
 

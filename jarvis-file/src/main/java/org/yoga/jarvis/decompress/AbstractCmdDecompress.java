@@ -19,6 +19,7 @@ package org.yoga.jarvis.decompress;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.lang.NonNull;
+import org.yoga.jarvis.CmdHandler;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.StringUtils;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
  * @Date: 2023/6/21 16:17
  */
 @Slf4j
-public abstract class AbstractCmdDecompress extends AbstractDecompress {
+public abstract class AbstractCmdDecompress extends AbstractDecompress implements CmdHandler {
 
     @Override
     protected void decompressActual(@NonNull File srcFile, @NonNull File destDir) {
@@ -71,12 +72,6 @@ public abstract class AbstractCmdDecompress extends AbstractDecompress {
             }
         }
     }
-
-    /**
-     * acquire the decompress shell script
-     */
-    @NonNull
-    protected abstract String acquireShell(@NonNull String srcFilePath, @NonNull String destDirPath);
 
     /**
      * check if the os supports the decompress command
