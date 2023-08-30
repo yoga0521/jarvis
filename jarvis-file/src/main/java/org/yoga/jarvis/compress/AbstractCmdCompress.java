@@ -17,6 +17,7 @@
 package org.yoga.jarvis.compress;
 
 import org.springframework.lang.NonNull;
+import org.yoga.jarvis.CmdHandler;
 
 import java.io.File;
 
@@ -25,16 +26,11 @@ import java.io.File;
  * @Author: yoga
  * @Date: 2023/8/24 16:32
  */
-public abstract class AbstractCmdCompress extends AbstractCompress {
+public abstract class AbstractCmdCompress extends AbstractCompress implements CmdHandler {
 
     @Override
     protected void compressActual(@NonNull File srcFile, @NonNull File destDir) {
 
     }
 
-    /**
-     * acquire the compress shell script
-     */
-    @NonNull
-    protected abstract String acquireShell(@NonNull String srcFile, @NonNull String destDir);
 }
