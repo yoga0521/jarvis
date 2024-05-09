@@ -18,9 +18,10 @@ package org.yoga.jarvis.limiter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yoga.jarvis.util.Assert;
 
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Description: SimpleWindow Limiter
@@ -33,19 +34,29 @@ public class SimpleWindowLimiter {
     /**
      * threshold
      */
-
-    private static Integer threshold = 2;
+    private final int threshold;
 
     /**
      * time windows（ms）
      */
-    private static long timeWindows = 1000;
-    /**
-     * counter
-     */
-    private static AtomicInteger counter = new AtomicInteger();
+    private final long timeWindows;
 
-    public synchronized static boolean tryAcquire(long timeout, TimeUnit unit) {
-        return counter.incrementAndGet() <= threshold;
+    /**
+     * record queue
+     */
+    private final Queue<Long> queue;
+
+    public SimpleWindowLimiter(int threshold, long timeWindows, Queue<Long> queue) {
+        this.threshold = threshold;
+        this.timeWindows = timeWindows;
+        this.queue = queue;
+    }
+
+    public synchronized boolean tryAcquire(long timeout, TimeUnit unit) {
+        Assert.isTrue(timeout > 0, "timeout val is illegal");
+        if (queue.size() >= threshold) {
+            return false;
+        }
+        return queue.offer(System.currentTimeMillis() + unit.toMillis(timeout));
     }
 }
