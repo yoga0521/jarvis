@@ -36,8 +36,24 @@ public class ThreadPoolFactory {
      */
     public static ExecutorService generateIOThreadPool(String nameFormat) {
         return new ThreadPoolExecutor(
-                2 * Runtime.getRuntime().availableProcessors(),
+                2 * Runtime.getRuntime().availableProcessors() + 1,
                 4 * Runtime.getRuntime().availableProcessors(),
+                5000L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingDeque<>(1024),
+                new ThreadFactoryBuilder().setNameFormat(nameFormat).build());
+    }
+
+    /**
+     * Generate a thread pool for calculate operations
+     *
+     * @param nameFormat thread name format
+     * @return thread pool
+     */
+    public static ExecutorService generateCalculateThreadPool(String nameFormat) {
+        return new ThreadPoolExecutor(
+                Runtime.getRuntime().availableProcessors() + 1,
+                2 * Runtime.getRuntime().availableProcessors(),
                 5000L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingDeque<>(1024),

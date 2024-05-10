@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import org.yoga.jarvis.util.Assert;
 
 import java.util.Queue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,19 +40,19 @@ public class SimpleWindowLimiter {
     private final int threshold;
 
     /**
-     * time windows（ms）
-     */
-    private final long timeWindows;
-
-    /**
      * record queue
      */
     private final Queue<Long> queue;
 
-    public SimpleWindowLimiter(int threshold, long timeWindows, Queue<Long> queue) {
+    /**
+     * the threadPool for doing cleanup task
+     */
+    protected final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    public SimpleWindowLimiter(int threshold) {
         this.threshold = threshold;
-        this.timeWindows = timeWindows;
-        this.queue = queue;
+        this.queue = new LinkedBlockingDeque<>(threshold);
+        cleanupExpiryRecord();
     }
 
     public synchronized boolean tryAcquire(long timeout, TimeUnit unit) {
@@ -58,5 +61,16 @@ public class SimpleWindowLimiter {
             return false;
         }
         return queue.offer(System.currentTimeMillis() + unit.toMillis(timeout));
+    }
+
+    private synchronized void cleanupExpiryRecord() {
+        scheduler.scheduleAtFixedRate(() -> {
+            synchronized (this) {
+                long currentTime = System.currentTimeMillis();
+                while (!queue.isEmpty() && (queue.peek() <= currentTime)) {
+                    queue.poll();
+                }
+            }
+        }, 0, 1, TimeUnit.SECONDS);
     }
 }
