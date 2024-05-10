@@ -25,6 +25,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @Description: SimpleWindow Limiter
@@ -49,27 +52,53 @@ public class SimpleWindowLimiter {
      */
     protected final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    /**
+     * readWriteLock
+     */
+    private final ReadWriteLock lock;
+
+    /**
+     * readLock
+     */
+    private final Lock readLock;
+
+    /**
+     * writeLock
+     */
+    private final Lock writeLock;
+
     public SimpleWindowLimiter(int threshold) {
         this.threshold = threshold;
         this.queue = new LinkedBlockingDeque<>(threshold);
+        this.lock = new ReentrantReadWriteLock();
+        this.readLock = lock.readLock();
+        this.writeLock = lock.writeLock();
         cleanupExpiryRecord();
     }
 
     public synchronized boolean tryAcquire(long timeout, TimeUnit unit) {
-        Assert.isTrue(timeout > 0, "timeout val is illegal");
-        if (queue.size() >= threshold) {
-            return false;
+        writeLock.lock();
+        try {
+            Assert.isTrue(timeout > 0, "timeout val is illegal");
+            if (queue.size() >= threshold) {
+                return false;
+            }
+            return queue.offer(System.currentTimeMillis() + unit.toMillis(timeout));
+        } finally {
+            writeLock.unlock();
         }
-        return queue.offer(System.currentTimeMillis() + unit.toMillis(timeout));
     }
 
     private synchronized void cleanupExpiryRecord() {
         scheduler.scheduleAtFixedRate(() -> {
-            synchronized (this) {
+            writeLock.lock();
+            try {
                 long currentTime = System.currentTimeMillis();
                 while (!queue.isEmpty() && (queue.peek() <= currentTime)) {
                     queue.poll();
                 }
+            } finally {
+                writeLock.unlock();
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
