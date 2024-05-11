@@ -30,12 +30,13 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * @Description: SimpleWindow Limiter
+ * @Description: Fixed Window Limiter
  * @Author: yoga
  * @Date: 2022/6/2 13:24
  */
-public class SimpleWindowLimiter {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleWindowLimiter.class);
+public class FixedWindowLimiter {
+
+    private static final Logger logger = LoggerFactory.getLogger(FixedWindowLimiter.class);
 
     /**
      * threshold
@@ -67,7 +68,7 @@ public class SimpleWindowLimiter {
      */
     private final Lock writeLock;
 
-    public SimpleWindowLimiter(int threshold) {
+    public FixedWindowLimiter(int threshold) {
         this.threshold = threshold;
         this.queue = new LinkedBlockingDeque<>(threshold);
         this.lock = new ReentrantReadWriteLock();
@@ -76,7 +77,7 @@ public class SimpleWindowLimiter {
         cleanupExpiryRecord();
     }
 
-    public synchronized boolean tryAcquire(long timeout, TimeUnit unit) {
+    public boolean tryAcquire(long timeout, TimeUnit unit) {
         writeLock.lock();
         try {
             Assert.isTrue(timeout > 0, "timeout val is illegal");
@@ -89,7 +90,7 @@ public class SimpleWindowLimiter {
         }
     }
 
-    private synchronized void cleanupExpiryRecord() {
+    private void cleanupExpiryRecord() {
         scheduler.scheduleAtFixedRate(() -> {
             writeLock.lock();
             try {
