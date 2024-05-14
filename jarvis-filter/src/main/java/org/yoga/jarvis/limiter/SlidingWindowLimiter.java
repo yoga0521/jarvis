@@ -16,6 +16,9 @@
 
 package org.yoga.jarvis.limiter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @Description: SlidingWindow Limiter
  * @Author: yoga
@@ -23,5 +26,59 @@ package org.yoga.jarvis.limiter;
  */
 public class SlidingWindowLimiter {
 
+    private static final Logger logger = LoggerFactory.getLogger(SlidingWindowLimiter.class);
 
+    // fixed time window size, ms
+    private long windowSize;
+
+    // fixed the number of small windows for window splitting
+    private int windowNum;
+
+    // the maximum number of requests allowed to pass through each window
+    private int maxRequestCount;
+
+    // count of requests within each window
+    private int[] perWindowCount;
+
+    // total count
+    private int totalCount;
+
+    // current window index
+    private int currentWindowIndex;
+
+    // the size of each small window, ms
+    private long perWindowSize;
+
+    // window right border
+    private long windowRightBorder;
+
+    public SlidingWindowLimiter(long windowSize, int windowNum, int maxRequestCount) {
+        this.windowSize = windowSize;
+        this.windowNum = windowNum;
+        this.maxRequestCount = maxRequestCount;
+        this.perWindowCount = new int[windowNum];
+        this.perWindowSize = windowSize / windowNum;
+        this.windowRightBorder = System.currentTimeMillis();
+    }
+
+    public synchronized boolean tryAcquire() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime > windowRightBorder) {
+            do {
+                currentWindowIndex = (++currentWindowIndex) % windowNum;
+                totalCount -= perWindowCount[currentWindowIndex];
+                perWindowCount[currentWindowIndex] = 0;
+                windowRightBorder += perWindowSize;
+            } while (windowRightBorder < currentTime);
+        }
+        if (totalCount < maxRequestCount) {
+            logger.info("tryAcquire success,{}", currentWindowIndex);
+            perWindowCount[currentWindowIndex]++;
+            totalCount++;
+            return true;
+        } else {
+            logger.error("tryAcquire fail,{}", currentWindowIndex);
+            return false;
+        }
+    }
 }
