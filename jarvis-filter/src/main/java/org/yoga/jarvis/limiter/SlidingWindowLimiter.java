@@ -19,6 +19,9 @@ package org.yoga.jarvis.limiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * @Description: SlidingWindow Limiter
  * @Author: yoga
@@ -28,57 +31,32 @@ public class SlidingWindowLimiter {
 
     private static final Logger logger = LoggerFactory.getLogger(SlidingWindowLimiter.class);
 
-    // fixed time window size, ms
-    private long windowSize;
+    // window size
+    private final long windowSize;
 
-    // fixed the number of small windows for window splitting
-    private int windowNum;
+    // max request per window
+    private final int maxRequestPerWindow;
 
-    // the maximum number of requests allowed to pass through each window
-    private int maxRequestCount;
+    // queue
+    private final Queue<Long> queue = new ConcurrentLinkedQueue<>();
 
-    // count of requests within each window
-    private int[] perWindowCount;
-
-    // total count
-    private int totalCount;
-
-    // current window index
-    private int currentWindowIndex;
-
-    // the size of each small window, ms
-    private long perWindowSize;
-
-    // window right border
-    private long windowRightBorder;
-
-    public SlidingWindowLimiter(long windowSize, int windowNum, int maxRequestCount) {
+    public SlidingWindowLimiter(long windowSize, int maxRequestPerWindow) {
         this.windowSize = windowSize;
-        this.windowNum = windowNum;
-        this.maxRequestCount = maxRequestCount;
-        this.perWindowCount = new int[windowNum];
-        this.perWindowSize = windowSize / windowNum;
-        this.windowRightBorder = System.currentTimeMillis();
+        this.maxRequestPerWindow = maxRequestPerWindow;
     }
 
     public synchronized boolean tryAcquire() {
         long currentTime = System.currentTimeMillis();
-        if (currentTime > windowRightBorder) {
-            do {
-                currentWindowIndex = (++currentWindowIndex) % windowNum;
-                totalCount -= perWindowCount[currentWindowIndex];
-                perWindowCount[currentWindowIndex] = 0;
-                windowRightBorder += perWindowSize;
-            } while (windowRightBorder < currentTime);
+        long windowStart = currentTime - windowSize;
+        // clean expired timestamp
+        while (!queue.isEmpty() && queue.peek() < windowStart) {
+            queue.poll();
         }
-        if (totalCount < maxRequestCount) {
-            logger.info("tryAcquire success,{}", currentWindowIndex);
-            perWindowCount[currentWindowIndex]++;
-            totalCount++;
+
+        if (queue.size() < maxRequestPerWindow) {
+            queue.add(currentTime);
             return true;
-        } else {
-            logger.error("tryAcquire fail,{}", currentWindowIndex);
-            return false;
         }
+        return false;
     }
 }
