@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @Description: SlidingWindow Limiter
@@ -40,6 +42,8 @@ public class SlidingWindowLimiter {
     // queue
     private final Queue<Long> queue = new ConcurrentLinkedQueue<>();
 
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     public SlidingWindowLimiter(long windowSize, int maxRequestPerWindow) {
         this.windowSize = windowSize;
         this.maxRequestPerWindow = maxRequestPerWindow;
@@ -48,9 +52,16 @@ public class SlidingWindowLimiter {
     public synchronized boolean tryAcquire() {
         long currentTime = System.currentTimeMillis();
         long windowStart = currentTime - windowSize;
-        // clean expired timestamp
-        while (!queue.isEmpty() && queue.peek() < windowStart) {
-            queue.poll();
+
+        lock.readLock().lock();
+        try {
+            // clean expired timestamp
+            while (!queue.isEmpty() && queue.peek() < windowStart) {
+                queue.poll();
+            }
+        } finally {
+            // 释放读锁
+            lock.readLock().unlock();
         }
 
         if (queue.size() < maxRequestPerWindow) {
