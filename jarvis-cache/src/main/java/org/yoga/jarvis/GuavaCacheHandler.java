@@ -19,8 +19,11 @@ package org.yoga.jarvis;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
+import org.yoga.jarvis.exception.JarvisException;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * @Description: Cache Handler implemented by guava
@@ -58,6 +61,15 @@ public class GuavaCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 		super.put(k, v);
 		cache.put(k, v);
 	}
+
+	@Override
+	public V get(K k, Function<? super K, ? extends V> mappingFunction) {
+        try {
+            return cache.get(k, () -> mappingFunction.apply(k));
+        } catch (ExecutionException e) {
+            throw new JarvisException(e);
+        }
+    }
 
 	@Override
 	public V getIfPresent(K k) {

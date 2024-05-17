@@ -16,7 +16,9 @@
 
 package org.yoga.jarvis;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * @Description: Cache Handler
@@ -25,35 +27,44 @@ import javax.annotation.Nullable;
  */
 public interface CacheHandler<K, V> {
 
-	/**
-	 * add cache
-	 *
-	 * @param k key, not null
-	 * @param v value, not null
-	 */
-	void put(K k, V v);
+    /**
+     * add cache
+     *
+     * @param k key, not null
+     * @param v value, not null
+     */
+    void put(@Nonnull K k, V v);
 
-	/**
-	 * get cache
-	 *
-	 * @param k key, not null
-	 * @return value
-	 */
-	@Nullable
-	V getIfPresent(K k);
+    /**
+     * get cache
+     *
+     * @param k               key, not null
+     * @param mappingFunction function to load key and value
+     * @return value
+     */
+    V get(@Nonnull K k, @Nonnull Function<? super K, ? extends V> mappingFunction);
 
-	/**
-	 * remove cache
-	 *
-	 * @param k key
-	 */
-	void remove(K k);
+    /**
+     * get cache
+     *
+     * @param k key, not null
+     * @return value
+     */
+    @Nullable
+    V getIfPresent(@Nonnull K k);
 
-	/**
-	 * clear all cache
-	 */
-	void clear();
+    /**
+     * remove cache
+     *
+     * @param k key
+     */
+    void remove(@Nonnull K k);
 
-	long size();
+    /**
+     * clear all cache
+     */
+    void clear();
+
+    long size();
 
 }
