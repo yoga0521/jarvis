@@ -57,16 +57,36 @@ public class SlidingWindowLimiter {
         try {
             // clean expired timestamp
             while (!queue.isEmpty() && queue.peek() < windowStart) {
-                queue.poll();
+                // upgrade to write lock
+                lock.readLock().unlock();
+                lock.writeLock().lock();
+
+                try {
+                    // double check
+                    if (!queue.isEmpty() && queue.peek() < windowStart) {
+                        queue.poll();
+                    }
+                } finally {
+                    // downgrade the read lock and release the write lock
+                    lock.readLock().lock();
+                    lock.writeLock().unlock();
+                }
             }
         } finally {
-            // 释放读锁
+            // release the read lock
             lock.readLock().unlock();
         }
 
-        if (queue.size() < maxRequestPerWindow) {
-            queue.add(currentTime);
-            return true;
+
+        lock.writeLock().lock();
+        try {
+            if (queue.size() < maxRequestPerWindow) {
+                queue.add(currentTime);
+                return true;
+            }
+        } finally {
+            // release the write lock
+            lock.writeLock().unlock();
         }
         return false;
     }
