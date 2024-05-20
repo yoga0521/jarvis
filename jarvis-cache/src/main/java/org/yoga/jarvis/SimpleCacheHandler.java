@@ -54,11 +54,13 @@ public class SimpleCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
         CacheValue<V> cacheValue = cache.get(k);
         if (cacheValue != null && (cacheValue.getTimestamp() + expiredTime > System.currentTimeMillis())) {
             return cacheValue.getValue();
-        } else {
-            V newVal = mappingFunction.apply(k);
+        }
+        V newVal = mappingFunction.apply(k);
+        if (newVal != null) {
             put(k, newVal);
             return newVal;
         }
+        return null;
     }
 
     @Override
