@@ -57,8 +57,10 @@ public class SimpleCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
         }
         V newVal = mappingFunction.apply(k);
         if (newVal != null) {
-            put(k, newVal);
-            return newVal;
+            CacheValue<V> newCacheValue = new CacheValue<>(newVal, System.currentTimeMillis());
+            if (cache.putIfAbsent(k, newCacheValue) == null) {
+                return newVal;
+            }
         }
         return null;
     }
