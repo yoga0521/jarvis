@@ -16,7 +16,12 @@
 
 package org.yoga.jarvis;
 
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.sync.RedisCommands;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 /**
  * @Description: Cache Handler implemented by redis
@@ -25,6 +30,22 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
+    private final RedisClient redisClient;
+
+    private final RedisCommands<String, String> syncCommands;
+
+    private final long expiredTime;
+
+    public RedisCacheHandler(String host, int port, long expiredTime) {
+        this.redisClient = RedisClient.create("redis://" + host + ":" + port);
+        this.syncCommands = redisClient.connect().sync();
+        this.expiredTime = expiredTime;
+    }
+
+    @Override
+    public V get(@NotNull K k, @NotNull Function<? super K, ? extends V> mappingFunction) {
+        return null;
+    }
 
     @Override
     public V getIfPresent(K k) {
