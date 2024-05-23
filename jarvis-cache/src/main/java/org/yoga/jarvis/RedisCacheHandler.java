@@ -19,7 +19,6 @@ package org.yoga.jarvis;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -30,16 +29,32 @@ import java.util.function.Function;
  */
 public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
+    /**
+     * redis client
+     */
     private final RedisClient redisClient;
 
-    private final RedisCommands<String, String> syncCommands;
+    /**
+     * commands
+     */
+    private final RedisCommands<String, String> commands;
 
+    /**
+     * expiredTime, ms
+     */
     private final long expiredTime;
 
     public RedisCacheHandler(String host, int port, long expiredTime) {
         this.redisClient = RedisClient.create("redis://" + host + ":" + port);
-        this.syncCommands = redisClient.connect().sync();
+        this.commands = redisClient.connect().sync();
         this.expiredTime = expiredTime;
+    }
+
+    @Override
+    public void put(K k, V v) {
+        super.put(k, v);
+        String serializedVal = serialize(v);
+        commands.setex(k.toString(), expiredTime, serializedVal);
     }
 
     @Override
@@ -49,21 +64,39 @@ public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
     @Override
     public V getIfPresent(K k) {
+        String value = commands.get(k.toString());
+        if (value != null) {
+            return deserialize(value);
+        }
         return null;
     }
 
     @Override
     public void remove(K k) {
-
+        commands.del(k.toString());
     }
 
     @Override
     public void clear() {
-
+        commands.flushall();
     }
 
     @Override
     public long size() {
         return 0;
+    }
+
+    private String serialize(V value) {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
+    private V deserialize(String value) {
+        if (value == null) {
+            return null;
+        }
+        return (V) value;
     }
 }
