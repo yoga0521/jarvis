@@ -59,6 +59,17 @@ public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
     @Override
     public V get(@NotNull K k, @NotNull Function<? super K, ? extends V> mappingFunction) {
+        String value = commands.get(k.toString());
+        if (value != null) {
+            return deserialize(value);
+        }
+        V newVal = mappingFunction.apply(k);
+        if (newVal != null) {
+            super.put(k, newVal);
+            String serializedVal = serialize(newVal);
+            commands.setex(k.toString(), expiredTime, serializedVal);
+            return newVal;
+        }
         return null;
     }
 
