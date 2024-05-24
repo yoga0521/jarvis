@@ -94,7 +94,7 @@ public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
     @Override
     public long size() {
-        return 0;
+        return commands.keys("*").size();
     }
 
     private String serialize(V value) {
