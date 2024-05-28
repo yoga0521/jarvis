@@ -16,6 +16,9 @@
 
 package org.yoga.jarvis.filter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Description: Filter
  * @Author: yoga
@@ -33,5 +36,5 @@ public interface Filter {
     /**
      * filter
      */
-    void doFilter();
+    void filter(HttpServletRequest request, HttpServletResponse response);
 }

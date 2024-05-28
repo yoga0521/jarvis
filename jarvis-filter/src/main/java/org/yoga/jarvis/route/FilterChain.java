@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.route;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,4 +29,15 @@ import java.util.List;
 public class FilterChain {
 
     private List<RoutingFilter> filters = new ArrayList<>();
+
+    public void addFilter(RoutingFilter filter) {
+        filters.add(filter);
+    }
+
+    public boolean doFilter(HttpServletRequest request, HttpServletResponse response) {
+        for (RoutingFilter filter : filters) {
+            filter.filter(request, response);
+        }
+        return true;
+    }
 }

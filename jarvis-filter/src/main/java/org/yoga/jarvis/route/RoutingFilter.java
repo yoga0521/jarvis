@@ -18,6 +18,9 @@ package org.yoga.jarvis.route;
 
 import org.yoga.jarvis.filter.Filter;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Description: 路由过滤器
  * @Author: yoga
@@ -31,7 +34,7 @@ public class RoutingFilter implements Filter {
     }
 
     @Override
-    public void doFilter() {
+    public void filter(HttpServletRequest request, HttpServletResponse response) {
 
     }
 }
