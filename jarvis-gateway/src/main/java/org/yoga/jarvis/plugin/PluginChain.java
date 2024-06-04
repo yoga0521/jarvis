@@ -42,6 +42,10 @@ public class PluginChain implements Plugin {
         return null;
     }
 
+    protected void execute() {
+
+    }
+
     /**
      * add plugin to chain
      *
