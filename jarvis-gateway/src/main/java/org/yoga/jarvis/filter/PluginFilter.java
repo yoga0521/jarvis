@@ -16,9 +16,12 @@
 
 package org.yoga.jarvis.filter;
 
+import org.springframework.http.server.RequestPath;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
+import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.plugin.PluginChain;
 import reactor.core.publisher.Mono;
 
 /**
@@ -28,8 +31,21 @@ import reactor.core.publisher.Mono;
  */
 public class PluginFilter implements WebFilter {
 
+    /**
+     * Gateway Server Configs
+     */
+    private ServerConfigs serverConfigs;
+
+    public PluginFilter(ServerConfigs serverConfigs) {
+        this.serverConfigs = serverConfigs;
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return null;
+        RequestPath requestPath = exchange.getRequest().getPath();
+        // request path format: /[appName]/path
+        String appName = requestPath.value().split("/")[1];
+        PluginChain pluginChain = new PluginChain(serverConfigs, appName);
+        return pluginChain.execute(exchange, pluginChain);
     }
 }

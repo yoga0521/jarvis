@@ -16,6 +16,9 @@
 
 package org.yoga.jarvis.plugin;
 
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
 /**
  * @Description: Plugin
  * @Author: yoga
@@ -37,4 +40,6 @@ public interface Plugin {
      * @return plugin name
      */
     String name();
+
+    Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain);
 }
