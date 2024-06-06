@@ -47,7 +47,7 @@ public class OssConfigs {
     /**
      * Part size for multipart upload, default 100 MB
      */
-    private long partSize = 102_400;
+    private long partSize = 1024 * 100L;
 
     public String getEndpoint() {
         return endpoint;
