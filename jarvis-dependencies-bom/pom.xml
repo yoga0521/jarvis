@@ -84,6 +84,8 @@
 
         <aspose.version>23.1</aspose.version>
 
+        <nacos-boot.version>2023.0.1.0</nacos-boot.version>
+
         <!-- Maven plugins -->
         <maven_flatten.version>1.2.7</maven_flatten.version>
 
@@ -259,6 +261,12 @@
                 <groupId>com.aspose</groupId>
                 <artifactId>aspose-cad</artifactId>
                 <version>${aspose.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${nacos-boot.version}</version>
             </dependency>
 
         </dependencies>
