@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.balancer.impl;
+package org.yoga.jarvis.balance.impl;
 
-import org.yoga.jarvis.balancer.AbstractLoadBalance;
+import org.yoga.jarvis.balance.AbstractLoadBalance;
 import org.yoga.jarvis.core.ServerInstance;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

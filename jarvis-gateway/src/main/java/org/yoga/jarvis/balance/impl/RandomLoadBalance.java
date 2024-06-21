@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.balancer;
+package org.yoga.jarvis.balance.impl;
 
+import org.yoga.jarvis.balance.AbstractLoadBalance;
 import org.yoga.jarvis.core.ServerInstance;
-import org.yoga.jarvis.exception.JarvisException;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * @Description: Load Balance
+ * @Description: Random Load Balance
  * @Author: yoga
- * @Date: 2024/6/12 15:20
+ * @Date: 2024/6/13 17:47
  */
-public interface LoadBalance {
+public class RandomLoadBalance extends AbstractLoadBalance {
 
-    /**
-     * select load balance
-     *
-     * @param instances server instances
-     * @return The server instance of the selected
-     * @throws JarvisException Exception
-     */
-    ServerInstance select(List<ServerInstance> instances) throws JarvisException;
+    public static final String NAME = "random";
+
+    @Override
+    protected ServerInstance doSelect(List<ServerInstance> instances) {
+        return instances.get(ThreadLocalRandom.current().nextInt(instances.size()));
+    }
 }

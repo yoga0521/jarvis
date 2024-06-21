@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.balancer.impl;
+package org.yoga.jarvis.balance;
 
-import org.yoga.jarvis.balancer.AbstractLoadBalance;
-import org.yoga.jarvis.core.ServerInstance;
-
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import org.yoga.jarvis.CacheHandler;
+import org.yoga.jarvis.GuavaCacheHandler;
 
 /**
- * @Description: Random Load Balance
+ * @Description: Load Balance Factory
  * @Author: yoga
- * @Date: 2024/6/13 17:47
+ * @Date: 2024/6/21 17:07
  */
-public class RandomLoadBalance extends AbstractLoadBalance {
+public class LoadBalanceFactory {
 
-    public static final String NAME = "random";
+    private static final CacheHandler<String, LoadBalance> LOAD_BALANCE_CACHE = new GuavaCacheHandler<>(8, 32, 24 * 60 * 60);
 
-    @Override
-    protected ServerInstance doSelect(List<ServerInstance> instances) {
-        return instances.get(ThreadLocalRandom.current().nextInt(instances.size()));
+    private LoadBalanceFactory() {
     }
 }
