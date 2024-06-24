@@ -18,6 +18,10 @@ package org.yoga.jarvis.balance;
 
 import org.yoga.jarvis.CacheHandler;
 import org.yoga.jarvis.GuavaCacheHandler;
+import org.yoga.jarvis.exception.JarvisException;
+import org.yoga.jarvis.util.Assert;
+
+import java.util.ServiceLoader;
 
 /**
  * @Description: Load Balance Factory
@@ -29,5 +33,34 @@ public class LoadBalanceFactory {
     private static final CacheHandler<String, LoadBalance> LOAD_BALANCE_CACHE = new GuavaCacheHandler<>(8, 32, 24 * 60 * 60);
 
     private LoadBalanceFactory() {
+    }
+
+    /**
+     * get the instance of load balance
+     *
+     * @param name    load balance name
+     * @param appName app name
+     * @param version version
+     * @return the instance of load balance
+     */
+    public static LoadBalance getInstance(final String name, String appName, String version) {
+        return LOAD_BALANCE_CACHE.get(appName + ":" + version, k -> getLoadBalance(name));
+    }
+
+    /**
+     * get load balance by name
+     *
+     * @param name load balance name
+     * @return load balance
+     */
+    private static LoadBalance getLoadBalance(String name) {
+        Assert.notBlank(name, "load balance name can not be blank!");
+        ServiceLoader<LoadBalance> loader = ServiceLoader.load(LoadBalance.class);
+        for (LoadBalance loadBalance : loader) {
+            if (name.equals(loadBalance.getName())) {
+                return loadBalance;
+            }
+        }
+        throw new JarvisException("invalid load balance name");
     }
 }

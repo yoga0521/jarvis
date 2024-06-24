@@ -37,4 +37,9 @@ public class RoundRobinLoadBalance extends AbstractLoadBalance {
     protected ServerInstance doSelect(List<ServerInstance> instances) {
         return instances.get(currentIndex.updateAndGet(i -> (i + 1) % instances.size()));
     }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }

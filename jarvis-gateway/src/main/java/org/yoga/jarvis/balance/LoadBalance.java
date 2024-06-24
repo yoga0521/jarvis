@@ -36,4 +36,11 @@ public interface LoadBalance {
      * @throws JarvisException Exception
      */
     ServerInstance select(List<ServerInstance> instances) throws JarvisException;
+
+    /**
+     * get the name of the load balance policy
+     *
+     * @return the name of the load balance policy
+     */
+    String getName();
 }

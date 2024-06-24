@@ -35,4 +35,9 @@ public class RandomLoadBalance extends AbstractLoadBalance {
     protected ServerInstance doSelect(List<ServerInstance> instances) {
         return instances.get(ThreadLocalRandom.current().nextInt(instances.size()));
     }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 }
