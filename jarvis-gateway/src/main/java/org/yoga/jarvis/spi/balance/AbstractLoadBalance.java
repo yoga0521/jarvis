@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.balance;
+package org.yoga.jarvis.spi.balance;
 
 import org.yoga.jarvis.core.ServerInstance;
+import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.util.CollectionUtils;
 
 import java.util.List;

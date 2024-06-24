@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.balance.impl;
+package org.yoga.jarvis.spi;
 
-import org.yoga.jarvis.balance.AbstractLoadBalance;
 import org.yoga.jarvis.core.ServerInstance;
+import org.yoga.jarvis.exception.JarvisException;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @Description: Round Robin Load Balance
+ * @Description: Load Balance
  * @Author: yoga
- * @Date: 2024/6/17 15:27
+ * @Date: 2024/6/12 15:20
  */
-public class RoundRobinLoadBalance extends AbstractLoadBalance {
+public interface LoadBalance {
 
-    public static final String NAME = "round-robin";
+    /**
+     * select load balance
+     *
+     * @param instances server instances
+     * @return The server instance of the selected
+     * @throws JarvisException Exception
+     */
+    ServerInstance select(List<ServerInstance> instances) throws JarvisException;
 
-    private final AtomicInteger currentIndex = new AtomicInteger(0);
-
-    @Override
-    protected ServerInstance doSelect(List<ServerInstance> instances) {
-        return instances.get(currentIndex.updateAndGet(i -> (i + 1) % instances.size()));
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
+    /**
+     * get the name of the load balance policy
+     *
+     * @return the name of the load balance policy
+     */
+    String getName();
 }

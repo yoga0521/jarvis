@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.balance;
+package org.yoga.jarvis.spi.balance;
 
 import org.yoga.jarvis.CacheHandler;
 import org.yoga.jarvis.GuavaCacheHandler;
 import org.yoga.jarvis.exception.JarvisException;
+import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.util.Assert;
 
 import java.util.ServiceLoader;
