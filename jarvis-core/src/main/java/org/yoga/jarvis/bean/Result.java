@@ -16,12 +16,16 @@
 
 package org.yoga.jarvis.bean;
 
+import java.io.Serializable;
+
 /**
  * @Description: result for jarvis
  * @Author: yoga
  * @Date: 2022/5/17 14:38
  */
-public class Result<T> {
+public class Result<T> implements Serializable {
+
+    private static final long serialVersionUID = 554878361470425798L;
 
     private boolean success;
 
