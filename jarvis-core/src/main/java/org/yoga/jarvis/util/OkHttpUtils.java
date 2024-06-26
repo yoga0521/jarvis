@@ -30,9 +30,9 @@ import java.util.concurrent.TimeUnit;
 public class OkHttpUtils {
 
     private static final OkHttpClient OKHTTP_CLIENT = new OkHttpClient.Builder()
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(120, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
             .build();
 
     /**
@@ -43,7 +43,7 @@ public class OkHttpUtils {
      * @param paramJsonStr param json str
      * @return result
      */
-    public static String okHttpPost(String reqUrl, Map<String, String> header, String paramJsonStr) {
+    public static String post(String reqUrl, Map<String, String> header, String paramJsonStr) {
         RequestBody body = RequestBody.create(paramJsonStr, MediaType.parse("application/json; charset=utf-8"));
 
         Request.Builder builder = new Request.Builder().url(reqUrl);
