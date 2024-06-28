@@ -16,7 +16,11 @@
 
 package org.yoga.jarvis.util;
 
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.yoga.jarvis.exception.JarvisException;
 
 import java.util.Map;
@@ -56,6 +60,30 @@ public class OkHttpUtils {
             return response.body().string();
         } catch (Exception e) {
             throw new JarvisException("HTTP Request Fail URL: " + reqUrl, e);
+        }
+    }
+
+    /**
+     * OKHTTP  execute
+     *
+     * @param url          request url
+     * @param header       header
+     * @param method       method
+     * @param paramJsonStr param json str
+     * @return result
+     */
+    public static String execute(String url, Map<String, String> header, String method, String paramJsonStr) {
+
+        Request.Builder builder = new Request.Builder().url(url);
+        if (header != null && !header.isEmpty()) {
+            header.forEach(builder::addHeader);
+        }
+        Request request = builder.method(method, StringUtils.isNotBlank(paramJsonStr) ? RequestBody.create(paramJsonStr, MediaType.parse("application/json; charset=utf-8")) : null).build();
+        try {
+            Response response = OKHTTP_CLIENT.newCall(request).execute();
+            return response.body().string();
+        } catch (Exception e) {
+            throw new JarvisException("HTTP Request Fail URL: " + url, e);
         }
     }
 }
