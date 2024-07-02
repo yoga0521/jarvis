@@ -17,6 +17,7 @@
 package org.yoga.jarvis.util;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -30,7 +31,7 @@ import java.util.stream.Collector;
 public class CollectionUtils {
 
     /**
-     * Check an array is {@code null} or has length 0
+     * Check an {@code Collection} is {@code null} or has length 0
      *
      * <pre class="code">
      * CollectionsUtils.isEmpty({@code null}) = true
@@ -60,6 +61,36 @@ public class CollectionUtils {
      */
     public static <T> boolean isNotEmpty(final Collection<T> collection) {
         return !isEmpty(collection);
+    }
+
+    /**
+     * Check a {@code Map} is {@code null} or has length 0
+     *
+     * <pre class="code">
+     * CollectionsUtils.isEmpty({@code null}) = true
+     * CollectionsUtils.isEmpty(new HashMap(16)) = true
+     * </pre>
+     *
+     * @param map the {@code Map}
+     * @return {@code true} if the {@code Map} is {@code null} or has length 0
+     */
+    public static <K,V> boolean isEmpty(final Map<K, V> map) {
+        return map == null || map.size() == 0;
+    }
+
+    /**
+     * Check a {@code Map} is not {@code null} and has size
+     *
+     * <pre class="code">
+     * CollectionsUtils.isNotEmpty({@code null}) = false
+     * CollectionsUtils.isNotEmpty(new HashMap(16)) = false
+     * </pre>
+     *
+     * @param map the {@code Map}
+     * @return {@code true} if the {@code Map} is not {@code null} and has size
+     */
+    public static <K, V> boolean isNotEmpty(final Map<K, V> map) {
+        return !isEmpty(map);
     }
 
     /**
