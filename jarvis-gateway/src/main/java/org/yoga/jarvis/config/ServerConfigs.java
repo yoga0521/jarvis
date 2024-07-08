@@ -17,6 +17,7 @@
 package org.yoga.jarvis.config;
 
 import org.yoga.jarvis.constant.RateLimiterType;
+import org.yoga.jarvis.spi.balance.impl.RoundRobinLoadBalance;
 
 /**
  * @Description: Gateway Server Configs
@@ -40,6 +41,11 @@ public class ServerConfigs {
      */
     private RateLimiterType rateLimiterType = RateLimiterType.Token_Bucket;
 
+    /**
+     * LoadBalance algorithm, default round
+     */
+    private String loadBalance = RoundRobinLoadBalance.NAME;
+
     public long getTimeout() {
         return timeout;
     }
@@ -62,5 +68,13 @@ public class ServerConfigs {
 
     public void setRateLimiterType(RateLimiterType rateLimiterType) {
         this.rateLimiterType = rateLimiterType;
+    }
+
+    public String getLoadBalance() {
+        return loadBalance;
+    }
+
+    public void setLoadBalance(String loadBalance) {
+        this.loadBalance = loadBalance;
     }
 }

@@ -18,10 +18,22 @@ package org.yoga.jarvis.plugin.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import org.yoga.jarvis.cache.ServerInstanceCache;
+import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.core.ServerInstance;
+import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.plugin.Plugin;
 import org.yoga.jarvis.plugin.PluginChain;
+import org.yoga.jarvis.spi.LoadBalance;
+import org.yoga.jarvis.spi.balance.LoadBalanceFactory;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Route Plugin
@@ -31,6 +43,15 @@ import reactor.core.publisher.Mono;
 public class RoutePlugin implements Plugin {
 
     protected static final Logger logger = LoggerFactory.getLogger(RoutePlugin.class);
+
+    /**
+     * Gateway Server Configs
+     */
+    private ServerConfigs serverConfigs;
+
+    public RoutePlugin(ServerConfigs serverConfigs) {
+        this.serverConfigs = serverConfigs;
+    }
 
     @Override
     public Integer order() {
@@ -45,5 +66,18 @@ public class RoutePlugin implements Plugin {
     @Override
     public Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain) {
         return null;
+    }
+
+    private ServerInstance chooseInstance(String appName, ServerHttpRequest request) {
+        List<ServerInstance> serverInstances = ServerInstanceCache.getServerInstances(appName);
+        if (CollectionUtils.isEmpty(serverInstances)) {
+            logger.error("server instance[{}] not find", appName);
+            throw new JarvisException("server instance not find");
+        }
+        // version todo
+        String version = "v1";
+        //Select an instance based on the loadBalance algorithm
+        LoadBalance loadBalance = LoadBalanceFactory.getInstance(serverConfigs.getLoadBalance(), appName, version);
+        return loadBalance.select(serverInstances);
     }
 }
