@@ -36,7 +36,7 @@ public class AuthorizationPlugin implements Plugin {
     /**
      * Gateway Server Configs
      */
-    private ServerConfigs serverConfigs;
+    private final ServerConfigs serverConfigs;
 
     public AuthorizationPlugin(ServerConfigs serverConfigs) {
         this.serverConfigs = serverConfigs;

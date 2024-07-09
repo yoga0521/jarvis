@@ -47,7 +47,7 @@ public class RoutePlugin implements Plugin {
     /**
      * Gateway Server Configs
      */
-    private ServerConfigs serverConfigs;
+    private final ServerConfigs serverConfigs;
 
     public RoutePlugin(ServerConfigs serverConfigs) {
         this.serverConfigs = serverConfigs;
