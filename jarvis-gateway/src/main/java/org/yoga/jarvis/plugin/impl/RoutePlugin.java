@@ -16,11 +16,14 @@
 
 package org.yoga.jarvis.plugin.impl;
 
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import org.yoga.jarvis.cache.ServerInstanceCache;
 import org.yoga.jarvis.config.ServerConfigs;
@@ -31,9 +34,9 @@ import org.yoga.jarvis.plugin.PluginChain;
 import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.spi.balance.LoadBalanceFactory;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Description: Route Plugin
@@ -48,6 +51,20 @@ public class RoutePlugin implements Plugin {
      * Gateway Server Configs
      */
     private final ServerConfigs serverConfigs;
+
+    /**
+     * Use reactive web client
+     */
+    private static final WebClient webClient;
+
+    static {
+        webClient = WebClient
+                .builder()
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create().doOnConnected(conn ->
+                        conn.addHandlerLast(new ReadTimeoutHandler(10))
+                                .addHandlerLast(new WriteTimeoutHandler(10)))))
+                .build();
+    }
 
     public RoutePlugin(ServerConfigs serverConfigs) {
         this.serverConfigs = serverConfigs;
