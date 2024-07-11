@@ -34,12 +34,12 @@ public class PluginChain implements Plugin {
     /**
      * Gateway Server Configs
      */
-    private ServerConfigs serverConfigs;
+    private final ServerConfigs serverConfigs;
 
     /**
      * App Name
      */
-    private String appName;
+    private final String appName;
 
     /**
      * The position of current plugin
@@ -86,5 +86,9 @@ public class PluginChain implements Plugin {
         plugins.add(plugin);
         // order by the plugin's order
         plugins.sort(Comparator.comparing(Plugin::order));
+    }
+
+    public String getAppName() {
+        return appName;
     }
 }

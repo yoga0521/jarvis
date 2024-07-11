@@ -38,6 +38,7 @@ import org.yoga.jarvis.plugin.PluginChain;
 import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.spi.balance.LoadBalanceFactory;
 import org.yoga.jarvis.util.Assert;
+import org.yoga.jarvis.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -99,7 +100,18 @@ public class RoutePlugin implements Plugin {
 
     @Override
     public Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain) {
-        return null;
+        ServerHttpRequest request = exchange.getRequest();
+        String appName = pluginChain.getAppName();
+        //
+        ServerInstance serverInstance = chooseInstance(pluginChain.getAppName(), request);
+        Assert.notNull(serverInstance, appName + " no server available!");
+        // build new url, http://ip:port/path
+        String url = "http://" + serverInstance.getIp() + ":" + serverInstance.getPort() +
+                request.getPath().value().replaceFirst("/" + appName, "");
+        if (StringUtils.isNotBlank(request.getURI().getQuery())) {
+            url += "?" + request.getURI().getQuery();
+        }
+        return forward(exchange, url);
     }
 
     /**
