@@ -17,7 +17,6 @@
 package org.yoga.jarvis.plugin;
 
 import org.springframework.web.server.ServerWebExchange;
-import org.yoga.jarvis.config.ServerConfigs;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -25,16 +24,11 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @Description:
+ * @Description: PluginChain
  * @Author: yoga
  * @Date: 2024/5/31 15:14
  */
-public class PluginChain implements Plugin {
-
-    /**
-     * Gateway Server Configs
-     */
-    private final ServerConfigs serverConfigs;
+public class PluginChain {
 
     /**
      * App Name
@@ -51,22 +45,10 @@ public class PluginChain implements Plugin {
      */
     private List<Plugin> plugins;
 
-    public PluginChain(ServerConfigs serverConfigs, String appName) {
-        this.serverConfigs = serverConfigs;
+    public PluginChain(String appName) {
         this.appName = appName;
     }
 
-    @Override
-    public Integer order() {
-        return null;
-    }
-
-    @Override
-    public String name() {
-        return null;
-    }
-
-    @Override
     public Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain) {
         if (pos == plugins.size()) {
             return exchange.getResponse().setComplete();
