@@ -148,6 +148,13 @@ public class RoutePlugin implements Plugin {
                         .then(Mono.empty()));
     }
 
+    /**
+     * choose server instance
+     *
+     * @param appName app name
+     * @param request http request
+     * @return server instance
+     */
     private ServerInstance chooseInstance(String appName, ServerHttpRequest request) {
         List<ServerInstance> serverInstances = ServerInstanceCache.getServerInstances(appName);
         if (CollectionUtils.isEmpty(serverInstances)) {
