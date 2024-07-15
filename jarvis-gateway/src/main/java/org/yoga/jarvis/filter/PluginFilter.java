@@ -21,8 +21,14 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.plugin.Plugin;
 import org.yoga.jarvis.plugin.PluginChain;
+import org.yoga.jarvis.plugin.impl.AuthorizationPlugin;
+import org.yoga.jarvis.plugin.impl.RoutePlugin;
 import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description: Plugin Filter
@@ -45,7 +51,10 @@ public class PluginFilter implements WebFilter {
         RequestPath requestPath = exchange.getRequest().getPath();
         // request path format: /[appName]/path
         String appName = requestPath.value().split("/")[1];
-        PluginChain pluginChain = new PluginChain(serverConfigs, appName);
+        List<Plugin> plugins = new ArrayList<>();
+        plugins.add(new AuthorizationPlugin(serverConfigs));
+        plugins.add(new RoutePlugin(serverConfigs));
+        PluginChain pluginChain = new PluginChain(appName, plugins);
         return pluginChain.execute(exchange, pluginChain);
     }
 }

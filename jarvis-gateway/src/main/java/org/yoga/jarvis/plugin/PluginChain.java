@@ -19,7 +19,7 @@ package org.yoga.jarvis.plugin;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,10 +43,12 @@ public class PluginChain {
     /**
      * the plugins of chain
      */
-    private List<Plugin> plugins;
+    private final List<Plugin> plugins;
 
-    public PluginChain(String appName) {
+    public PluginChain(String appName, List<Plugin> plugins) {
         this.appName = appName;
+        plugins.sort(Comparator.comparing(Plugin::order));
+        this.plugins = Collections.unmodifiableList(plugins);
     }
 
     public Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain) {
@@ -54,20 +56,6 @@ public class PluginChain {
             return exchange.getResponse().setComplete();
         }
         return pluginChain.plugins.get(pos++).execute(exchange, this);
-    }
-
-    /**
-     * add plugin to chain
-     *
-     * @param plugin plugin
-     */
-    public void addPlugin(Plugin plugin) {
-        if (plugins == null) {
-            plugins = new ArrayList<>();
-        }
-        plugins.add(plugin);
-        // order by the plugin's order
-        plugins.sort(Comparator.comparing(Plugin::order));
     }
 
     public String getAppName() {

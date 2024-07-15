@@ -41,5 +41,12 @@ public interface Plugin {
      */
     String name();
 
+    /**
+     * plugin execute
+     *
+     * @param exchange    ServerWebExchange
+     * @param pluginChain PluginChain
+     * @return execute result
+     */
     Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain);
 }
