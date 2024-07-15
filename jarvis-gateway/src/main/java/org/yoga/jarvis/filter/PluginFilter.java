@@ -40,7 +40,7 @@ public class PluginFilter implements WebFilter {
     /**
      * Gateway Server Configs
      */
-    private ServerConfigs serverConfigs;
+    private final ServerConfigs serverConfigs;
 
     public PluginFilter(ServerConfigs serverConfigs) {
         this.serverConfigs = serverConfigs;
