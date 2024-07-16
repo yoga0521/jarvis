@@ -38,7 +38,7 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
 
     protected static final Logger logger = LoggerFactory.getLogger(SyncRegisteredAppTaskListener.class);
 
-    private static ScheduledThreadPoolExecutor scheduledPool = new ScheduledThreadPoolExecutor(1,
+    private static final ScheduledThreadPoolExecutor scheduledPool = new ScheduledThreadPoolExecutor(1,
             new ThreadFactoryBuilder().setNameFormat("sync-registered-app").build());
 
     @NacosInjected
