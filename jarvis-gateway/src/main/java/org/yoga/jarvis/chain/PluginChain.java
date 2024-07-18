@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.plugin;
+package org.yoga.jarvis.chain;
 
 import org.springframework.web.server.ServerWebExchange;
+import org.yoga.jarvis.plugin.Plugin;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;

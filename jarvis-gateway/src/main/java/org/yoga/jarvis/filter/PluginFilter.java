@@ -22,7 +22,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import org.yoga.jarvis.config.ServerConfigs;
 import org.yoga.jarvis.plugin.Plugin;
-import org.yoga.jarvis.plugin.PluginChain;
+import org.yoga.jarvis.chain.PluginChain;
 import org.yoga.jarvis.plugin.impl.AuthorizationPlugin;
 import org.yoga.jarvis.plugin.impl.RoutePlugin;
 import reactor.core.publisher.Mono;

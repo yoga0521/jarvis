@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ServerWebExchange;
 import org.yoga.jarvis.config.ServerConfigs;
 import org.yoga.jarvis.plugin.Plugin;
-import org.yoga.jarvis.plugin.PluginChain;
+import org.yoga.jarvis.chain.PluginChain;
 import reactor.core.publisher.Mono;
 
 /**

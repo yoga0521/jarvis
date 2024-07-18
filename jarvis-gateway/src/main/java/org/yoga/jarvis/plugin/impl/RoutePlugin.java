@@ -34,7 +34,7 @@ import org.yoga.jarvis.config.ServerConfigs;
 import org.yoga.jarvis.core.ServerInstance;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.plugin.Plugin;
-import org.yoga.jarvis.plugin.PluginChain;
+import org.yoga.jarvis.chain.PluginChain;
 import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.spi.balance.LoadBalanceFactory;
 import org.yoga.jarvis.util.Assert;
