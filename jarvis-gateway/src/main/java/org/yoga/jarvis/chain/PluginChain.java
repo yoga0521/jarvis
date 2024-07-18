@@ -39,7 +39,7 @@ public class PluginChain {
     /**
      * The position of current plugin
      */
-    private int pos = 0;
+    private int pos;
 
     /**
      * the plugins of chain
@@ -48,6 +48,7 @@ public class PluginChain {
 
     public PluginChain(String appName, List<Plugin> plugins) {
         this.appName = appName;
+        this.pos = 0;
         plugins.sort(Comparator.comparing(Plugin::order));
         this.plugins = Collections.unmodifiableList(plugins);
     }
