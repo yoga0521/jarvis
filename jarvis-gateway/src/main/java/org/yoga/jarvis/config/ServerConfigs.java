@@ -19,6 +19,9 @@ package org.yoga.jarvis.config;
 import org.yoga.jarvis.constant.RateLimiterType;
 import org.yoga.jarvis.spi.balance.impl.RoundRobinLoadBalance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Description: Gateway Server Configs
  * @Author: yoga
@@ -45,6 +48,11 @@ public class ServerConfigs {
      * LoadBalance algorithm, default round
      */
     private String loadBalance = RoundRobinLoadBalance.NAME;
+
+    /**
+     * Ip whitelist
+     */
+    private List<String> ipWhitelist = new ArrayList<>();
 
     public long getTimeout() {
         return timeout;
@@ -76,5 +84,13 @@ public class ServerConfigs {
 
     public void setLoadBalance(String loadBalance) {
         this.loadBalance = loadBalance;
+    }
+
+    public List<String> getIpWhitelist() {
+        return ipWhitelist;
+    }
+
+    public void setIpWhitelist(List<String> ipWhitelist) {
+        this.ipWhitelist = ipWhitelist;
     }
 }
