@@ -16,6 +16,7 @@
 
 package org.yoga.jarvis.util;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -145,5 +146,15 @@ public class PatternUtils {
         // second judgment: check the front part of the asterisk is equal
         // third judgment: asterisk as well as the following part(example:*xy) is fuzzy match
         return str.length() >= idx && pattern.startsWith(str.substring(0, idx)) && fuzzyMatch(pattern.substring(idx), str.substring(idx));
+    }
+
+
+    public static boolean fuzzyMatch(List<String> patterns, String str) {
+        for (String pattern : patterns) {
+            if (fuzzyMatch(pattern, str)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
