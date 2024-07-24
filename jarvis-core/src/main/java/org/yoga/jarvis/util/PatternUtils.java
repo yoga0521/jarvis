@@ -150,9 +150,11 @@ public class PatternUtils {
 
 
     public static boolean fuzzyMatch(List<String> patterns, String str) {
-        for (String pattern : patterns) {
-            if (fuzzyMatch(pattern, str)) {
-                return true;
+        if (CollectionUtils.isNotEmpty(patterns)) {
+            for (String pattern : patterns) {
+                if (fuzzyMatch(pattern, str)) {
+                    return true;
+                }
             }
         }
         return false;
