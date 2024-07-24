@@ -19,9 +19,12 @@ package org.yoga.jarvis.plugin.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.server.ServerWebExchange;
+import org.yoga.jarvis.chain.PluginChain;
 import org.yoga.jarvis.config.ServerConfigs;
 import org.yoga.jarvis.plugin.Plugin;
-import org.yoga.jarvis.chain.PluginChain;
+import org.yoga.jarvis.util.Assert;
+import org.yoga.jarvis.util.CollectionUtils;
+import org.yoga.jarvis.util.PatternUtils;
 import reactor.core.publisher.Mono;
 
 /**
@@ -55,6 +58,13 @@ public class AuthorizationPlugin implements Plugin {
     @Override
     public Mono<Void> execute(ServerWebExchange exchange, PluginChain pluginChain) {
         logger.info("authorization plugin start execute");
+        // check ip whitelist
+        if (CollectionUtils.isNotEmpty(serverConfigs.getIpWhitelist())) {
+            String ipFormHeaders = exchange.getRequest().getHeaders().getFirst("X-Forwarded-For");
+            Assert.notBlank(ipFormHeaders, "Failed to get the IP address from the request header");
+            String realIp = ipFormHeaders.split(",")[0];
+            Assert.isTrue(PatternUtils.fuzzyMatch(serverConfigs.getIpWhitelist(), realIp), "IP address is not authorized");
+        }
         return pluginChain.execute(exchange, pluginChain);
     }
 }
