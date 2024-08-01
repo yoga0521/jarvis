@@ -49,6 +49,11 @@
             <artifactId>tomcat-embed-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
         <!-- log -->
         <dependency>
             <groupId>org.slf4j</groupId>
