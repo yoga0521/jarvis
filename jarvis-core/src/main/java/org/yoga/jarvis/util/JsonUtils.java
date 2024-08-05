@@ -105,9 +105,6 @@ public class JsonUtils {
         return null;
     }
 
-    //将json数组字符串转为指定对象List列表或者Map集合
-
-
     /**
      * object to json string
      *
@@ -123,6 +120,34 @@ public class JsonUtils {
         return null;
     }
 
+    /**
+     * object to bytes
+     *
+     * @param obj object
+     * @return bytes
+     */
+    public static byte[] toBytes(Object obj) {
+        try {
+            return objectMapper.writeValueAsBytes(obj);
+        } catch (JsonProcessingException e) {
+            logger.error("object to bytes fail", e);
+        }
+        return null;
+    }
+
+    /**
+     * write the object to file
+     *
+     * @param file file
+     * @param obj  object
+     */
+    public static void toFile(File file, Object obj) {
+        try {
+            objectMapper.writeValue(file, obj);
+        } catch (IOException e) {
+            logger.error("failed to write the object to file", e);
+        }
+    }
 
 
 }
