@@ -40,11 +40,6 @@ public class ApplicationInfo {
      */
     private List<ServerInstance> serverInstances;
 
-    /**
-     * route rule
-     */
-    private RouteRule routeRule;
-
     public String getAppId() {
         return appId;
     }
@@ -69,79 +64,4 @@ public class ApplicationInfo {
         this.serverInstances = serverInstances;
     }
 
-    public RouteRule getRouteRule() {
-        return routeRule;
-    }
-
-    public void setRouteRule(RouteRule routeRule) {
-        this.routeRule = routeRule;
-    }
-
-    public static class RouteRule {
-
-        /**
-         * application version
-         */
-        private String version;
-
-        /**
-         * priority
-         */
-        private int priority;
-
-        /**
-         * match key
-         */
-        private String matchKey;
-
-        /**
-         * match method
-         */
-        private String matchMethod;
-
-        /**
-         * match rule
-         */
-        private String matchRule;
-
-        public String getVersion() {
-            return version;
-        }
-
-        public void setVersion(String version) {
-            this.version = version;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-
-        public void setPriority(int priority) {
-            this.priority = priority;
-        }
-
-        public String getMatchKey() {
-            return matchKey;
-        }
-
-        public void setMatchKey(String matchKey) {
-            this.matchKey = matchKey;
-        }
-
-        public String getMatchMethod() {
-            return matchMethod;
-        }
-
-        public void setMatchMethod(String matchMethod) {
-            this.matchMethod = matchMethod;
-        }
-
-        public String getMatchRule() {
-            return matchRule;
-        }
-
-        public void setMatchRule(String matchRule) {
-            this.matchRule = matchRule;
-        }
-    }
 }
