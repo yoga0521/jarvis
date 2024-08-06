@@ -22,19 +22,27 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.core.ApplicationRouteRule;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.factory.ThreadFactoryBuilder;
 import org.yoga.jarvis.task.SyncRegisteredAppTask;
 import org.yoga.jarvis.util.Assert;
+import org.yoga.jarvis.util.CollectionUtils;
+import org.yoga.jarvis.util.JsonUtils;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Sync Registered App Task Listener
@@ -91,8 +99,16 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
         }
     }
 
-
+    /**
+     * update nacos config
+     *
+     * @param configInfo config info
+     */
     private void updateConfig(String configInfo) {
-        logger.info("update config success");
+        List<ApplicationRouteRule> applicationRouteRules = JsonUtils.parseObj(configInfo, new TypeReference<List<ApplicationRouteRule>>() {
+        });
+        Map<String, List<ApplicationRouteRule>> applicationRouteRuleMap = CollectionUtils.isEmpty(applicationRouteRules)
+                ? Maps.newHashMap() : applicationRouteRules.stream().collect(Collectors.groupingBy(ApplicationRouteRule::getApplicationName));
+        logger.info("update application route rule config success");
     }
 }

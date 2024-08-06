@@ -24,6 +24,11 @@ package org.yoga.jarvis.core;
 public class ApplicationRouteRule {
 
     /**
+     * application name
+     */
+    private String applicationName;
+
+    /**
      * application version
      */
     private String version;
@@ -47,6 +52,14 @@ public class ApplicationRouteRule {
      * match rule
      */
     private String matchRule;
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
 
     public String getVersion() {
         return version;
