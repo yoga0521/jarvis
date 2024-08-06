@@ -44,7 +44,7 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (selectedConverterType == StringHttpMessageConverter.class) {
-            return JsonUtils.toJsonStr(Result.success(body), "convert fail");
+            return JsonUtils.toJSONStr(Result.success(body));
         }
         if (body instanceof Result) {
             return body;
