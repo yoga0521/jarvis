@@ -29,6 +29,9 @@ import org.yoga.jarvis.constant.DateFormatConstant;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Json Utils
@@ -149,5 +152,47 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * 深拷贝
+     *
+     * @param obj   source
+     * @param clazz class
+     * @param <T>   generics
+     * @return target
+     */
+    public static <T> T deepCopy(Object obj, Class<T> clazz) {
+        return parseObj(toJSONStr(obj), clazz);
+    }
 
+    /**
+     * deep copy
+     *
+     * @param obj       source
+     * @param reference type reference
+     * @param <T>       generics
+     * @return target
+     */
+    public static <T> T deepCopy(Object obj, TypeReference<T> reference) {
+        return parseObj(toJSONStr(obj), reference);
+    }
+
+    /**
+     * to sorted map
+     *
+     * @param obj object
+     * @return sorted map
+     */
+    public static Map<String, Object> toSortedMap(Object obj) {
+        Map<String, Object> objMap = deepCopy(obj, new TypeReference<Map<String, Object>>() {
+        });
+        return objMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (o, n) -> o,
+                        LinkedHashMap::new
+                ));
+    }
 }
