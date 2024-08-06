@@ -80,7 +80,7 @@ public class HttpEncryptClientController {
 //                    });
 //
 //            if (response.getStatusCode().is2xxSuccessful()) {
-//                log.info("返回值: {}", JsonUtils.toJsonStr(response.getBody()));
+//                log.info("返回值: {}", JsonUtils.toJSONStr(response.getBody()));
 //            }
 //        } catch (Exception e) {
 //            log.error("接口调用失败", e);
@@ -99,7 +99,7 @@ public class HttpEncryptClientController {
         Assert.notNull(data, "业务参数为空");
 
         // 业务参数进行AES加密
-        String encryptedParamStr = AESUtils.encryptByCbc(JsonUtils.toJsonStr(data), aesKey, aesIv);
+        String encryptedParamStr = AESUtils.encryptByCbc(JsonUtils.toJSONStr(data), aesKey, aesIv);
         // AES加密key和向量进行RSA加密（使用服务端的公钥加密，这样只有拥有对应私钥的服务端可以解密）
         String aesKiEncryptedStr = RSAUtils.encryptByPublicKey(aesKey + "$" + aesIv, serverRsaPubKey);
 
@@ -117,7 +117,7 @@ public class HttpEncryptClientController {
         // 移除掉sign字段
         treeMap.remove("sign");
         // 设置签名（使用客户端的私钥签名，这样只有拥有私钥的客户端可以向服务端发送有效请求，其他的请求验签都会失败）
-        param.setSign(RSAUtils.sign(JsonUtils.toJsonStr(treeMap), clientRsaPriKey));
+        param.setSign(RSAUtils.sign(JsonUtils.toJSONStr(treeMap), clientRsaPriKey));
         return param;
     }
 

@@ -74,7 +74,7 @@ public class HttpEncryptServerController {
         treeMap.remove("sign");
 
         // RSA验签（使用客户端的公钥进行验签，保证只接收客户端的消息）
-        if (!RSAUtils.verify(JsonUtils.toJsonStr(treeMap), clientPubKey, param.getSign())) {
+        if (!RSAUtils.verify(JsonUtils.toJSONStr(treeMap), clientPubKey, param.getSign())) {
             throw new JarvisException("验签失败");
         }
 
