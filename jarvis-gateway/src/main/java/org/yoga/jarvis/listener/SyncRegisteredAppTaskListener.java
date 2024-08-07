@@ -37,7 +37,9 @@ import org.yoga.jarvis.task.SyncRegisteredAppTask;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.CollectionUtils;
 import org.yoga.jarvis.util.JsonUtils;
+import org.yoga.jarvis.util.NetUtils;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -71,11 +73,21 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
         logger.info("server refresh interval: {}s", serverConfigs.getCacheRefreshInterval());
         scheduledPool.scheduleWithFixedDelay(new SyncRegisteredAppTask(namingService), 0L,
                 serverConfigs.getCacheRefreshInterval(), TimeUnit.MICROSECONDS);
+        // register nacos
+        InetAddress inetAddress = NetUtils.getLocalIpAddress0();
+        Assert.notNull(inetAddress, "jarvis-server inetAddress is null");
+        String serverPort = event.getApplicationContext().getEnvironment().getProperty("server.port");
+        Assert.notBlank(serverPort, "jarvis-server serverPort is null");
+        try {
+            namingService.registerInstance("jarvis-server", SyncRegisteredAppTask.APP_GROUP_NAME, inetAddress.getHostAddress(), Integer.parseInt(serverPort));
+        } catch (NacosException e) {
+            throw new JarvisException("jarvis-server register nacos failed", e);
+        }
         // config
         try {
-            String serverAddr = event.getApplicationContext().getEnvironment().getProperty("nacos.discovery.server-addr");
-            Assert.notBlank(serverAddr, "nacos discovery server-addr must not be null");
-            ConfigService configService = NacosFactory.createConfigService(serverAddr);
+            String nacosServerAddr = event.getApplicationContext().getEnvironment().getProperty("nacos.discovery.server-addr");
+            Assert.notBlank(nacosServerAddr, "nacos discovery server-addr must not be null");
+            ConfigService configService = NacosFactory.createConfigService(nacosServerAddr);
             // get config from nacos
             String configInfo = configService.getConfig(NACOS_DATA_ID, SyncRegisteredAppTask.APP_GROUP_NAME, 5000);
             // init config
@@ -96,7 +108,7 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
                 }
             });
         } catch (NacosException e) {
-            throw new JarvisException("get configs from nacos error");
+            throw new JarvisException("get configs from nacos failed", e);
         }
     }
 
