@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.yoga.jarvis.cache.ApplicationRouteRuleCache;
 import org.yoga.jarvis.config.ServerConfigs;
 import org.yoga.jarvis.core.ApplicationRouteRule;
 import org.yoga.jarvis.exception.JarvisException;
@@ -109,6 +110,7 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
         });
         Map<String, List<ApplicationRouteRule>> applicationRouteRuleMap = CollectionUtils.isEmpty(applicationRouteRules)
                 ? Maps.newHashMap() : applicationRouteRules.stream().collect(Collectors.groupingBy(ApplicationRouteRule::getApplicationName));
+        ApplicationRouteRuleCache.addAll(applicationRouteRuleMap);
         logger.info("update application route rule config success");
     }
 }
