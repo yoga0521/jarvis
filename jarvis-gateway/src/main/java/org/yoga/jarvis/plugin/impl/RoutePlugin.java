@@ -29,20 +29,24 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
+import org.yoga.jarvis.cache.ApplicationRouteRuleCache;
 import org.yoga.jarvis.cache.ServerInstanceCache;
+import org.yoga.jarvis.chain.PluginChain;
 import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.core.ApplicationRouteRule;
 import org.yoga.jarvis.core.ServerInstance;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.plugin.Plugin;
-import org.yoga.jarvis.chain.PluginChain;
 import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.spi.balance.LoadBalanceFactory;
+import org.yoga.jarvis.task.SyncRegisteredAppTask;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -161,8 +165,15 @@ public class RoutePlugin implements Plugin {
             logger.error("server instance[{}] not find", appName);
             throw new JarvisException("server instance not find");
         }
-        // version todo
-        String version = "v1";
+        // version
+        List<ApplicationRouteRule> routeRules = ApplicationRouteRuleCache.getApplicationRouteRules(appName);
+        String version = routeRules.stream()
+                .sorted(Comparator.comparing(ApplicationRouteRule::getPriority))
+                .filter(rule -> StringUtils.isNotBlank(rule.getMatchKey()) && StringUtils.isNotBlank(rule.getMatchRule()))
+                .filter(rule -> rule.getMatchRule().equals(request.getHeaders().getFirst(rule.getMatchKey())))
+                .map(ApplicationRouteRule::getVersion)
+                .findFirst()
+                .orElse(SyncRegisteredAppTask.DEFAULT_APP_VERSION);
         //Select an instance based on the loadBalance algorithm
         LoadBalance loadBalance = LoadBalanceFactory.getInstance(serverConfigs.getLoadBalance(), appName, version);
         return loadBalance.select(serverInstances);
