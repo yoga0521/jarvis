@@ -23,6 +23,7 @@ import com.alibaba.nacos.api.naming.pojo.ListView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yoga.jarvis.cache.ServerInstanceCache;
+import org.yoga.jarvis.constant.CommonConstant;
 import org.yoga.jarvis.core.ServerInstance;
 import org.yoga.jarvis.util.CollectionUtils;
 
@@ -38,16 +39,6 @@ public class SyncRegisteredAppTask implements Runnable {
 
     protected static final Logger logger = LoggerFactory.getLogger(SyncRegisteredAppTask.class);
 
-    /**
-     * app group name
-     */
-    public static final String APP_GROUP_NAME = "Jarvis-Gateway";
-
-    /**
-     * default app version
-     */
-    public static final String DEFAULT_APP_VERSION = "1.0";
-
     private final NamingService namingService;
 
     public SyncRegisteredAppTask(NamingService namingService) {
@@ -57,13 +48,13 @@ public class SyncRegisteredAppTask implements Runnable {
     @Override
     public void run() {
         try {
-            ListView<String> servers = namingService.getServicesOfServer(1, Integer.MAX_VALUE, APP_GROUP_NAME);
+            ListView<String> servers = namingService.getServicesOfServer(1, Integer.MAX_VALUE, CommonConstant.APP_GROUP_NAME);
             if (servers == null || CollectionUtils.isEmpty(servers.getData())) {
                 return;
             }
             List<String> appNames = servers.getData();
             for (String appName : appNames) {
-                List<Instance> instances = namingService.getAllInstances(appName, APP_GROUP_NAME);
+                List<Instance> instances = namingService.getAllInstances(appName, CommonConstant.APP_GROUP_NAME);
                 if (CollectionUtils.isEmpty(instances)) {
                     continue;
                 }
@@ -73,7 +64,7 @@ public class SyncRegisteredAppTask implements Runnable {
                             serverInstance.setIp(instance.getIp());
                             serverInstance.setPort(instance.getPort());
                             serverInstance.setVersion(CollectionUtils.isEmpty(instance.getMetadata())
-                                    ? DEFAULT_APP_VERSION : instance.getMetadata().getOrDefault("version", DEFAULT_APP_VERSION));
+                                    ? CommonConstant.DEFAULT_APP_VERSION : instance.getMetadata().getOrDefault("version", CommonConstant.DEFAULT_APP_VERSION));
                             return serverInstance;
                         })
                         .collect(Collectors.toList()));

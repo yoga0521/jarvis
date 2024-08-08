@@ -33,13 +33,13 @@ import org.yoga.jarvis.cache.ApplicationRouteRuleCache;
 import org.yoga.jarvis.cache.ServerInstanceCache;
 import org.yoga.jarvis.chain.PluginChain;
 import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.constant.CommonConstant;
 import org.yoga.jarvis.core.ApplicationRouteRule;
 import org.yoga.jarvis.core.ServerInstance;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.plugin.Plugin;
 import org.yoga.jarvis.spi.LoadBalance;
 import org.yoga.jarvis.spi.balance.LoadBalanceFactory;
-import org.yoga.jarvis.task.SyncRegisteredAppTask;
 import org.yoga.jarvis.util.Assert;
 import org.yoga.jarvis.util.StringUtils;
 import reactor.core.publisher.Mono;
@@ -173,7 +173,7 @@ public class RoutePlugin implements Plugin {
                 .filter(rule -> rule.getMatchRule().equals(request.getHeaders().getFirst(rule.getMatchKey())))
                 .map(ApplicationRouteRule::getVersion)
                 .findFirst()
-                .orElse(SyncRegisteredAppTask.DEFAULT_APP_VERSION);
+                .orElse(CommonConstant.DEFAULT_APP_VERSION);
         //Select an instance based on the loadBalance algorithm
         LoadBalance loadBalance = LoadBalanceFactory.getInstance(serverConfigs.getLoadBalance(), appName, version);
         return loadBalance.select(serverInstances);

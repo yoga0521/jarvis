@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.yoga.jarvis.cache.ApplicationRouteRuleCache;
 import org.yoga.jarvis.config.ServerConfigs;
+import org.yoga.jarvis.constant.CommonConstant;
 import org.yoga.jarvis.core.ApplicationRouteRule;
 import org.yoga.jarvis.exception.JarvisException;
 import org.yoga.jarvis.factory.ThreadFactoryBuilder;
@@ -56,8 +57,6 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
 
     protected static final Logger logger = LoggerFactory.getLogger(SyncRegisteredAppTaskListener.class);
 
-    private static final String NACOS_DATA_ID = "app-config";
-
     private static final ScheduledThreadPoolExecutor scheduledPool = new ScheduledThreadPoolExecutor(1,
             new ThreadFactoryBuilder().setNameFormat("sync-registered-app").build());
 
@@ -79,7 +78,7 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
         String serverPort = event.getApplicationContext().getEnvironment().getProperty("server.port");
         Assert.notBlank(serverPort, "jarvis-server serverPort is null");
         try {
-            namingService.registerInstance("jarvis-server", SyncRegisteredAppTask.APP_GROUP_NAME, inetAddress.getHostAddress(), Integer.parseInt(serverPort));
+            namingService.registerInstance("jarvis-server", CommonConstant.APP_GROUP_NAME, inetAddress.getHostAddress(), Integer.parseInt(serverPort));
         } catch (NacosException e) {
             throw new JarvisException("jarvis-server register nacos failed", e);
         }
@@ -89,11 +88,11 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
             Assert.notBlank(nacosServerAddr, "nacos discovery server-addr must not be null");
             ConfigService configService = NacosFactory.createConfigService(nacosServerAddr);
             // get config from nacos
-            String configInfo = configService.getConfig(NACOS_DATA_ID, SyncRegisteredAppTask.APP_GROUP_NAME, 5000);
+            String configInfo = configService.getConfig(CommonConstant.NACOS_DATA_ID, CommonConstant.APP_GROUP_NAME, 5000);
             // init config
             updateConfig(configInfo);
             // add nacos config listener
-            configService.addListener(NACOS_DATA_ID, SyncRegisteredAppTask.APP_GROUP_NAME, new Listener() {
+            configService.addListener(CommonConstant.NACOS_DATA_ID, CommonConstant.APP_GROUP_NAME, new Listener() {
 
                 @Override
                 public Executor getExecutor() {
