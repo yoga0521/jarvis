@@ -121,7 +121,7 @@ public class SyncRegisteredAppTaskListener implements ApplicationListener<Contex
         });
         Map<String, List<ApplicationRouteRule>> applicationRouteRuleMap = CollectionUtils.isEmpty(applicationRouteRules)
                 ? Maps.newHashMap() : applicationRouteRules.stream().collect(Collectors.groupingBy(ApplicationRouteRule::getApplicationName));
-        ApplicationRouteRuleCache.addAll(applicationRouteRuleMap);
+        ApplicationRouteRuleCache.add(applicationRouteRuleMap);
         logger.info("update application route rule config success");
     }
 }

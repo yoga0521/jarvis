@@ -33,22 +33,13 @@ public class ApplicationRouteRuleCache {
     private static final CacheHandler<String, List<ApplicationRouteRule>> APPLICATION_ROUTE_RULE_CACHE = new GuavaCacheHandler<>(8, 256, 24 * 60 * 60);
 
     /**
-     * add application route rules to cache
-     *
-     * @param applicationName application name
-     * @param rules           application route rules
-     */
-    public static void add(String applicationName, List<ApplicationRouteRule> rules) {
-        APPLICATION_ROUTE_RULE_CACHE.put(applicationName, rules);
-    }
-
-    /**
      * add application route rule map to cache
      *
      * @param ruleMap application route rule map
      */
-    public static void addAll(Map<String, List<ApplicationRouteRule>> ruleMap) {
-        ruleMap.forEach(ApplicationRouteRuleCache::add);
+    public static void add(Map<String, List<ApplicationRouteRule>> ruleMap) {
+        ruleMap.forEach(APPLICATION_ROUTE_RULE_CACHE::put);
+        APPLICATION_ROUTE_RULE_CACHE.removeIf(key -> !ruleMap.containsKey(key));
     }
 
     /**
