@@ -19,8 +19,11 @@ package org.yoga.jarvis;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Simple Cache Handler
@@ -87,6 +90,11 @@ public class SimpleCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
     @Override
     public long size() {
         return cache.size();
+    }
+
+    @Override
+    public Set<K> keys() {
+        return cache.keySet();
     }
 
     /**

@@ -31,14 +31,4 @@ public abstract class AbstractCacheHandler<K, V> implements CacheHandler<K, V> {
 		Assert.notNull(v, "value must not be null!");
 	}
 
-	/**
-	 * If there is no cache, get it through this method
-	 *
-	 * @param k key
-	 * @return getIfKNotExist value
-	 */
-	protected V getIfNotExist(K k) {
-		return null;
-	}
-
 }

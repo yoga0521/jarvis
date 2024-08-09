@@ -18,6 +18,8 @@ package org.yoga.jarvis;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -65,6 +67,17 @@ public interface CacheHandler<K, V> {
      */
     void clear();
 
+    /**
+     * cache size
+     *
+     * @return cache size
+     */
     long size();
 
+    /**
+     * get all cache keys
+     *
+     * @return all cache keys
+     */
+    Set<K> keys();
 }

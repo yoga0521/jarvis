@@ -21,9 +21,12 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import org.yoga.jarvis.exception.JarvisException;
 
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Cache Handler implemented by guava
@@ -90,5 +93,10 @@ public class GuavaCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 	public long size() {
 		cache.cleanUp();
 		return cache.size();
+	}
+
+	@Override
+	public Set<K> keys() {
+		return cache.asMap().keySet();
 	}
 }

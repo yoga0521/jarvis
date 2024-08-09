@@ -21,9 +21,13 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalListener;
 import org.yoga.jarvis.exception.JarvisException;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Caffeine Cache Handler
@@ -82,5 +86,10 @@ public class CaffeineCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 	public long size() {
 		cache.cleanUp();
 		return cache.estimatedSize();
+	}
+
+	@Override
+	public Set<K> keys() {
+		return cache.asMap().keySet();
 	}
 }

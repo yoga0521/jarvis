@@ -20,7 +20,9 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @Description: Cache Handler implemented by redis
@@ -95,6 +97,12 @@ public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
     @Override
     public long size() {
         return commands.keys("*").size();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Set<K> keys() {
+        return commands.keys("*").stream().map(key -> (K) key).collect(Collectors.toSet());
     }
 
     private String serialize(V value) {
