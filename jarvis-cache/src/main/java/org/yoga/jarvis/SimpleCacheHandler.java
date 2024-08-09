@@ -83,6 +83,11 @@ public class SimpleCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
     }
 
     @Override
+    public void removeIf(Predicate<? super K> predicate) {
+        cache.keySet().removeIf(predicate);
+    }
+
+    @Override
     public void clear() {
         cache.clear();
     }

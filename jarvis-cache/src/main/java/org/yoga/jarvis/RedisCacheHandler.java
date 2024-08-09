@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * @Author: yoga
  * @Date: 2024/5/9 16:41
  */
+@SuppressWarnings("unchecked")
 public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 
     /**
@@ -90,6 +92,11 @@ public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
     }
 
     @Override
+    public void removeIf(Predicate<? super K> predicate) {
+        commands.del(keys().stream().filter(predicate).map(Object::toString).toArray(String[]::new));
+    }
+
+    @Override
     public void clear() {
         commands.flushall();
     }
@@ -99,7 +106,6 @@ public class RedisCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
         return commands.keys("*").size();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Set<K> keys() {
         return commands.keys("*").stream().map(key -> (K) key).collect(Collectors.toSet());

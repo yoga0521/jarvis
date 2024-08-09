@@ -78,6 +78,11 @@ public class CaffeineCacheHandler<K, V> extends AbstractCacheHandler<K, V> {
 	}
 
 	@Override
+	public void removeIf(Predicate<? super K> predicate) {
+		cache.invalidateAll(keys().stream().filter(predicate).collect(Collectors.toSet()));
+	}
+
+	@Override
 	public void clear() {
 		cache.invalidateAll();
 	}

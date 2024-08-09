@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @Description: Cache Handler
@@ -61,6 +62,13 @@ public interface CacheHandler<K, V> {
      * @param k key
      */
     void remove(@Nonnull K k);
+
+    /**
+     * remove cache by key predicate
+     *
+     * @param predicate key predicate
+     */
+    void removeIf(@Nonnull Predicate<? super K> predicate);
 
     /**
      * clear all cache
