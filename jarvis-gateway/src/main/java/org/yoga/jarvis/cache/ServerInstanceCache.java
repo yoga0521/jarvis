@@ -54,10 +54,10 @@ public class ServerInstanceCache {
     /**
      * remove the expired server
      *
-     * @param onlineServerNames online server name
+     * @param onlineServerAppNames online server app name
      */
-    public static void removeExpired(List<String> onlineServerNames) {
-        SERVER_INSTANCE_CACHE.removeIf(key -> !onlineServerNames.contains(key));
+    public static void removeExpired(List<String> onlineServerAppNames) {
+        SERVER_INSTANCE_CACHE.removeIf(key -> !onlineServerAppNames.contains(key));
     }
 
 }

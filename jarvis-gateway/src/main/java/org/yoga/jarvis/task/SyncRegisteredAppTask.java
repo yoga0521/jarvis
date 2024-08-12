@@ -20,6 +20,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.naming.pojo.ListView;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yoga.jarvis.cache.ServerInstanceCache;
@@ -52,8 +53,8 @@ public class SyncRegisteredAppTask implements Runnable {
             if (servers == null || CollectionUtils.isEmpty(servers.getData())) {
                 return;
             }
-            List<String> appNames = servers.getData();
-            for (String appName : appNames) {
+            List<String> onlineServerAppNames = Lists.newArrayList();
+            for (String appName : servers.getData()) {
                 List<Instance> instances = namingService.getAllInstances(appName, CommonConstant.APP_GROUP_NAME);
                 if (CollectionUtils.isEmpty(instances)) {
                     continue;
@@ -68,8 +69,9 @@ public class SyncRegisteredAppTask implements Runnable {
                             return serverInstance;
                         })
                         .collect(Collectors.toList()));
+                onlineServerAppNames.add(appName);
             }
-
+            ServerInstanceCache.removeExpired(onlineServerAppNames);
         } catch (NacosException e) {
             logger.error("sync registered apps from nacos error!", e);
         }
