@@ -91,9 +91,10 @@
         <module>jarvis-filter</module>
         <module>jarvis-gateway</module>
         <module>jarvis-test</module>
-        <module>jarivis-build-tools</module>
+<!--        <module>jarvis-build-tools</module>-->
         <module>jarvis-message</module>
         <module>jarvis-identifier</module>
+        <module>jarvis-admin</module>
     </modules>
 
     <dependencyManagement>

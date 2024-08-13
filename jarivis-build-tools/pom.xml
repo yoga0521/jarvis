@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.yoga.jarvis</groupId>
-    <artifactId>jarivis-build-tools</artifactId>
+    <artifactId>jarvis-build-tools</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
