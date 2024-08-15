@@ -40,7 +40,6 @@
             <pattern>${pattern}</pattern>
             <charset>UTF-8</charset>
         </encoder>
-        <filter class="org.yoga.jarvis.filter.MyFilter"/>
     </appender>
 
     <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->

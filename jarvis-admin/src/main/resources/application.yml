@@ -13,6 +13,9 @@ spring:
   application:
     name: jarvis-admin
 
+logging:
+  config: classpath:logback-spring.xml
+
 log:
    path: D:\Users\yoga\Settings\Projects\Logs\${spring.application.name}
    name: all
