@@ -12,6 +12,10 @@ server:
 spring:
   application:
     name: jarvis-admin
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 600MB
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/jarvis?useUnicode=true&characterEncoding=UTF-8&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowMultiQueries=true
     username: root
