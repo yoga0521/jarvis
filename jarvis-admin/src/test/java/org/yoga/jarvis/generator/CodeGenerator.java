@@ -91,8 +91,8 @@ public class CodeGenerator {
                         .author("yoga")
                         // 输出目录
                         .outputDir(projectPath + "/src/main/java")
-                        // 时间类型对应策略，只使用 java.util.date 代替
-                        .dateType(DateType.ONLY_DATE)
+                        // 时间类型对应策略
+                        .dateType(DateType.TIME_PACK)
                         // 禁止打开输出目录
                         .disableOpenDir())
                 // 包配置
@@ -141,10 +141,12 @@ public class CodeGenerator {
                         .enableFileOverride()
                         // service+impl配置
                         .serviceBuilder()
-                        // service名称
-                        .formatServiceFileName("%sDaoService")
-                        // serviceImpl名称
-                        .formatServiceImplFileName("%sDaoServiceImpl")
+//                        // service名称
+//                        .formatServiceFileName("%sDaoService")
+//                        // serviceImpl名称
+//                        .formatServiceImplFileName("%sDaoServiceImpl")
+                        // 不生成service
+                        .disable()
                         // controller配置
                         .controllerBuilder()
                         // 不生成controller

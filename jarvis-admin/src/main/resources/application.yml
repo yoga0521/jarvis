@@ -49,3 +49,7 @@ logging:
 log:
    path: D:\Users\yoga\Settings\Projects\Logs\${spring.application.name}
    name: all
+
+user:
+  login:
+    salt: oi3b2dt5
