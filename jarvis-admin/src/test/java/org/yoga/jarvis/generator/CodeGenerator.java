@@ -41,9 +41,11 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
         // 需要生成的表名，英文逗号分割
-        String tableNames = "test";
+        String tableNames = "user";
         // 数据库schema
         String schemaName = "jarvis";
+        // 模块名
+        String moduleName = "";
         // 生成文件的父包名
         String packageParentName = "org.yoga.jarvis.repository";
 
@@ -95,6 +97,8 @@ public class CodeGenerator {
                         .disableOpenDir())
                 // 包配置
                 .packageConfig(builder -> builder
+                        // 指定模块名
+                        .moduleName(moduleName)
                         // 指定父包名
                         .parent(packageParentName)
                         // 指定xml文件路径
