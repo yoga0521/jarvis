@@ -84,7 +84,7 @@
 
         <aspose.version>23.1</aspose.version>
 
-        <nacos-boot.version>2023.0.1.0</nacos-boot.version>
+        <nacos-boot.version>2021.0.6.1</nacos-boot.version>
 
         <!-- Maven plugins -->
         <maven_flatten.version>1.2.7</maven_flatten.version>

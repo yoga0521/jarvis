@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis;
+package org.yoga.jarvis.annotation;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@SpringBootTest
-class JarvisAdminApplicationTests {
-
-    @Test
-    void contextLoads() {
-    }
-
+/**
+ * @Description: Used to flag annotations that require global exception handling
+ * @Author: yoga
+ * @Date: 2024/8/26 10:41
+ */
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface GlobalErrorHandler {
 }
