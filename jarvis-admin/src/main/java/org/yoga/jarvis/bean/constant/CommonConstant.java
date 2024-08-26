@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.yoga.jarvis.bean;
+package org.yoga.jarvis.bean.constant;
 
 /**
  * @Description: 通用枚举值

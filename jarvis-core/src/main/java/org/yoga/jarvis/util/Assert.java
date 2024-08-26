@@ -16,6 +16,8 @@
 
 package org.yoga.jarvis.util;
 
+import org.yoga.jarvis.exception.JarvisException;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -31,11 +33,11 @@ public class Assert {
      *
      * @param expression boolean expression
      * @param message    exception message to use when it fails
-     * @throws IllegalArgumentException if {@code expression} is {@code false}
+     * @throws JarvisException if {@code expression} is {@code false}
      */
     public static void isTrue(final boolean expression, String message) {
         if (!expression) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -48,11 +50,11 @@ public class Assert {
      *
      * @param object  the object to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code object} is not {@code null}
+     * @throws JarvisException if the {@code object} is not {@code null}
      */
     public static <T> void isNull(final T object, String message) {
         if (object != null) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -65,11 +67,11 @@ public class Assert {
      *
      * @param object  the object to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code object} is {@code null}
+     * @throws JarvisException if the {@code object} is {@code null}
      */
     public static <T> void notNull(final T object, String message) {
         if (null == object) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -82,12 +84,12 @@ public class Assert {
      *
      * @param cs      the cs to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code cs} is not empty
+     * @throws JarvisException if the {@code cs} is not empty
      * @see StringUtils#isNotEmpty(CharSequence)
      */
     public static void isEmpty(final CharSequence cs, String message) {
         if (StringUtils.isNotEmpty(cs)) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -100,11 +102,11 @@ public class Assert {
      *
      * @param array   the array to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code array} is not empty
+     * @throws JarvisException if the {@code array} is not empty
      */
     public static void isEmpty(final Object[] array, String message) {
         if (array != null && array.length != 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -117,11 +119,11 @@ public class Assert {
      *
      * @param array   the array to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code array} is not empty
+     * @throws JarvisException if the {@code array} is not empty
      */
     public static void isEmpty(final char[] array, String message) {
         if (array != null && array.length != 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -134,11 +136,11 @@ public class Assert {
      *
      * @param collection the collection to check, nullable
      * @param message    exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code collection} is not empty
+     * @throws JarvisException if the {@code collection} is not empty
      */
     public static void isEmpty(final Collection<?> collection, String message) {
         if (collection != null && collection.size() != 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -151,11 +153,11 @@ public class Assert {
      *
      * @param map     the map to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code map} is not empty
+     * @throws JarvisException if the {@code map} is not empty
      */
     public static void isEmpty(final Map<?, ?> map, String message) {
         if (map != null && map.size() != 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -168,12 +170,12 @@ public class Assert {
      *
      * @param cs      the cs to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code cs} is empty
+     * @throws JarvisException if the {@code cs} is empty
      * @see StringUtils#isEmpty(CharSequence)
      */
     public static void notEmpty(final CharSequence cs, String message) {
         if (StringUtils.isEmpty(cs)) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -186,11 +188,11 @@ public class Assert {
      *
      * @param array   the array to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code array} is empty
+     * @throws JarvisException if the {@code array} is empty
      */
     public static void notEmpty(final Object[] array, String message) {
         if (null == array || array.length == 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -203,11 +205,11 @@ public class Assert {
      *
      * @param array   the array to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code array} is empty
+     * @throws JarvisException if the {@code array} is empty
      */
     public static void notEmpty(final char[] array, String message) {
         if (null == array || array.length == 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -220,11 +222,11 @@ public class Assert {
      *
      * @param collection the collection to check, nullable
      * @param message    exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code collection} is empty
+     * @throws JarvisException if the {@code collection} is empty
      */
     public static void notEmpty(final Collection<?> collection, String message) {
         if (null == collection || collection.size() == 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -237,11 +239,11 @@ public class Assert {
      *
      * @param map     the map to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code map} is empty
+     * @throws JarvisException if the {@code map} is empty
      */
     public static void notEmpty(final Map<?, ?> map, String message) {
         if (null == map || map.size() == 0) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 
@@ -254,12 +256,12 @@ public class Assert {
      *
      * @param cs      the {@code CharSequence} to check, nullable
      * @param message exception message to use when it fails
-     * @throws IllegalArgumentException if the {@code CharSequence} is {@code null} or has length 0 or has whitespace only
+     * @throws JarvisException if the {@code CharSequence} is {@code null} or has length 0 or has whitespace only
      * @see StringUtils#isBlank(CharSequence)
      */
     public static void notBlank(final CharSequence cs, String message) {
         if (StringUtils.isBlank(cs)) {
-            throw new IllegalArgumentException(message);
+            throw new JarvisException(message);
         }
     }
 }
