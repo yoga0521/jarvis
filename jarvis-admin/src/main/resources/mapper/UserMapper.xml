@@ -13,7 +13,7 @@
         <result column="gmt_modify" property="gmtModify" />
         <result column="modifier_id" property="modifierId" />
         <result column="memo" property="memo" />
-        <result column="is_del" property="isDel" />
+        <result column="is_delete" property="isDelete" />
     </resultMap>
 
 </mapper>

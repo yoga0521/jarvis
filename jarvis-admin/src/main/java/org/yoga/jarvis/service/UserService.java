@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.yoga.jarvis.bean.CommonConstant;
+import org.yoga.jarvis.bean.constant.CommonConstant;
 import org.yoga.jarvis.repository.entity.UserDO;
 import org.yoga.jarvis.repository.mapper.UserMapper;
 import org.yoga.jarvis.util.Assert;
@@ -58,7 +58,7 @@ public class UserService {
         QueryWrapper<UserDO> qw = new QueryWrapper<>();
         qw.eq(UserDO.NAME, name);
         qw.eq(UserDO.PASSWORD, DigestUtils.md5Hex(password + userLoginSalt));
-        qw.eq(UserDO.IS_DEL, CommonConstant.IS_DEL_NOT);
+        qw.eq(UserDO.IS_DELETE, CommonConstant.IS_DEL_NOT);
         UserDO user = userMapper.selectOne(qw);
         Assert.notNull(user, "用户名或密码错误");
     }
@@ -74,7 +74,7 @@ public class UserService {
         Assert.notBlank(password, "密码为空");
         QueryWrapper<UserDO> qw = new QueryWrapper<>();
         qw.eq(UserDO.NAME, name);
-        qw.eq(UserDO.IS_DEL, CommonConstant.IS_DEL_NOT);
+        qw.eq(UserDO.IS_DELETE, CommonConstant.IS_DEL_NOT);
         Assert.isTrue(userMapper.selectCount(qw) == 0, "用户名已存在");
         UserDO user = new UserDO();
         user.setName(name);
