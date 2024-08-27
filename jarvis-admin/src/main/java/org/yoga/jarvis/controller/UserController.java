@@ -45,7 +45,18 @@ public class UserController {
     }
 
     /**
-     * 注册用户
+     * 用户登录
+     *
+     * @param param 请求参数
+     */
+    @PostMapping("login")
+    public Result<Void> login(@RequestBody @NotNull(message = "请求参数为空") @Valid UserDTO param) {
+        userService.login(param.getName(), param.getPassword());
+        return Result.success();
+    }
+
+    /**
+     * 用户注册
      *
      * @param param 请求参数
      */

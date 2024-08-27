@@ -38,7 +38,6 @@ public class UserDTO implements Serializable {
      * 用户名
      */
     @NotBlank(message = "用户名为空")
-    @Length(min = 1, max = 32, message = "用户名长度不能超过32")
     private String name;
 
     /**
