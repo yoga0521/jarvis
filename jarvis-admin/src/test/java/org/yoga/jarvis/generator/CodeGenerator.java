@@ -41,7 +41,7 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
         // 需要生成的表名，英文逗号分割
-        String tableNames = "user";
+        String tableNames = "application";
         // 数据库schema
         String schemaName = "jarvis";
         // 模块名
