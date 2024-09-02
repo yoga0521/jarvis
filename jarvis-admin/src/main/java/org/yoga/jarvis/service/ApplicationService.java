@@ -18,7 +18,12 @@ package org.yoga.jarvis.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.yoga.jarvis.bean.dto.ApplicationDTO;
+import org.yoga.jarvis.repository.entity.ApplicationDO;
 import org.yoga.jarvis.repository.mapper.ApplicationMapper;
+import org.yoga.jarvis.util.JsonUtils;
+
+import java.time.LocalDateTime;
 
 /**
  * @Description: 应用service
@@ -33,5 +38,12 @@ public class ApplicationService {
 
     public ApplicationService(ApplicationMapper applicationMapper) {
         this.applicationMapper = applicationMapper;
+    }
+
+    public void register(ApplicationDTO dto) {
+        ApplicationDO application = JsonUtils.deepCopy(dto, ApplicationDO.class);
+        application.setGmtCreated(LocalDateTime.now());
+        applicationMapper.insert(application);
+        log.info("应用[{}]注册成功！", dto.getName());
     }
 }
