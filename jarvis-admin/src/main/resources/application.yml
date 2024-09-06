@@ -24,6 +24,11 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+        enabled: false
+  thymeleaf:
+    # thymeleaf 页面的缓存开关，默认 true 开启缓存
+    # 建议在开发阶段关闭 thymeleaf 页面缓存，目的实时看到页面
+    cache: false
 
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*Mapper.xml
