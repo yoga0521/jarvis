@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2022 yoga
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.yoga.jarvis.repository.mapper.RouteRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="org.yoga.jarvis.repository.entity.RouteRuleDO">
+        <id column="id" property="id" />
+        <result column="app_id" property="appId" />
+        <result column="version" property="version" />
+        <result column="name" property="name" />
+        <result column="priority" property="priority" />
+        <result column="match_key" property="matchKey" />
+        <result column="match_method" property="matchMethod" />
+        <result column="match_rule" property="matchRule" />
+        <result column="enabled" property="enabled" />
+        <result column="gmt_created" property="gmtCreated" />
+        <result column="creator_id" property="creatorId" />
+        <result column="creator_name" property="creatorName" />
+        <result column="gmt_modify" property="gmtModify" />
+        <result column="modifier_id" property="modifierId" />
+        <result column="memo" property="memo" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+</mapper>
