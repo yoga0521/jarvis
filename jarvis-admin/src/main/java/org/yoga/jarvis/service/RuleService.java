@@ -18,6 +18,7 @@ package org.yoga.jarvis.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.yoga.jarvis.repository.mapper.RouteRuleMapper;
 
 /**
  * @Description: 规则service
@@ -27,4 +28,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class RuleService {
+
+    private final RouteRuleMapper routeRuleMapper;
+
+    public RuleService(RouteRuleMapper routeRuleMapper) {
+        this.routeRuleMapper = routeRuleMapper;
+    }
 }
