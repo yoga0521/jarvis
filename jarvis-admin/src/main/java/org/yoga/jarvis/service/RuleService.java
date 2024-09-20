@@ -16,9 +16,17 @@
 
 package org.yoga.jarvis.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.yoga.jarvis.bean.constant.CommonConstant;
+import org.yoga.jarvis.bean.dto.RuleDTO;
+import org.yoga.jarvis.repository.entity.RouteRuleDO;
 import org.yoga.jarvis.repository.mapper.RouteRuleMapper;
+import org.yoga.jarvis.util.JsonUtils;
+
+import java.util.List;
 
 /**
  * @Description: 规则service
@@ -33,5 +41,13 @@ public class RuleService {
 
     public RuleService(RouteRuleMapper routeRuleMapper) {
         this.routeRuleMapper = routeRuleMapper;
+    }
+
+    public List<RuleDTO> getEnabledRules() {
+        QueryWrapper<RouteRuleDO> query = new QueryWrapper<>();
+        query.eq(RouteRuleDO.ENABLED, CommonConstant.YES);
+        query.eq(RouteRuleDO.IS_DELETE, CommonConstant.IS_DEL_NOT);
+        return JsonUtils.deepCopy(routeRuleMapper.selectList(query), new TypeReference<List<RuleDTO>>() {
+        });
     }
 }
