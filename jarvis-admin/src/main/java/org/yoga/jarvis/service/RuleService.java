@@ -19,6 +19,7 @@ package org.yoga.jarvis.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.yoga.jarvis.bean.constant.CommonConstant;
 import org.yoga.jarvis.bean.dto.RuleDTO;
@@ -26,6 +27,7 @@ import org.yoga.jarvis.repository.entity.RouteRuleDO;
 import org.yoga.jarvis.repository.mapper.RouteRuleMapper;
 import org.yoga.jarvis.util.JsonUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -49,5 +51,11 @@ public class RuleService {
         query.eq(RouteRuleDO.IS_DELETE, CommonConstant.IS_DEL_NOT);
         return JsonUtils.deepCopy(routeRuleMapper.selectList(query), new TypeReference<List<RuleDTO>>() {
         });
+    }
+
+    public void addRule(RuleDTO ruleDTO) {
+        RouteRuleDO routeRule = JsonUtils.deepCopy(ruleDTO, RouteRuleDO.class);
+        routeRuleMapper.insert(routeRule);
+        // 监听 todo
     }
 }
